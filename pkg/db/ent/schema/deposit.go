@@ -2,26 +2,26 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/account-manager/pkg/db/mixin"
 	"github.com/google/uuid"
-
-	account "github.com/NpoolPlatform/message/npool/account/mgr/v1/account"
+	"github.com/shopspring/decimal"
 )
 
-// User holds the schema definition for the User entity.
-type User struct {
+// Deposit holds the schema definition for the Deposit entity.
+type Deposit struct {
 	ent.Schema
 }
 
-func (User) Mixin() []ent.Mixin {
+func (Deposit) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.TimeMixin{},
 	}
 }
 
-// Fields of the User.
-func (User) Fields() []ent.Field {
+// Fields of the Deposit.
+func (Deposit) Fields() []ent.Field {
 	return []ent.Field{
 		field.
 			UUID("id", uuid.UUID{}).
@@ -52,17 +52,22 @@ func (User) Fields() []ent.Field {
 				return uuid.UUID{}
 			}),
 		field.
-			String("used_for").
+			Other("balance", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
 			Optional().
-			Default(account.AccountUsedFor_DefaultAccountUsedFor.String()),
+			Default(decimal.Decimal{}),
 		field.
-			JSON("labels", []string{}).
+			UUID("collecting_tid", uuid.UUID{}).
 			Optional().
-			Default([]string{}),
+			Default(func() uuid.UUID {
+				return uuid.UUID{}
+			}),
 	}
 }
 
-// Edges of the User.
-func (User) Edges() []ent.Edge {
+// Edges of the Deposit.
+func (Deposit) Edges() []ent.Edge {
 	return nil
 }

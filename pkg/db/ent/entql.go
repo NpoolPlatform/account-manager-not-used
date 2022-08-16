@@ -4,6 +4,7 @@ package ent
 
 import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/deposit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/limitation"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
@@ -18,7 +19,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 6)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 7)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   account.Table,
@@ -39,10 +40,33 @@ var schemaGraph = func() *sqlgraph.Schema {
 			account.FieldPlatformHoldPrivateKey: {Type: field.TypeBool, Column: account.FieldPlatformHoldPrivateKey},
 			account.FieldActive:                 {Type: field.TypeBool, Column: account.FieldActive},
 			account.FieldLocked:                 {Type: field.TypeBool, Column: account.FieldLocked},
+			account.FieldLockedBy:               {Type: field.TypeString, Column: account.FieldLockedBy},
 			account.FieldBlocked:                {Type: field.TypeBool, Column: account.FieldBlocked},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   deposit.Table,
+			Columns: deposit.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: deposit.FieldID,
+			},
+		},
+		Type: "Deposit",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			deposit.FieldCreatedAt:     {Type: field.TypeUint32, Column: deposit.FieldCreatedAt},
+			deposit.FieldUpdatedAt:     {Type: field.TypeUint32, Column: deposit.FieldUpdatedAt},
+			deposit.FieldDeletedAt:     {Type: field.TypeUint32, Column: deposit.FieldDeletedAt},
+			deposit.FieldAppID:         {Type: field.TypeUUID, Column: deposit.FieldAppID},
+			deposit.FieldUserID:        {Type: field.TypeUUID, Column: deposit.FieldUserID},
+			deposit.FieldCoinTypeID:    {Type: field.TypeUUID, Column: deposit.FieldCoinTypeID},
+			deposit.FieldAccountID:     {Type: field.TypeUUID, Column: deposit.FieldAccountID},
+			deposit.FieldBalance:       {Type: field.TypeOther, Column: deposit.FieldBalance},
+			deposit.FieldCollectingTid: {Type: field.TypeUUID, Column: deposit.FieldCollectingTid},
+		},
+	}
+	graph.Nodes[2] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   goodbenefit.Table,
 			Columns: goodbenefit.Columns,
@@ -61,7 +85,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			goodbenefit.FieldBackup:    {Type: field.TypeBool, Column: goodbenefit.FieldBackup},
 		},
 	}
-	graph.Nodes[2] = &sqlgraph.Node{
+	graph.Nodes[3] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   limitation.Table,
 			Columns: limitation.Columns,
@@ -80,7 +104,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			limitation.FieldAmount:     {Type: field.TypeOther, Column: limitation.FieldAmount},
 		},
 	}
-	graph.Nodes[3] = &sqlgraph.Node{
+	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   payment.Table,
 			Columns: payment.Columns,
@@ -96,13 +120,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 			payment.FieldDeletedAt:     {Type: field.TypeUint32, Column: payment.FieldDeletedAt},
 			payment.FieldCoinTypeID:    {Type: field.TypeUUID, Column: payment.FieldCoinTypeID},
 			payment.FieldAccountID:     {Type: field.TypeUUID, Column: payment.FieldAccountID},
-			payment.FieldIdle:          {Type: field.TypeBool, Column: payment.FieldIdle},
-			payment.FieldOccupiedBy:    {Type: field.TypeString, Column: payment.FieldOccupiedBy},
 			payment.FieldCollectingTid: {Type: field.TypeUUID, Column: payment.FieldCollectingTid},
 			payment.FieldAvailableAt:   {Type: field.TypeUint32, Column: payment.FieldAvailableAt},
 		},
 	}
-	graph.Nodes[4] = &sqlgraph.Node{
+	graph.Nodes[5] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   platform.Table,
 			Columns: platform.Columns,
@@ -122,7 +144,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			platform.FieldBackup:     {Type: field.TypeBool, Column: platform.FieldBackup},
 		},
 	}
-	graph.Nodes[5] = &sqlgraph.Node{
+	graph.Nodes[6] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   user.Table,
 			Columns: user.Columns,
@@ -142,7 +164,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			user.FieldAccountID:  {Type: field.TypeUUID, Column: user.FieldAccountID},
 			user.FieldUsedFor:    {Type: field.TypeString, Column: user.FieldUsedFor},
 			user.FieldLabels:     {Type: field.TypeJSON, Column: user.FieldLabels},
-			user.FieldBalance:    {Type: field.TypeOther, Column: user.FieldBalance},
 		},
 	}
 	return graph
@@ -238,9 +259,98 @@ func (f *AccountFilter) WhereLocked(p entql.BoolP) {
 	f.Where(p.Field(account.FieldLocked))
 }
 
+// WhereLockedBy applies the entql string predicate on the locked_by field.
+func (f *AccountFilter) WhereLockedBy(p entql.StringP) {
+	f.Where(p.Field(account.FieldLockedBy))
+}
+
 // WhereBlocked applies the entql bool predicate on the blocked field.
 func (f *AccountFilter) WhereBlocked(p entql.BoolP) {
 	f.Where(p.Field(account.FieldBlocked))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (dq *DepositQuery) addPredicate(pred func(s *sql.Selector)) {
+	dq.predicates = append(dq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the DepositQuery builder.
+func (dq *DepositQuery) Filter() *DepositFilter {
+	return &DepositFilter{dq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *DepositMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the DepositMutation builder.
+func (m *DepositMutation) Filter() *DepositFilter {
+	return &DepositFilter{m}
+}
+
+// DepositFilter provides a generic filtering capability at runtime for DepositQuery.
+type DepositFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *DepositFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *DepositFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(deposit.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *DepositFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(deposit.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *DepositFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(deposit.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *DepositFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(deposit.FieldDeletedAt))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *DepositFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(deposit.FieldAppID))
+}
+
+// WhereUserID applies the entql [16]byte predicate on the user_id field.
+func (f *DepositFilter) WhereUserID(p entql.ValueP) {
+	f.Where(p.Field(deposit.FieldUserID))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *DepositFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(deposit.FieldCoinTypeID))
+}
+
+// WhereAccountID applies the entql [16]byte predicate on the account_id field.
+func (f *DepositFilter) WhereAccountID(p entql.ValueP) {
+	f.Where(p.Field(deposit.FieldAccountID))
+}
+
+// WhereBalance applies the entql other predicate on the balance field.
+func (f *DepositFilter) WhereBalance(p entql.OtherP) {
+	f.Where(p.Field(deposit.FieldBalance))
+}
+
+// WhereCollectingTid applies the entql [16]byte predicate on the collecting_tid field.
+func (f *DepositFilter) WhereCollectingTid(p entql.ValueP) {
+	f.Where(p.Field(deposit.FieldCollectingTid))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -271,7 +381,7 @@ type GoodBenefitFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *GoodBenefitFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -340,7 +450,7 @@ type LimitationFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *LimitationFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -409,7 +519,7 @@ type PaymentFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *PaymentFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -443,16 +553,6 @@ func (f *PaymentFilter) WhereCoinTypeID(p entql.ValueP) {
 // WhereAccountID applies the entql [16]byte predicate on the account_id field.
 func (f *PaymentFilter) WhereAccountID(p entql.ValueP) {
 	f.Where(p.Field(payment.FieldAccountID))
-}
-
-// WhereIdle applies the entql bool predicate on the idle field.
-func (f *PaymentFilter) WhereIdle(p entql.BoolP) {
-	f.Where(p.Field(payment.FieldIdle))
-}
-
-// WhereOccupiedBy applies the entql string predicate on the occupied_by field.
-func (f *PaymentFilter) WhereOccupiedBy(p entql.StringP) {
-	f.Where(p.Field(payment.FieldOccupiedBy))
 }
 
 // WhereCollectingTid applies the entql [16]byte predicate on the collecting_tid field.
@@ -493,7 +593,7 @@ type PlatformFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *PlatformFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -567,7 +667,7 @@ type UserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -621,9 +721,4 @@ func (f *UserFilter) WhereUsedFor(p entql.StringP) {
 // WhereLabels applies the entql json.RawMessage predicate on the labels field.
 func (f *UserFilter) WhereLabels(p entql.BytesP) {
 	f.Where(p.Field(user.FieldLabels))
-}
-
-// WhereBalance applies the entql other predicate on the balance field.
-func (f *UserFilter) WhereBalance(p entql.OtherP) {
-	f.Where(p.Field(user.FieldBalance))
 }

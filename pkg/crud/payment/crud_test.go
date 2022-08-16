@@ -33,23 +33,17 @@ var entity = ent.Payment{
 	ID:         uuid.New(),
 	CoinTypeID: uuid.New(),
 	AccountID:  uuid.New(),
-	Idle:       true,
-	OccupiedBy: npool.OccupiedBy_Payment.String(),
 }
 
 var (
 	id         = entity.ID.String()
 	coinTypeID = entity.CoinTypeID.String()
 	accountID  = entity.AccountID.String()
-	idle       = entity.Idle
-	occupiedBy = npool.OccupiedBy_Payment
 
 	req = npool.AccountReq{
 		ID:         &id,
 		CoinTypeID: &coinTypeID,
 		AccountID:  &accountID,
-		Idle:       &idle,
-		OccupiedBy: &occupiedBy,
 	}
 )
 
@@ -72,13 +66,11 @@ func createBulk(t *testing.T) {
 			ID:         uuid.New(),
 			CoinTypeID: uuid.New(),
 			AccountID:  uuid.New(),
-			OccupiedBy: npool.OccupiedBy_Payment.String(),
 		},
 		{
 			ID:         uuid.New(),
 			CoinTypeID: uuid.New(),
 			AccountID:  uuid.New(),
-			OccupiedBy: npool.OccupiedBy_Payment.String(),
 		},
 	}
 
@@ -87,13 +79,11 @@ func createBulk(t *testing.T) {
 		_id := _entity.ID.String()
 		_coinTypeID := _entity.CoinTypeID.String()
 		_accountID := _entity.AccountID.String()
-		_occupiedBy := npool.OccupiedBy_Payment
 
 		reqs = append(reqs, &npool.AccountReq{
 			ID:         &_id,
 			CoinTypeID: &_coinTypeID,
 			AccountID:  &_accountID,
-			OccupiedBy: &_occupiedBy,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -105,14 +95,11 @@ func createBulk(t *testing.T) {
 func update(t *testing.T) {
 	collectingTID := uuid.New()
 	collectingTIDS := collectingTID.String()
-	idle := false
 	availableAt := uint32(time.Now().Unix())
 
-	req.Idle = &idle
 	req.CollectingTID = &collectingTIDS
 	req.AvailableAt = &availableAt
 
-	entity.Idle = idle
 	entity.CollectingTid = collectingTID
 	entity.AvailableAt = availableAt
 

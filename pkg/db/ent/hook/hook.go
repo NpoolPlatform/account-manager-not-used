@@ -22,6 +22,19 @@ func (f AccountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return f(ctx, mv)
 }
 
+// The DepositFunc type is an adapter to allow the use of ordinary
+// function as Deposit mutator.
+type DepositFunc func(context.Context, *ent.DepositMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DepositFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.DepositMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DepositMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The GoodBenefitFunc type is an adapter to allow the use of ordinary
 // function as GoodBenefit mutator.
 type GoodBenefitFunc func(context.Context, *ent.GoodBenefitMutation) (ent.Value, error)

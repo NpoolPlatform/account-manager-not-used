@@ -93,34 +93,6 @@ func (pc *PaymentCreate) SetNillableAccountID(u *uuid.UUID) *PaymentCreate {
 	return pc
 }
 
-// SetIdle sets the "idle" field.
-func (pc *PaymentCreate) SetIdle(b bool) *PaymentCreate {
-	pc.mutation.SetIdle(b)
-	return pc
-}
-
-// SetNillableIdle sets the "idle" field if the given value is not nil.
-func (pc *PaymentCreate) SetNillableIdle(b *bool) *PaymentCreate {
-	if b != nil {
-		pc.SetIdle(*b)
-	}
-	return pc
-}
-
-// SetOccupiedBy sets the "occupied_by" field.
-func (pc *PaymentCreate) SetOccupiedBy(s string) *PaymentCreate {
-	pc.mutation.SetOccupiedBy(s)
-	return pc
-}
-
-// SetNillableOccupiedBy sets the "occupied_by" field if the given value is not nil.
-func (pc *PaymentCreate) SetNillableOccupiedBy(s *string) *PaymentCreate {
-	if s != nil {
-		pc.SetOccupiedBy(*s)
-	}
-	return pc
-}
-
 // SetCollectingTid sets the "collecting_tid" field.
 func (pc *PaymentCreate) SetCollectingTid(u uuid.UUID) *PaymentCreate {
 	pc.mutation.SetCollectingTid(u)
@@ -271,14 +243,6 @@ func (pc *PaymentCreate) defaults() error {
 		v := payment.DefaultAccountID()
 		pc.mutation.SetAccountID(v)
 	}
-	if _, ok := pc.mutation.Idle(); !ok {
-		v := payment.DefaultIdle
-		pc.mutation.SetIdle(v)
-	}
-	if _, ok := pc.mutation.OccupiedBy(); !ok {
-		v := payment.DefaultOccupiedBy
-		pc.mutation.SetOccupiedBy(v)
-	}
 	if _, ok := pc.mutation.CollectingTid(); !ok {
 		if payment.DefaultCollectingTid == nil {
 			return fmt.Errorf("ent: uninitialized payment.DefaultCollectingTid (forgotten import ent/runtime?)")
@@ -390,22 +354,6 @@ func (pc *PaymentCreate) createSpec() (*Payment, *sqlgraph.CreateSpec) {
 			Column: payment.FieldAccountID,
 		})
 		_node.AccountID = value
-	}
-	if value, ok := pc.mutation.Idle(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: payment.FieldIdle,
-		})
-		_node.Idle = value
-	}
-	if value, ok := pc.mutation.OccupiedBy(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: payment.FieldOccupiedBy,
-		})
-		_node.OccupiedBy = value
 	}
 	if value, ok := pc.mutation.CollectingTid(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -564,42 +512,6 @@ func (u *PaymentUpsert) UpdateAccountID() *PaymentUpsert {
 // ClearAccountID clears the value of the "account_id" field.
 func (u *PaymentUpsert) ClearAccountID() *PaymentUpsert {
 	u.SetNull(payment.FieldAccountID)
-	return u
-}
-
-// SetIdle sets the "idle" field.
-func (u *PaymentUpsert) SetIdle(v bool) *PaymentUpsert {
-	u.Set(payment.FieldIdle, v)
-	return u
-}
-
-// UpdateIdle sets the "idle" field to the value that was provided on create.
-func (u *PaymentUpsert) UpdateIdle() *PaymentUpsert {
-	u.SetExcluded(payment.FieldIdle)
-	return u
-}
-
-// ClearIdle clears the value of the "idle" field.
-func (u *PaymentUpsert) ClearIdle() *PaymentUpsert {
-	u.SetNull(payment.FieldIdle)
-	return u
-}
-
-// SetOccupiedBy sets the "occupied_by" field.
-func (u *PaymentUpsert) SetOccupiedBy(v string) *PaymentUpsert {
-	u.Set(payment.FieldOccupiedBy, v)
-	return u
-}
-
-// UpdateOccupiedBy sets the "occupied_by" field to the value that was provided on create.
-func (u *PaymentUpsert) UpdateOccupiedBy() *PaymentUpsert {
-	u.SetExcluded(payment.FieldOccupiedBy)
-	return u
-}
-
-// ClearOccupiedBy clears the value of the "occupied_by" field.
-func (u *PaymentUpsert) ClearOccupiedBy() *PaymentUpsert {
-	u.SetNull(payment.FieldOccupiedBy)
 	return u
 }
 
@@ -797,48 +709,6 @@ func (u *PaymentUpsertOne) UpdateAccountID() *PaymentUpsertOne {
 func (u *PaymentUpsertOne) ClearAccountID() *PaymentUpsertOne {
 	return u.Update(func(s *PaymentUpsert) {
 		s.ClearAccountID()
-	})
-}
-
-// SetIdle sets the "idle" field.
-func (u *PaymentUpsertOne) SetIdle(v bool) *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.SetIdle(v)
-	})
-}
-
-// UpdateIdle sets the "idle" field to the value that was provided on create.
-func (u *PaymentUpsertOne) UpdateIdle() *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.UpdateIdle()
-	})
-}
-
-// ClearIdle clears the value of the "idle" field.
-func (u *PaymentUpsertOne) ClearIdle() *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.ClearIdle()
-	})
-}
-
-// SetOccupiedBy sets the "occupied_by" field.
-func (u *PaymentUpsertOne) SetOccupiedBy(v string) *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.SetOccupiedBy(v)
-	})
-}
-
-// UpdateOccupiedBy sets the "occupied_by" field to the value that was provided on create.
-func (u *PaymentUpsertOne) UpdateOccupiedBy() *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.UpdateOccupiedBy()
-	})
-}
-
-// ClearOccupiedBy clears the value of the "occupied_by" field.
-func (u *PaymentUpsertOne) ClearOccupiedBy() *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.ClearOccupiedBy()
 	})
 }
 
@@ -1209,48 +1079,6 @@ func (u *PaymentUpsertBulk) UpdateAccountID() *PaymentUpsertBulk {
 func (u *PaymentUpsertBulk) ClearAccountID() *PaymentUpsertBulk {
 	return u.Update(func(s *PaymentUpsert) {
 		s.ClearAccountID()
-	})
-}
-
-// SetIdle sets the "idle" field.
-func (u *PaymentUpsertBulk) SetIdle(v bool) *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.SetIdle(v)
-	})
-}
-
-// UpdateIdle sets the "idle" field to the value that was provided on create.
-func (u *PaymentUpsertBulk) UpdateIdle() *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.UpdateIdle()
-	})
-}
-
-// ClearIdle clears the value of the "idle" field.
-func (u *PaymentUpsertBulk) ClearIdle() *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.ClearIdle()
-	})
-}
-
-// SetOccupiedBy sets the "occupied_by" field.
-func (u *PaymentUpsertBulk) SetOccupiedBy(v string) *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.SetOccupiedBy(v)
-	})
-}
-
-// UpdateOccupiedBy sets the "occupied_by" field to the value that was provided on create.
-func (u *PaymentUpsertBulk) UpdateOccupiedBy() *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.UpdateOccupiedBy()
-	})
-}
-
-// ClearOccupiedBy clears the value of the "occupied_by" field.
-func (u *PaymentUpsertBulk) ClearOccupiedBy() *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.ClearOccupiedBy()
 	})
 }
 

@@ -149,6 +149,20 @@ func (ac *AccountCreate) SetNillableLocked(b *bool) *AccountCreate {
 	return ac
 }
 
+// SetLockedBy sets the "locked_by" field.
+func (ac *AccountCreate) SetLockedBy(s string) *AccountCreate {
+	ac.mutation.SetLockedBy(s)
+	return ac
+}
+
+// SetNillableLockedBy sets the "locked_by" field if the given value is not nil.
+func (ac *AccountCreate) SetNillableLockedBy(s *string) *AccountCreate {
+	if s != nil {
+		ac.SetLockedBy(*s)
+	}
+	return ac
+}
+
 // SetBlocked sets the "blocked" field.
 func (ac *AccountCreate) SetBlocked(b bool) *AccountCreate {
 	ac.mutation.SetBlocked(b)
@@ -298,6 +312,10 @@ func (ac *AccountCreate) defaults() error {
 		v := account.DefaultLocked
 		ac.mutation.SetLocked(v)
 	}
+	if _, ok := ac.mutation.LockedBy(); !ok {
+		v := account.DefaultLockedBy
+		ac.mutation.SetLockedBy(v)
+	}
 	if _, ok := ac.mutation.Blocked(); !ok {
 		v := account.DefaultBlocked
 		ac.mutation.SetBlocked(v)
@@ -431,6 +449,14 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 			Column: account.FieldLocked,
 		})
 		_node.Locked = value
+	}
+	if value, ok := ac.mutation.LockedBy(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: account.FieldLockedBy,
+		})
+		_node.LockedBy = value
 	}
 	if value, ok := ac.mutation.Blocked(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -653,6 +679,24 @@ func (u *AccountUpsert) UpdateLocked() *AccountUpsert {
 // ClearLocked clears the value of the "locked" field.
 func (u *AccountUpsert) ClearLocked() *AccountUpsert {
 	u.SetNull(account.FieldLocked)
+	return u
+}
+
+// SetLockedBy sets the "locked_by" field.
+func (u *AccountUpsert) SetLockedBy(v string) *AccountUpsert {
+	u.Set(account.FieldLockedBy, v)
+	return u
+}
+
+// UpdateLockedBy sets the "locked_by" field to the value that was provided on create.
+func (u *AccountUpsert) UpdateLockedBy() *AccountUpsert {
+	u.SetExcluded(account.FieldLockedBy)
+	return u
+}
+
+// ClearLockedBy clears the value of the "locked_by" field.
+func (u *AccountUpsert) ClearLockedBy() *AccountUpsert {
+	u.SetNull(account.FieldLockedBy)
 	return u
 }
 
@@ -910,6 +954,27 @@ func (u *AccountUpsertOne) UpdateLocked() *AccountUpsertOne {
 func (u *AccountUpsertOne) ClearLocked() *AccountUpsertOne {
 	return u.Update(func(s *AccountUpsert) {
 		s.ClearLocked()
+	})
+}
+
+// SetLockedBy sets the "locked_by" field.
+func (u *AccountUpsertOne) SetLockedBy(v string) *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.SetLockedBy(v)
+	})
+}
+
+// UpdateLockedBy sets the "locked_by" field to the value that was provided on create.
+func (u *AccountUpsertOne) UpdateLockedBy() *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.UpdateLockedBy()
+	})
+}
+
+// ClearLockedBy clears the value of the "locked_by" field.
+func (u *AccountUpsertOne) ClearLockedBy() *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.ClearLockedBy()
 	})
 }
 
@@ -1336,6 +1401,27 @@ func (u *AccountUpsertBulk) UpdateLocked() *AccountUpsertBulk {
 func (u *AccountUpsertBulk) ClearLocked() *AccountUpsertBulk {
 	return u.Update(func(s *AccountUpsert) {
 		s.ClearLocked()
+	})
+}
+
+// SetLockedBy sets the "locked_by" field.
+func (u *AccountUpsertBulk) SetLockedBy(v string) *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.SetLockedBy(v)
+	})
+}
+
+// UpdateLockedBy sets the "locked_by" field to the value that was provided on create.
+func (u *AccountUpsertBulk) UpdateLockedBy() *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.UpdateLockedBy()
+	})
+}
+
+// ClearLockedBy clears the value of the "locked_by" field.
+func (u *AccountUpsertBulk) ClearLockedBy() *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.ClearLockedBy()
 	})
 }
 

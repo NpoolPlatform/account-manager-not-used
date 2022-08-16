@@ -14,8 +14,6 @@ func Ent2Grpc(row *ent.Payment) *npool.Account {
 		ID:            row.ID.String(),
 		CoinTypeID:    row.CoinTypeID.String(),
 		AccountID:     row.AccountID.String(),
-		Idle:          row.Idle,
-		OccupiedBy:    npool.OccupiedBy(npool.OccupiedBy_value[row.OccupiedBy]),
 		CollectingTID: row.CollectingTid.String(),
 		CreatedAt:     row.CreatedAt,
 		AvailableAt:   row.AvailableAt,

@@ -43,19 +43,6 @@ func validate(info *npool.AccountReq) error {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("CollectingTID is invalid: %v", err))
 	}
 
-	if info.OccupiedBy == nil {
-		logger.Sugar().Errorw("validate", "OccupiedBy", info.OccupiedBy)
-		return status.Error(codes.InvalidArgument, "OccupiedBy is empty")
-	}
-
-	switch info.GetOccupiedBy() {
-	case npool.OccupiedBy_Payment:
-	case npool.OccupiedBy_Collecting:
-	default:
-		logger.Sugar().Errorw("validate", "OccupiedBy", info.GetOccupiedBy())
-		return status.Error(codes.InvalidArgument, "OccupiedBy is invalid")
-	}
-
 	return nil
 }
 

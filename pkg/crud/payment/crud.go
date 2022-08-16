@@ -31,12 +31,6 @@ func CreateSet(c *ent.PaymentCreate, in *npool.AccountReq) *ent.PaymentCreate {
 	if in.AccountID != nil {
 		c.SetAccountID(uuid.MustParse(in.GetAccountID()))
 	}
-	if in.Idle != nil {
-		c.SetIdle(in.GetIdle())
-	}
-	if in.OccupiedBy != nil {
-		c.SetOccupiedBy(in.GetOccupiedBy().String())
-	}
 	if in.CollectingTID != nil {
 		c.SetCollectingTid(uuid.MustParse(in.GetCollectingTID()))
 	}
@@ -107,12 +101,6 @@ func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Payment, er
 func UpdateSet(info *ent.Payment, in *npool.AccountReq) *ent.PaymentUpdateOne {
 	u := info.Update()
 
-	if in.Idle != nil {
-		u.SetIdle(in.GetIdle())
-	}
-	if in.OccupiedBy != nil {
-		u.SetOccupiedBy(in.GetOccupiedBy().String())
-	}
 	if in.CollectingTID != nil {
 		u.SetCollectingTid(uuid.MustParse(in.GetCollectingTID()))
 	}
@@ -204,22 +192,6 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PaymentQuery, erro
 		switch conds.GetAccountID().GetOp() {
 		case cruder.EQ:
 			stm.Where(payment.AccountID(uuid.MustParse(conds.GetAccountID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid payment field")
-		}
-	}
-	if conds.Idle != nil {
-		switch conds.GetIdle().GetOp() {
-		case cruder.EQ:
-			stm.Where(payment.Idle(conds.GetIdle().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid payment field")
-		}
-	}
-	if conds.OccupiedBy != nil {
-		switch conds.GetOccupiedBy().GetOp() {
-		case cruder.LIKE:
-			stm.Where(payment.OccupiedBy(npool.OccupiedBy(conds.GetOccupiedBy().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid payment field")
 		}

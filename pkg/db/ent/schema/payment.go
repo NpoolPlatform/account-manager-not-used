@@ -7,8 +7,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/account-manager/pkg/db/mixin"
 	"github.com/google/uuid"
-
-	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/payment"
 )
 
 // Payment holds the schema definition for the Payment entity.
@@ -41,14 +39,6 @@ func (Payment) Fields() []ent.Field {
 			Default(func() uuid.UUID {
 				return uuid.UUID{}
 			}),
-		field.
-			Bool("idle").
-			Optional().
-			Default(true),
-		field.
-			String("occupied_by").
-			Optional().
-			Default(npool.OccupiedBy_DefaultOccupiedBy.String()),
 		field.
 			UUID("collecting_tid", uuid.UUID{}).
 			Optional().

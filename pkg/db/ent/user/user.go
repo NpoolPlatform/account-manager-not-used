@@ -5,7 +5,6 @@ package user
 import (
 	"entgo.io/ent"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 const (
@@ -31,8 +30,6 @@ const (
 	FieldUsedFor = "used_for"
 	// FieldLabels holds the string denoting the labels field in the database.
 	FieldLabels = "labels"
-	// FieldBalance holds the string denoting the balance field in the database.
-	FieldBalance = "balance"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -49,7 +46,6 @@ var Columns = []string{
 	FieldAccountID,
 	FieldUsedFor,
 	FieldLabels,
-	FieldBalance,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -91,8 +87,6 @@ var (
 	DefaultUsedFor string
 	// DefaultLabels holds the default value on creation for the "labels" field.
 	DefaultLabels []string
-	// DefaultBalance holds the default value on creation for the "balance" field.
-	DefaultBalance decimal.Decimal
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

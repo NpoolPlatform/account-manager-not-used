@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/deposit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/limitation"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
@@ -75,14 +76,74 @@ func init() {
 	accountDescLocked := accountFields[6].Descriptor()
 	// account.DefaultLocked holds the default value on creation for the locked field.
 	account.DefaultLocked = accountDescLocked.Default.(bool)
+	// accountDescLockedBy is the schema descriptor for locked_by field.
+	accountDescLockedBy := accountFields[7].Descriptor()
+	// account.DefaultLockedBy holds the default value on creation for the locked_by field.
+	account.DefaultLockedBy = accountDescLockedBy.Default.(string)
 	// accountDescBlocked is the schema descriptor for blocked field.
-	accountDescBlocked := accountFields[7].Descriptor()
+	accountDescBlocked := accountFields[8].Descriptor()
 	// account.DefaultBlocked holds the default value on creation for the blocked field.
 	account.DefaultBlocked = accountDescBlocked.Default.(bool)
 	// accountDescID is the schema descriptor for id field.
 	accountDescID := accountFields[0].Descriptor()
 	// account.DefaultID holds the default value on creation for the id field.
 	account.DefaultID = accountDescID.Default.(func() uuid.UUID)
+	depositMixin := schema.Deposit{}.Mixin()
+	deposit.Policy = privacy.NewPolicies(depositMixin[0], schema.Deposit{})
+	deposit.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := deposit.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	depositMixinFields0 := depositMixin[0].Fields()
+	_ = depositMixinFields0
+	depositFields := schema.Deposit{}.Fields()
+	_ = depositFields
+	// depositDescCreatedAt is the schema descriptor for created_at field.
+	depositDescCreatedAt := depositMixinFields0[0].Descriptor()
+	// deposit.DefaultCreatedAt holds the default value on creation for the created_at field.
+	deposit.DefaultCreatedAt = depositDescCreatedAt.Default.(func() uint32)
+	// depositDescUpdatedAt is the schema descriptor for updated_at field.
+	depositDescUpdatedAt := depositMixinFields0[1].Descriptor()
+	// deposit.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	deposit.DefaultUpdatedAt = depositDescUpdatedAt.Default.(func() uint32)
+	// deposit.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	deposit.UpdateDefaultUpdatedAt = depositDescUpdatedAt.UpdateDefault.(func() uint32)
+	// depositDescDeletedAt is the schema descriptor for deleted_at field.
+	depositDescDeletedAt := depositMixinFields0[2].Descriptor()
+	// deposit.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	deposit.DefaultDeletedAt = depositDescDeletedAt.Default.(func() uint32)
+	// depositDescAppID is the schema descriptor for app_id field.
+	depositDescAppID := depositFields[1].Descriptor()
+	// deposit.DefaultAppID holds the default value on creation for the app_id field.
+	deposit.DefaultAppID = depositDescAppID.Default.(func() uuid.UUID)
+	// depositDescUserID is the schema descriptor for user_id field.
+	depositDescUserID := depositFields[2].Descriptor()
+	// deposit.DefaultUserID holds the default value on creation for the user_id field.
+	deposit.DefaultUserID = depositDescUserID.Default.(func() uuid.UUID)
+	// depositDescCoinTypeID is the schema descriptor for coin_type_id field.
+	depositDescCoinTypeID := depositFields[3].Descriptor()
+	// deposit.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	deposit.DefaultCoinTypeID = depositDescCoinTypeID.Default.(func() uuid.UUID)
+	// depositDescAccountID is the schema descriptor for account_id field.
+	depositDescAccountID := depositFields[4].Descriptor()
+	// deposit.DefaultAccountID holds the default value on creation for the account_id field.
+	deposit.DefaultAccountID = depositDescAccountID.Default.(func() uuid.UUID)
+	// depositDescBalance is the schema descriptor for balance field.
+	depositDescBalance := depositFields[5].Descriptor()
+	// deposit.DefaultBalance holds the default value on creation for the balance field.
+	deposit.DefaultBalance = depositDescBalance.Default.(decimal.Decimal)
+	// depositDescCollectingTid is the schema descriptor for collecting_tid field.
+	depositDescCollectingTid := depositFields[6].Descriptor()
+	// deposit.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
+	deposit.DefaultCollectingTid = depositDescCollectingTid.Default.(func() uuid.UUID)
+	// depositDescID is the schema descriptor for id field.
+	depositDescID := depositFields[0].Descriptor()
+	// deposit.DefaultID holds the default value on creation for the id field.
+	deposit.DefaultID = depositDescID.Default.(func() uuid.UUID)
 	goodbenefitMixin := schema.GoodBenefit{}.Mixin()
 	goodbenefit.Policy = privacy.NewPolicies(goodbenefitMixin[0], schema.GoodBenefit{})
 	goodbenefit.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -207,20 +268,12 @@ func init() {
 	paymentDescAccountID := paymentFields[2].Descriptor()
 	// payment.DefaultAccountID holds the default value on creation for the account_id field.
 	payment.DefaultAccountID = paymentDescAccountID.Default.(func() uuid.UUID)
-	// paymentDescIdle is the schema descriptor for idle field.
-	paymentDescIdle := paymentFields[3].Descriptor()
-	// payment.DefaultIdle holds the default value on creation for the idle field.
-	payment.DefaultIdle = paymentDescIdle.Default.(bool)
-	// paymentDescOccupiedBy is the schema descriptor for occupied_by field.
-	paymentDescOccupiedBy := paymentFields[4].Descriptor()
-	// payment.DefaultOccupiedBy holds the default value on creation for the occupied_by field.
-	payment.DefaultOccupiedBy = paymentDescOccupiedBy.Default.(string)
 	// paymentDescCollectingTid is the schema descriptor for collecting_tid field.
-	paymentDescCollectingTid := paymentFields[5].Descriptor()
+	paymentDescCollectingTid := paymentFields[3].Descriptor()
 	// payment.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
 	payment.DefaultCollectingTid = paymentDescCollectingTid.Default.(func() uuid.UUID)
 	// paymentDescAvailableAt is the schema descriptor for available_at field.
-	paymentDescAvailableAt := paymentFields[6].Descriptor()
+	paymentDescAvailableAt := paymentFields[4].Descriptor()
 	// payment.DefaultAvailableAt holds the default value on creation for the available_at field.
 	payment.DefaultAvailableAt = paymentDescAvailableAt.Default.(func() uint32)
 	// paymentDescID is the schema descriptor for id field.
@@ -327,10 +380,6 @@ func init() {
 	userDescLabels := userFields[6].Descriptor()
 	// user.DefaultLabels holds the default value on creation for the labels field.
 	user.DefaultLabels = userDescLabels.Default.([]string)
-	// userDescBalance is the schema descriptor for balance field.
-	userDescBalance := userFields[7].Descriptor()
-	// user.DefaultBalance holds the default value on creation for the balance field.
-	user.DefaultBalance = userDescBalance.Default.(decimal.Decimal)
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.

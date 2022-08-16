@@ -203,6 +203,26 @@ func (au *AccountUpdate) ClearLocked() *AccountUpdate {
 	return au
 }
 
+// SetLockedBy sets the "locked_by" field.
+func (au *AccountUpdate) SetLockedBy(s string) *AccountUpdate {
+	au.mutation.SetLockedBy(s)
+	return au
+}
+
+// SetNillableLockedBy sets the "locked_by" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableLockedBy(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetLockedBy(*s)
+	}
+	return au
+}
+
+// ClearLockedBy clears the value of the "locked_by" field.
+func (au *AccountUpdate) ClearLockedBy() *AccountUpdate {
+	au.mutation.ClearLockedBy()
+	return au
+}
+
 // SetBlocked sets the "blocked" field.
 func (au *AccountUpdate) SetBlocked(b bool) *AccountUpdate {
 	au.mutation.SetBlocked(b)
@@ -435,6 +455,19 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: account.FieldLocked,
 		})
 	}
+	if value, ok := au.mutation.LockedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: account.FieldLockedBy,
+		})
+	}
+	if au.mutation.LockedByCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: account.FieldLockedBy,
+		})
+	}
 	if value, ok := au.mutation.Blocked(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -639,6 +672,26 @@ func (auo *AccountUpdateOne) SetNillableLocked(b *bool) *AccountUpdateOne {
 // ClearLocked clears the value of the "locked" field.
 func (auo *AccountUpdateOne) ClearLocked() *AccountUpdateOne {
 	auo.mutation.ClearLocked()
+	return auo
+}
+
+// SetLockedBy sets the "locked_by" field.
+func (auo *AccountUpdateOne) SetLockedBy(s string) *AccountUpdateOne {
+	auo.mutation.SetLockedBy(s)
+	return auo
+}
+
+// SetNillableLockedBy sets the "locked_by" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableLockedBy(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetLockedBy(*s)
+	}
+	return auo
+}
+
+// ClearLockedBy clears the value of the "locked_by" field.
+func (auo *AccountUpdateOne) ClearLockedBy() *AccountUpdateOne {
+	auo.mutation.ClearLockedBy()
 	return auo
 }
 
@@ -896,6 +949,19 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Column: account.FieldLocked,
+		})
+	}
+	if value, ok := auo.mutation.LockedBy(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: account.FieldLockedBy,
+		})
+	}
+	if auo.mutation.LockedByCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: account.FieldLockedBy,
 		})
 	}
 	if value, ok := auo.mutation.Blocked(); ok {

@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/deposit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/limitation"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
@@ -28,6 +29,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Account is the client for interacting with the Account builders.
 	Account *AccountClient
+	// Deposit is the client for interacting with the Deposit builders.
+	Deposit *DepositClient
 	// GoodBenefit is the client for interacting with the GoodBenefit builders.
 	GoodBenefit *GoodBenefitClient
 	// Limitation is the client for interacting with the Limitation builders.
@@ -52,6 +55,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Account = NewAccountClient(c.config)
+	c.Deposit = NewDepositClient(c.config)
 	c.GoodBenefit = NewGoodBenefitClient(c.config)
 	c.Limitation = NewLimitationClient(c.config)
 	c.Payment = NewPaymentClient(c.config)
@@ -91,6 +95,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:         ctx,
 		config:      cfg,
 		Account:     NewAccountClient(cfg),
+		Deposit:     NewDepositClient(cfg),
 		GoodBenefit: NewGoodBenefitClient(cfg),
 		Limitation:  NewLimitationClient(cfg),
 		Payment:     NewPaymentClient(cfg),
@@ -116,6 +121,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:         ctx,
 		config:      cfg,
 		Account:     NewAccountClient(cfg),
+		Deposit:     NewDepositClient(cfg),
 		GoodBenefit: NewGoodBenefitClient(cfg),
 		Limitation:  NewLimitationClient(cfg),
 		Payment:     NewPaymentClient(cfg),
@@ -151,6 +157,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Account.Use(hooks...)
+	c.Deposit.Use(hooks...)
 	c.GoodBenefit.Use(hooks...)
 	c.Limitation.Use(hooks...)
 	c.Payment.Use(hooks...)
@@ -247,6 +254,97 @@ func (c *AccountClient) GetX(ctx context.Context, id uuid.UUID) *Account {
 func (c *AccountClient) Hooks() []Hook {
 	hooks := c.hooks.Account
 	return append(hooks[:len(hooks):len(hooks)], account.Hooks[:]...)
+}
+
+// DepositClient is a client for the Deposit schema.
+type DepositClient struct {
+	config
+}
+
+// NewDepositClient returns a client for the Deposit from the given config.
+func NewDepositClient(c config) *DepositClient {
+	return &DepositClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `deposit.Hooks(f(g(h())))`.
+func (c *DepositClient) Use(hooks ...Hook) {
+	c.hooks.Deposit = append(c.hooks.Deposit, hooks...)
+}
+
+// Create returns a create builder for Deposit.
+func (c *DepositClient) Create() *DepositCreate {
+	mutation := newDepositMutation(c.config, OpCreate)
+	return &DepositCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Deposit entities.
+func (c *DepositClient) CreateBulk(builders ...*DepositCreate) *DepositCreateBulk {
+	return &DepositCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Deposit.
+func (c *DepositClient) Update() *DepositUpdate {
+	mutation := newDepositMutation(c.config, OpUpdate)
+	return &DepositUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DepositClient) UpdateOne(d *Deposit) *DepositUpdateOne {
+	mutation := newDepositMutation(c.config, OpUpdateOne, withDeposit(d))
+	return &DepositUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DepositClient) UpdateOneID(id uuid.UUID) *DepositUpdateOne {
+	mutation := newDepositMutation(c.config, OpUpdateOne, withDepositID(id))
+	return &DepositUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Deposit.
+func (c *DepositClient) Delete() *DepositDelete {
+	mutation := newDepositMutation(c.config, OpDelete)
+	return &DepositDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *DepositClient) DeleteOne(d *Deposit) *DepositDeleteOne {
+	return c.DeleteOneID(d.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *DepositClient) DeleteOneID(id uuid.UUID) *DepositDeleteOne {
+	builder := c.Delete().Where(deposit.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DepositDeleteOne{builder}
+}
+
+// Query returns a query builder for Deposit.
+func (c *DepositClient) Query() *DepositQuery {
+	return &DepositQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Deposit entity by its id.
+func (c *DepositClient) Get(ctx context.Context, id uuid.UUID) (*Deposit, error) {
+	return c.Query().Where(deposit.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DepositClient) GetX(ctx context.Context, id uuid.UUID) *Deposit {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *DepositClient) Hooks() []Hook {
+	hooks := c.hooks.Deposit
+	return append(hooks[:len(hooks):len(hooks)], deposit.Hooks[:]...)
 }
 
 // GoodBenefitClient is a client for the GoodBenefit schema.

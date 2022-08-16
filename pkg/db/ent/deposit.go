@@ -3,17 +3,17 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/deposit"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
-// User is the model entity for the User schema.
-type User struct {
+// Deposit is the model entity for the Deposit schema.
+type Deposit struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
@@ -31,157 +31,153 @@ type User struct {
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// AccountID holds the value of the "account_id" field.
 	AccountID uuid.UUID `json:"account_id,omitempty"`
-	// UsedFor holds the value of the "used_for" field.
-	UsedFor string `json:"used_for,omitempty"`
-	// Labels holds the value of the "labels" field.
-	Labels []string `json:"labels,omitempty"`
+	// Balance holds the value of the "balance" field.
+	Balance decimal.Decimal `json:"balance,omitempty"`
+	// CollectingTid holds the value of the "collecting_tid" field.
+	CollectingTid uuid.UUID `json:"collecting_tid,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*User) scanValues(columns []string) ([]interface{}, error) {
+func (*Deposit) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldLabels:
-			values[i] = new([]byte)
-		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
+		case deposit.FieldBalance:
+			values[i] = new(decimal.Decimal)
+		case deposit.FieldCreatedAt, deposit.FieldUpdatedAt, deposit.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case user.FieldUsedFor:
-			values[i] = new(sql.NullString)
-		case user.FieldID, user.FieldAppID, user.FieldUserID, user.FieldCoinTypeID, user.FieldAccountID:
+		case deposit.FieldID, deposit.FieldAppID, deposit.FieldUserID, deposit.FieldCoinTypeID, deposit.FieldAccountID, deposit.FieldCollectingTid:
 			values[i] = new(uuid.UUID)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
+			return nil, fmt.Errorf("unexpected column %q for type Deposit", columns[i])
 		}
 	}
 	return values, nil
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the User fields.
-func (u *User) assignValues(columns []string, values []interface{}) error {
+// to the Deposit fields.
+func (d *Deposit) assignValues(columns []string, values []interface{}) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID:
+		case deposit.FieldID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				u.ID = *value
+				d.ID = *value
 			}
-		case user.FieldCreatedAt:
+		case deposit.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				u.CreatedAt = uint32(value.Int64)
+				d.CreatedAt = uint32(value.Int64)
 			}
-		case user.FieldUpdatedAt:
+		case deposit.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				u.UpdatedAt = uint32(value.Int64)
+				d.UpdatedAt = uint32(value.Int64)
 			}
-		case user.FieldDeletedAt:
+		case deposit.FieldDeletedAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
-				u.DeletedAt = uint32(value.Int64)
+				d.DeletedAt = uint32(value.Int64)
 			}
-		case user.FieldAppID:
+		case deposit.FieldAppID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value != nil {
-				u.AppID = *value
+				d.AppID = *value
 			}
-		case user.FieldUserID:
+		case deposit.FieldUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
-				u.UserID = *value
+				d.UserID = *value
 			}
-		case user.FieldCoinTypeID:
+		case deposit.FieldCoinTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
 			} else if value != nil {
-				u.CoinTypeID = *value
+				d.CoinTypeID = *value
 			}
-		case user.FieldAccountID:
+		case deposit.FieldAccountID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field account_id", values[i])
 			} else if value != nil {
-				u.AccountID = *value
+				d.AccountID = *value
 			}
-		case user.FieldUsedFor:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field used_for", values[i])
-			} else if value.Valid {
-				u.UsedFor = value.String
+		case deposit.FieldBalance:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field balance", values[i])
+			} else if value != nil {
+				d.Balance = *value
 			}
-		case user.FieldLabels:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field labels", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &u.Labels); err != nil {
-					return fmt.Errorf("unmarshal field labels: %w", err)
-				}
+		case deposit.FieldCollectingTid:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field collecting_tid", values[i])
+			} else if value != nil {
+				d.CollectingTid = *value
 			}
 		}
 	}
 	return nil
 }
 
-// Update returns a builder for updating this User.
-// Note that you need to call User.Unwrap() before calling this method if this User
+// Update returns a builder for updating this Deposit.
+// Note that you need to call Deposit.Unwrap() before calling this method if this Deposit
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (u *User) Update() *UserUpdateOne {
-	return (&UserClient{config: u.config}).UpdateOne(u)
+func (d *Deposit) Update() *DepositUpdateOne {
+	return (&DepositClient{config: d.config}).UpdateOne(d)
 }
 
-// Unwrap unwraps the User entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Deposit entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (u *User) Unwrap() *User {
-	tx, ok := u.config.driver.(*txDriver)
+func (d *Deposit) Unwrap() *Deposit {
+	tx, ok := d.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: User is not a transactional entity")
+		panic("ent: Deposit is not a transactional entity")
 	}
-	u.config.driver = tx.drv
-	return u
+	d.config.driver = tx.drv
+	return d
 }
 
 // String implements the fmt.Stringer.
-func (u *User) String() string {
+func (d *Deposit) String() string {
 	var builder strings.Builder
-	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
+	builder.WriteString("Deposit(")
+	builder.WriteString(fmt.Sprintf("id=%v", d.ID))
 	builder.WriteString(", created_at=")
-	builder.WriteString(fmt.Sprintf("%v", u.CreatedAt))
+	builder.WriteString(fmt.Sprintf("%v", d.CreatedAt))
 	builder.WriteString(", updated_at=")
-	builder.WriteString(fmt.Sprintf("%v", u.UpdatedAt))
+	builder.WriteString(fmt.Sprintf("%v", d.UpdatedAt))
 	builder.WriteString(", deleted_at=")
-	builder.WriteString(fmt.Sprintf("%v", u.DeletedAt))
+	builder.WriteString(fmt.Sprintf("%v", d.DeletedAt))
 	builder.WriteString(", app_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.AppID))
+	builder.WriteString(fmt.Sprintf("%v", d.AppID))
 	builder.WriteString(", user_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.UserID))
+	builder.WriteString(fmt.Sprintf("%v", d.UserID))
 	builder.WriteString(", coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.CoinTypeID))
+	builder.WriteString(fmt.Sprintf("%v", d.CoinTypeID))
 	builder.WriteString(", account_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.AccountID))
-	builder.WriteString(", used_for=")
-	builder.WriteString(u.UsedFor)
-	builder.WriteString(", labels=")
-	builder.WriteString(fmt.Sprintf("%v", u.Labels))
+	builder.WriteString(fmt.Sprintf("%v", d.AccountID))
+	builder.WriteString(", balance=")
+	builder.WriteString(fmt.Sprintf("%v", d.Balance))
+	builder.WriteString(", collecting_tid=")
+	builder.WriteString(fmt.Sprintf("%v", d.CollectingTid))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// Users is a parsable slice of User.
-type Users []*User
+// Deposits is a parsable slice of Deposit.
+type Deposits []*Deposit
 
-func (u Users) config(cfg config) {
-	for _i := range u {
-		u[_i].config = cfg
+func (d Deposits) config(cfg config) {
+	for _i := range d {
+		d[_i].config = cfg
 	}
 }

@@ -22,10 +22,6 @@ const (
 	FieldCoinTypeID = "coin_type_id"
 	// FieldAccountID holds the string denoting the account_id field in the database.
 	FieldAccountID = "account_id"
-	// FieldIdle holds the string denoting the idle field in the database.
-	FieldIdle = "idle"
-	// FieldOccupiedBy holds the string denoting the occupied_by field in the database.
-	FieldOccupiedBy = "occupied_by"
 	// FieldCollectingTid holds the string denoting the collecting_tid field in the database.
 	FieldCollectingTid = "collecting_tid"
 	// FieldAvailableAt holds the string denoting the available_at field in the database.
@@ -42,8 +38,6 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldCoinTypeID,
 	FieldAccountID,
-	FieldIdle,
-	FieldOccupiedBy,
 	FieldCollectingTid,
 	FieldAvailableAt,
 }
@@ -79,10 +73,6 @@ var (
 	DefaultCoinTypeID func() uuid.UUID
 	// DefaultAccountID holds the default value on creation for the "account_id" field.
 	DefaultAccountID func() uuid.UUID
-	// DefaultIdle holds the default value on creation for the "idle" field.
-	DefaultIdle bool
-	// DefaultOccupiedBy holds the default value on creation for the "occupied_by" field.
-	DefaultOccupiedBy string
 	// DefaultCollectingTid holds the default value on creation for the "collecting_tid" field.
 	DefaultCollectingTid func() uuid.UUID
 	// DefaultAvailableAt holds the default value on creation for the "available_at" field.

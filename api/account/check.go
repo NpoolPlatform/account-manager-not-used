@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func validate(info *npool.AccountReq) error {
+func validate(info *npool.AccountReq) error { //nolint
 	if info.CoinTypeID == nil {
 		logger.Sugar().Errorw("validate", "CoinTypeID", info.CoinTypeID)
 		return status.Error(codes.InvalidArgument, "CoinTypeID is empty")
@@ -47,6 +47,30 @@ func validate(info *npool.AccountReq) error {
 	default:
 		logger.Sugar().Errorw("validate", "UsedFor", info.GetUsedFor())
 		return status.Error(codes.InvalidArgument, "AccountUsedFor is invalid")
+	}
+
+	if info.LockedBy == nil && info.Locked == nil {
+		return nil
+	}
+
+	if !info.GetLocked() {
+		logger.Sugar().Errorw("validate", "Locked", info.GetLocked())
+		return status.Error(codes.InvalidArgument, "LockedBy must with Locked")
+	}
+
+	switch info.GetUsedFor() {
+	case npool.AccountUsedFor_UserDeposit:
+	case npool.AccountUsedFor_GoodPayment:
+		switch info.GetLockedBy() {
+		case npool.LockedBy_Payment:
+		case npool.LockedBy_Collecting:
+		default:
+			logger.Sugar().Errorw("validate", "LockedBy", info.GetLockedBy())
+			return status.Error(codes.InvalidArgument, "LockedBy is invalid")
+		}
+	default:
+		logger.Sugar().Errorw("validate", "UsedFor", info.GetUsedFor())
+		return status.Error(codes.InvalidArgument, "LockedBy-UsedFor is invalid")
 	}
 
 	return nil

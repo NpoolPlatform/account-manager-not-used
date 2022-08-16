@@ -34,6 +34,8 @@ type Account struct {
 	Active bool `json:"active,omitempty"`
 	// Locked holds the value of the "locked" field.
 	Locked bool `json:"locked,omitempty"`
+	// LockedBy holds the value of the "locked_by" field.
+	LockedBy string `json:"locked_by,omitempty"`
 	// Blocked holds the value of the "blocked" field.
 	Blocked bool `json:"blocked,omitempty"`
 }
@@ -47,7 +49,7 @@ func (*Account) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case account.FieldCreatedAt, account.FieldUpdatedAt, account.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case account.FieldAddress, account.FieldUsedFor:
+		case account.FieldAddress, account.FieldUsedFor, account.FieldLockedBy:
 			values[i] = new(sql.NullString)
 		case account.FieldID, account.FieldCoinTypeID:
 			values[i] = new(uuid.UUID)
@@ -126,6 +128,12 @@ func (a *Account) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				a.Locked = value.Bool
 			}
+		case account.FieldLockedBy:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field locked_by", values[i])
+			} else if value.Valid {
+				a.LockedBy = value.String
+			}
 		case account.FieldBlocked:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field blocked", values[i])
@@ -178,6 +186,8 @@ func (a *Account) String() string {
 	builder.WriteString(fmt.Sprintf("%v", a.Active))
 	builder.WriteString(", locked=")
 	builder.WriteString(fmt.Sprintf("%v", a.Locked))
+	builder.WriteString(", locked_by=")
+	builder.WriteString(a.LockedBy)
 	builder.WriteString(", blocked=")
 	builder.WriteString(fmt.Sprintf("%v", a.Blocked))
 	builder.WriteByte(')')

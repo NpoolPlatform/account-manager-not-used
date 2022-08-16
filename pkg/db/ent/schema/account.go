@@ -54,6 +54,10 @@ func (Account) Fields() []ent.Field {
 			Optional().
 			Default(false),
 		field.
+			String("locked_by").
+			Optional().
+			Default(npool.LockedBy_DefaultLockedBy.String()),
+		field.
 			Bool("blocked").
 			Optional().
 			Default(false),

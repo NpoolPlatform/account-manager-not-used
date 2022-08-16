@@ -42,6 +42,9 @@ func CreateSet(c *ent.AccountCreate, in *npool.AccountReq) *ent.AccountCreate {
 	if in.Locked != nil {
 		c.SetLocked(in.GetLocked())
 	}
+	if in.LockedBy != nil {
+		c.SetLockedBy(in.GetLockedBy().String())
+	}
 	if in.Blocked != nil {
 		c.SetBlocked(in.GetBlocked())
 	}
@@ -235,6 +238,14 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 		switch conds.GetLocked().GetOp() {
 		case cruder.EQ:
 			stm.Where(account.Locked(conds.GetLocked().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid account field")
+		}
+	}
+	if conds.LockedBy != nil {
+		switch conds.GetLockedBy().GetOp() {
+		case cruder.LIKE:
+			stm.Where(account.LockedBy(npool.LockedBy(conds.GetLockedBy().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid account field")
 		}

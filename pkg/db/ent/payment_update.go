@@ -123,46 +123,6 @@ func (pu *PaymentUpdate) ClearAccountID() *PaymentUpdate {
 	return pu
 }
 
-// SetIdle sets the "idle" field.
-func (pu *PaymentUpdate) SetIdle(b bool) *PaymentUpdate {
-	pu.mutation.SetIdle(b)
-	return pu
-}
-
-// SetNillableIdle sets the "idle" field if the given value is not nil.
-func (pu *PaymentUpdate) SetNillableIdle(b *bool) *PaymentUpdate {
-	if b != nil {
-		pu.SetIdle(*b)
-	}
-	return pu
-}
-
-// ClearIdle clears the value of the "idle" field.
-func (pu *PaymentUpdate) ClearIdle() *PaymentUpdate {
-	pu.mutation.ClearIdle()
-	return pu
-}
-
-// SetOccupiedBy sets the "occupied_by" field.
-func (pu *PaymentUpdate) SetOccupiedBy(s string) *PaymentUpdate {
-	pu.mutation.SetOccupiedBy(s)
-	return pu
-}
-
-// SetNillableOccupiedBy sets the "occupied_by" field if the given value is not nil.
-func (pu *PaymentUpdate) SetNillableOccupiedBy(s *string) *PaymentUpdate {
-	if s != nil {
-		pu.SetOccupiedBy(*s)
-	}
-	return pu
-}
-
-// ClearOccupiedBy clears the value of the "occupied_by" field.
-func (pu *PaymentUpdate) ClearOccupiedBy() *PaymentUpdate {
-	pu.mutation.ClearOccupiedBy()
-	return pu
-}
-
 // SetCollectingTid sets the "collecting_tid" field.
 func (pu *PaymentUpdate) SetCollectingTid(u uuid.UUID) *PaymentUpdate {
 	pu.mutation.SetCollectingTid(u)
@@ -370,32 +330,6 @@ func (pu *PaymentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: payment.FieldAccountID,
 		})
 	}
-	if value, ok := pu.mutation.Idle(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: payment.FieldIdle,
-		})
-	}
-	if pu.mutation.IdleCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: payment.FieldIdle,
-		})
-	}
-	if value, ok := pu.mutation.OccupiedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: payment.FieldOccupiedBy,
-		})
-	}
-	if pu.mutation.OccupiedByCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: payment.FieldOccupiedBy,
-		})
-	}
 	if value, ok := pu.mutation.CollectingTid(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -540,46 +474,6 @@ func (puo *PaymentUpdateOne) SetNillableAccountID(u *uuid.UUID) *PaymentUpdateOn
 // ClearAccountID clears the value of the "account_id" field.
 func (puo *PaymentUpdateOne) ClearAccountID() *PaymentUpdateOne {
 	puo.mutation.ClearAccountID()
-	return puo
-}
-
-// SetIdle sets the "idle" field.
-func (puo *PaymentUpdateOne) SetIdle(b bool) *PaymentUpdateOne {
-	puo.mutation.SetIdle(b)
-	return puo
-}
-
-// SetNillableIdle sets the "idle" field if the given value is not nil.
-func (puo *PaymentUpdateOne) SetNillableIdle(b *bool) *PaymentUpdateOne {
-	if b != nil {
-		puo.SetIdle(*b)
-	}
-	return puo
-}
-
-// ClearIdle clears the value of the "idle" field.
-func (puo *PaymentUpdateOne) ClearIdle() *PaymentUpdateOne {
-	puo.mutation.ClearIdle()
-	return puo
-}
-
-// SetOccupiedBy sets the "occupied_by" field.
-func (puo *PaymentUpdateOne) SetOccupiedBy(s string) *PaymentUpdateOne {
-	puo.mutation.SetOccupiedBy(s)
-	return puo
-}
-
-// SetNillableOccupiedBy sets the "occupied_by" field if the given value is not nil.
-func (puo *PaymentUpdateOne) SetNillableOccupiedBy(s *string) *PaymentUpdateOne {
-	if s != nil {
-		puo.SetOccupiedBy(*s)
-	}
-	return puo
-}
-
-// ClearOccupiedBy clears the value of the "occupied_by" field.
-func (puo *PaymentUpdateOne) ClearOccupiedBy() *PaymentUpdateOne {
-	puo.mutation.ClearOccupiedBy()
 	return puo
 }
 
@@ -812,32 +706,6 @@ func (puo *PaymentUpdateOne) sqlSave(ctx context.Context) (_node *Payment, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Column: payment.FieldAccountID,
-		})
-	}
-	if value, ok := puo.mutation.Idle(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: payment.FieldIdle,
-		})
-	}
-	if puo.mutation.IdleCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: payment.FieldIdle,
-		})
-	}
-	if value, ok := puo.mutation.OccupiedBy(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: payment.FieldOccupiedBy,
-		})
-	}
-	if puo.mutation.OccupiedByCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: payment.FieldOccupiedBy,
 		})
 	}
 	if value, ok := puo.mutation.CollectingTid(); ok {

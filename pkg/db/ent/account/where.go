@@ -154,6 +154,13 @@ func Locked(v bool) predicate.Account {
 	})
 }
 
+// LockedBy applies equality check predicate on the "locked_by" field. It's identical to LockedByEQ.
+func LockedBy(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLockedBy), v))
+	})
+}
+
 // Blocked applies equality check predicate on the "blocked" field. It's identical to BlockedEQ.
 func Blocked(v bool) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
@@ -810,6 +817,131 @@ func LockedIsNil() predicate.Account {
 func LockedNotNil() predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldLocked)))
+	})
+}
+
+// LockedByEQ applies the EQ predicate on the "locked_by" field.
+func LockedByEQ(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByNEQ applies the NEQ predicate on the "locked_by" field.
+func LockedByNEQ(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByIn applies the In predicate on the "locked_by" field.
+func LockedByIn(vs ...string) predicate.Account {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Account(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldLockedBy), v...))
+	})
+}
+
+// LockedByNotIn applies the NotIn predicate on the "locked_by" field.
+func LockedByNotIn(vs ...string) predicate.Account {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Account(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldLockedBy), v...))
+	})
+}
+
+// LockedByGT applies the GT predicate on the "locked_by" field.
+func LockedByGT(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByGTE applies the GTE predicate on the "locked_by" field.
+func LockedByGTE(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByLT applies the LT predicate on the "locked_by" field.
+func LockedByLT(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByLTE applies the LTE predicate on the "locked_by" field.
+func LockedByLTE(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByContains applies the Contains predicate on the "locked_by" field.
+func LockedByContains(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByHasPrefix applies the HasPrefix predicate on the "locked_by" field.
+func LockedByHasPrefix(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByHasSuffix applies the HasSuffix predicate on the "locked_by" field.
+func LockedByHasSuffix(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByIsNil applies the IsNil predicate on the "locked_by" field.
+func LockedByIsNil() predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldLockedBy)))
+	})
+}
+
+// LockedByNotNil applies the NotNil predicate on the "locked_by" field.
+func LockedByNotNil() predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldLockedBy)))
+	})
+}
+
+// LockedByEqualFold applies the EqualFold predicate on the "locked_by" field.
+func LockedByEqualFold(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldLockedBy), v))
+	})
+}
+
+// LockedByContainsFold applies the ContainsFold predicate on the "locked_by" field.
+func LockedByContainsFold(v string) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldLockedBy), v))
 	})
 }
 

@@ -26,10 +26,6 @@ type Payment struct {
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// AccountID holds the value of the "account_id" field.
 	AccountID uuid.UUID `json:"account_id,omitempty"`
-	// Idle holds the value of the "idle" field.
-	Idle bool `json:"idle,omitempty"`
-	// OccupiedBy holds the value of the "occupied_by" field.
-	OccupiedBy string `json:"occupied_by,omitempty"`
 	// CollectingTid holds the value of the "collecting_tid" field.
 	CollectingTid uuid.UUID `json:"collecting_tid,omitempty"`
 	// AvailableAt holds the value of the "available_at" field.
@@ -41,12 +37,8 @@ func (*Payment) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case payment.FieldIdle:
-			values[i] = new(sql.NullBool)
 		case payment.FieldCreatedAt, payment.FieldUpdatedAt, payment.FieldDeletedAt, payment.FieldAvailableAt:
 			values[i] = new(sql.NullInt64)
-		case payment.FieldOccupiedBy:
-			values[i] = new(sql.NullString)
 		case payment.FieldID, payment.FieldCoinTypeID, payment.FieldAccountID, payment.FieldCollectingTid:
 			values[i] = new(uuid.UUID)
 		default:
@@ -100,18 +92,6 @@ func (pa *Payment) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				pa.AccountID = *value
 			}
-		case payment.FieldIdle:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field idle", values[i])
-			} else if value.Valid {
-				pa.Idle = value.Bool
-			}
-		case payment.FieldOccupiedBy:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field occupied_by", values[i])
-			} else if value.Valid {
-				pa.OccupiedBy = value.String
-			}
 		case payment.FieldCollectingTid:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field collecting_tid", values[i])
@@ -162,10 +142,6 @@ func (pa *Payment) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pa.CoinTypeID))
 	builder.WriteString(", account_id=")
 	builder.WriteString(fmt.Sprintf("%v", pa.AccountID))
-	builder.WriteString(", idle=")
-	builder.WriteString(fmt.Sprintf("%v", pa.Idle))
-	builder.WriteString(", occupied_by=")
-	builder.WriteString(pa.OccupiedBy)
 	builder.WriteString(", collecting_tid=")
 	builder.WriteString(fmt.Sprintf("%v", pa.CollectingTid))
 	builder.WriteString(", available_at=")

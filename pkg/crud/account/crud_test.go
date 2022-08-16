@@ -33,6 +33,7 @@ var entity = ent.Account{
 	UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
 	Address:    uuid.New().String(),
 	Active:     true,
+	LockedBy:   npool.LockedBy_Payment.String(),
 }
 
 var (
@@ -40,12 +41,14 @@ var (
 	coinTypeID = entity.CoinTypeID.String()
 	usedFor    = npool.AccountUsedFor_GoodPayment
 	address    = entity.Address
+	lockedBy   = npool.LockedBy_Payment
 
 	req = npool.AccountReq{
 		ID:         &id,
 		CoinTypeID: &coinTypeID,
 		UsedFor:    &usedFor,
 		Address:    &address,
+		LockedBy:   &lockedBy,
 	}
 )
 
@@ -68,12 +71,14 @@ func createBulk(t *testing.T) {
 			CoinTypeID: uuid.New(),
 			UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
 			Address:    uuid.New().String(),
+			LockedBy:   entity.LockedBy,
 		},
 		{
 			ID:         uuid.New(),
 			CoinTypeID: uuid.New(),
 			UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
 			Address:    uuid.New().String(),
+			LockedBy:   entity.LockedBy,
 		},
 	}
 
@@ -83,12 +88,14 @@ func createBulk(t *testing.T) {
 		_coinTypeID := _entity.CoinTypeID.String()
 		_usedFor := npool.AccountUsedFor_GoodPayment
 		_address := _entity.Address
+		_lockedBy := npool.LockedBy_Payment
 
 		reqs = append(reqs, &npool.AccountReq{
 			ID:         &_id,
 			CoinTypeID: &_coinTypeID,
 			UsedFor:    &_usedFor,
 			Address:    &_address,
+			LockedBy:   &_lockedBy,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -100,13 +107,16 @@ func createBulk(t *testing.T) {
 func update(t *testing.T) {
 	active := false
 	enable := true
+	lockedBy := npool.LockedBy_Payment
 
 	req.Active = &active
 	req.Locked = &enable
+	req.LockedBy = &lockedBy
 	req.Blocked = &enable
 
 	entity.Active = active
 	entity.Locked = enable
+	entity.LockedBy = lockedBy.String()
 	entity.Blocked = enable
 
 	info, err := Update(context.Background(), &req)

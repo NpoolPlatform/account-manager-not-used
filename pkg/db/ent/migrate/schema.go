@@ -20,6 +20,7 @@ var (
 		{Name: "platform_hold_private_key", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "active", Type: field.TypeBool, Nullable: true, Default: true},
 		{Name: "locked", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "locked_by", Type: field.TypeString, Nullable: true, Default: "DefaultLockedBy"},
 		{Name: "blocked", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
@@ -27,6 +28,25 @@ var (
 		Name:       "accounts",
 		Columns:    AccountsColumns,
 		PrimaryKey: []*schema.Column{AccountsColumns[0]},
+	}
+	// DepositsColumns holds the columns for the "deposits" table.
+	DepositsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "balance", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "collecting_tid", Type: field.TypeUUID, Nullable: true},
+	}
+	// DepositsTable holds the schema information for the "deposits" table.
+	DepositsTable = &schema.Table{
+		Name:       "deposits",
+		Columns:    DepositsColumns,
+		PrimaryKey: []*schema.Column{DepositsColumns[0]},
 	}
 	// GoodBenefitsColumns holds the columns for the "good_benefits" table.
 	GoodBenefitsColumns = []*schema.Column{
@@ -68,8 +88,6 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "idle", Type: field.TypeBool, Nullable: true, Default: true},
-		{Name: "occupied_by", Type: field.TypeString, Nullable: true, Default: "DefaultOccupiedBy"},
 		{Name: "collecting_tid", Type: field.TypeUUID, Nullable: true},
 		{Name: "available_at", Type: field.TypeUint32, Nullable: true},
 	}
@@ -108,7 +126,6 @@ var (
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
 		{Name: "labels", Type: field.TypeJSON, Nullable: true},
-		{Name: "balance", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -119,6 +136,7 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AccountsTable,
+		DepositsTable,
 		GoodBenefitsTable,
 		LimitationsTable,
 		PaymentsTable,
