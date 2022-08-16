@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // User is the model entity for the User schema.
@@ -35,6 +36,8 @@ type User struct {
 	UsedFor string `json:"used_for,omitempty"`
 	// Labels holds the value of the "labels" field.
 	Labels []string `json:"labels,omitempty"`
+	// Balance holds the value of the "balance" field.
+	Balance decimal.Decimal `json:"balance,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,6 +47,8 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case user.FieldLabels:
 			values[i] = new([]byte)
+		case user.FieldBalance:
+			values[i] = new(decimal.Decimal)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
 		case user.FieldUsedFor:
@@ -127,6 +132,12 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 					return fmt.Errorf("unmarshal field labels: %w", err)
 				}
 			}
+		case user.FieldBalance:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field balance", values[i])
+			} else if value != nil {
+				u.Balance = *value
+			}
 		}
 	}
 	return nil
@@ -173,6 +184,8 @@ func (u *User) String() string {
 	builder.WriteString(u.UsedFor)
 	builder.WriteString(", labels=")
 	builder.WriteString(fmt.Sprintf("%v", u.Labels))
+	builder.WriteString(", balance=")
+	builder.WriteString(fmt.Sprintf("%v", u.Balance))
 	builder.WriteByte(')')
 	return builder.String()
 }

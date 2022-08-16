@@ -13,6 +13,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/predicate"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -192,6 +193,26 @@ func (uu *UserUpdate) SetLabels(s []string) *UserUpdate {
 // ClearLabels clears the value of the "labels" field.
 func (uu *UserUpdate) ClearLabels() *UserUpdate {
 	uu.mutation.ClearLabels()
+	return uu
+}
+
+// SetBalance sets the "balance" field.
+func (uu *UserUpdate) SetBalance(d decimal.Decimal) *UserUpdate {
+	uu.mutation.SetBalance(d)
+	return uu
+}
+
+// SetNillableBalance sets the "balance" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableBalance(d *decimal.Decimal) *UserUpdate {
+	if d != nil {
+		uu.SetBalance(*d)
+	}
+	return uu
+}
+
+// ClearBalance clears the value of the "balance" field.
+func (uu *UserUpdate) ClearBalance() *UserUpdate {
+	uu.mutation.ClearBalance()
 	return uu
 }
 
@@ -407,6 +428,19 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldLabels,
 		})
 	}
+	if value, ok := uu.mutation.Balance(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: user.FieldBalance,
+		})
+	}
+	if uu.mutation.BalanceCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: user.FieldBalance,
+		})
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
@@ -590,6 +624,26 @@ func (uuo *UserUpdateOne) SetLabels(s []string) *UserUpdateOne {
 // ClearLabels clears the value of the "labels" field.
 func (uuo *UserUpdateOne) ClearLabels() *UserUpdateOne {
 	uuo.mutation.ClearLabels()
+	return uuo
+}
+
+// SetBalance sets the "balance" field.
+func (uuo *UserUpdateOne) SetBalance(d decimal.Decimal) *UserUpdateOne {
+	uuo.mutation.SetBalance(d)
+	return uuo
+}
+
+// SetNillableBalance sets the "balance" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableBalance(d *decimal.Decimal) *UserUpdateOne {
+	if d != nil {
+		uuo.SetBalance(*d)
+	}
+	return uuo
+}
+
+// ClearBalance clears the value of the "balance" field.
+func (uuo *UserUpdateOne) ClearBalance() *UserUpdateOne {
+	uuo.mutation.ClearBalance()
 	return uuo
 }
 
@@ -827,6 +881,19 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Column: user.FieldLabels,
+		})
+	}
+	if value, ok := uuo.mutation.Balance(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: user.FieldBalance,
+		})
+	}
+	if uuo.mutation.BalanceCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: user.FieldBalance,
 		})
 	}
 	_node = &User{config: uuo.config}

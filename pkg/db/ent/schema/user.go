@@ -2,9 +2,11 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/account-manager/pkg/db/mixin"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	account "github.com/NpoolPlatform/message/npool/account/mgr/v1/account"
 )
@@ -59,6 +61,13 @@ func (User) Fields() []ent.Field {
 			JSON("labels", []string{}).
 			Optional().
 			Default([]string{}),
+		field.
+			Other("balance", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 	}
 }
 

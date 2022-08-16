@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // UserCreate is the builder for creating a User entity.
@@ -138,6 +139,20 @@ func (uc *UserCreate) SetNillableUsedFor(s *string) *UserCreate {
 // SetLabels sets the "labels" field.
 func (uc *UserCreate) SetLabels(s []string) *UserCreate {
 	uc.mutation.SetLabels(s)
+	return uc
+}
+
+// SetBalance sets the "balance" field.
+func (uc *UserCreate) SetBalance(d decimal.Decimal) *UserCreate {
+	uc.mutation.SetBalance(d)
+	return uc
+}
+
+// SetNillableBalance sets the "balance" field if the given value is not nil.
+func (uc *UserCreate) SetNillableBalance(d *decimal.Decimal) *UserCreate {
+	if d != nil {
+		uc.SetBalance(*d)
+	}
 	return uc
 }
 
@@ -285,6 +300,10 @@ func (uc *UserCreate) defaults() error {
 		v := user.DefaultLabels
 		uc.mutation.SetLabels(v)
 	}
+	if _, ok := uc.mutation.Balance(); !ok {
+		v := user.DefaultBalance
+		uc.mutation.SetBalance(v)
+	}
 	if _, ok := uc.mutation.ID(); !ok {
 		if user.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized user.DefaultID (forgotten import ent/runtime?)")
@@ -414,6 +433,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldLabels,
 		})
 		_node.Labels = value
+	}
+	if value, ok := uc.mutation.Balance(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: user.FieldBalance,
+		})
+		_node.Balance = value
 	}
 	return _node, _spec
 }
@@ -628,6 +655,24 @@ func (u *UserUpsert) UpdateLabels() *UserUpsert {
 // ClearLabels clears the value of the "labels" field.
 func (u *UserUpsert) ClearLabels() *UserUpsert {
 	u.SetNull(user.FieldLabels)
+	return u
+}
+
+// SetBalance sets the "balance" field.
+func (u *UserUpsert) SetBalance(v decimal.Decimal) *UserUpsert {
+	u.Set(user.FieldBalance, v)
+	return u
+}
+
+// UpdateBalance sets the "balance" field to the value that was provided on create.
+func (u *UserUpsert) UpdateBalance() *UserUpsert {
+	u.SetExcluded(user.FieldBalance)
+	return u
+}
+
+// ClearBalance clears the value of the "balance" field.
+func (u *UserUpsert) ClearBalance() *UserUpsert {
+	u.SetNull(user.FieldBalance)
 	return u
 }
 
@@ -867,6 +912,27 @@ func (u *UserUpsertOne) UpdateLabels() *UserUpsertOne {
 func (u *UserUpsertOne) ClearLabels() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearLabels()
+	})
+}
+
+// SetBalance sets the "balance" field.
+func (u *UserUpsertOne) SetBalance(v decimal.Decimal) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetBalance(v)
+	})
+}
+
+// UpdateBalance sets the "balance" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateBalance() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateBalance()
+	})
+}
+
+// ClearBalance clears the value of the "balance" field.
+func (u *UserUpsertOne) ClearBalance() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearBalance()
 	})
 }
 
@@ -1272,6 +1338,27 @@ func (u *UserUpsertBulk) UpdateLabels() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearLabels() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearLabels()
+	})
+}
+
+// SetBalance sets the "balance" field.
+func (u *UserUpsertBulk) SetBalance(v decimal.Decimal) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetBalance(v)
+	})
+}
+
+// UpdateBalance sets the "balance" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateBalance() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateBalance()
+	})
+}
+
+// ClearBalance clears the value of the "balance" field.
+func (u *UserUpsertBulk) ClearBalance() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearBalance()
 	})
 }
 

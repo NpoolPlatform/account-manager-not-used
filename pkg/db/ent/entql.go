@@ -142,6 +142,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			user.FieldAccountID:  {Type: field.TypeUUID, Column: user.FieldAccountID},
 			user.FieldUsedFor:    {Type: field.TypeString, Column: user.FieldUsedFor},
 			user.FieldLabels:     {Type: field.TypeJSON, Column: user.FieldLabels},
+			user.FieldBalance:    {Type: field.TypeOther, Column: user.FieldBalance},
 		},
 	}
 	return graph
@@ -620,4 +621,9 @@ func (f *UserFilter) WhereUsedFor(p entql.StringP) {
 // WhereLabels applies the entql json.RawMessage predicate on the labels field.
 func (f *UserFilter) WhereLabels(p entql.BytesP) {
 	f.Where(p.Field(user.FieldLabels))
+}
+
+// WhereBalance applies the entql other predicate on the balance field.
+func (f *UserFilter) WhereBalance(p entql.OtherP) {
+	f.Where(p.Field(user.FieldBalance))
 }

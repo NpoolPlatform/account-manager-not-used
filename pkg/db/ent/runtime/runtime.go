@@ -327,6 +327,10 @@ func init() {
 	userDescLabels := userFields[6].Descriptor()
 	// user.DefaultLabels holds the default value on creation for the labels field.
 	user.DefaultLabels = userDescLabels.Default.([]string)
+	// userDescBalance is the schema descriptor for balance field.
+	userDescBalance := userFields[7].Descriptor()
+	// user.DefaultBalance holds the default value on creation for the balance field.
+	user.DefaultBalance = userDescBalance.Default.(decimal.Decimal)
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.

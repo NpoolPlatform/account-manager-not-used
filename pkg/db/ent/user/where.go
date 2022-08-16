@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/predicate"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // ID filters vertices based on their ID field.
@@ -144,6 +145,13 @@ func AccountID(v uuid.UUID) predicate.User {
 func UsedFor(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldUsedFor), v))
+	})
+}
+
+// Balance applies equality check predicate on the "balance" field. It's identical to BalanceEQ.
+func Balance(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBalance), v))
 	})
 }
 
@@ -871,6 +879,96 @@ func LabelsIsNil() predicate.User {
 func LabelsNotNil() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldLabels)))
+	})
+}
+
+// BalanceEQ applies the EQ predicate on the "balance" field.
+func BalanceEQ(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBalance), v))
+	})
+}
+
+// BalanceNEQ applies the NEQ predicate on the "balance" field.
+func BalanceNEQ(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldBalance), v))
+	})
+}
+
+// BalanceIn applies the In predicate on the "balance" field.
+func BalanceIn(vs ...decimal.Decimal) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldBalance), v...))
+	})
+}
+
+// BalanceNotIn applies the NotIn predicate on the "balance" field.
+func BalanceNotIn(vs ...decimal.Decimal) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldBalance), v...))
+	})
+}
+
+// BalanceGT applies the GT predicate on the "balance" field.
+func BalanceGT(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldBalance), v))
+	})
+}
+
+// BalanceGTE applies the GTE predicate on the "balance" field.
+func BalanceGTE(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldBalance), v))
+	})
+}
+
+// BalanceLT applies the LT predicate on the "balance" field.
+func BalanceLT(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldBalance), v))
+	})
+}
+
+// BalanceLTE applies the LTE predicate on the "balance" field.
+func BalanceLTE(v decimal.Decimal) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldBalance), v))
+	})
+}
+
+// BalanceIsNil applies the IsNil predicate on the "balance" field.
+func BalanceIsNil() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldBalance)))
+	})
+}
+
+// BalanceNotNil applies the NotNil predicate on the "balance" field.
+func BalanceNotNil() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldBalance)))
 	})
 }
 

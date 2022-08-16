@@ -4419,6 +4419,7 @@ type UserMutation struct {
 	account_id    *uuid.UUID
 	used_for      *string
 	labels        *[]string
+	balance       *decimal.Decimal
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*User, error)
@@ -4991,6 +4992,55 @@ func (m *UserMutation) ResetLabels() {
 	delete(m.clearedFields, user.FieldLabels)
 }
 
+// SetBalance sets the "balance" field.
+func (m *UserMutation) SetBalance(d decimal.Decimal) {
+	m.balance = &d
+}
+
+// Balance returns the value of the "balance" field in the mutation.
+func (m *UserMutation) Balance() (r decimal.Decimal, exists bool) {
+	v := m.balance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBalance returns the old "balance" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldBalance(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBalance is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBalance requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBalance: %w", err)
+	}
+	return oldValue.Balance, nil
+}
+
+// ClearBalance clears the value of the "balance" field.
+func (m *UserMutation) ClearBalance() {
+	m.balance = nil
+	m.clearedFields[user.FieldBalance] = struct{}{}
+}
+
+// BalanceCleared returns if the "balance" field was cleared in this mutation.
+func (m *UserMutation) BalanceCleared() bool {
+	_, ok := m.clearedFields[user.FieldBalance]
+	return ok
+}
+
+// ResetBalance resets all changes to the "balance" field.
+func (m *UserMutation) ResetBalance() {
+	m.balance = nil
+	delete(m.clearedFields, user.FieldBalance)
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -5010,7 +5060,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -5038,6 +5088,9 @@ func (m *UserMutation) Fields() []string {
 	if m.labels != nil {
 		fields = append(fields, user.FieldLabels)
 	}
+	if m.balance != nil {
+		fields = append(fields, user.FieldBalance)
+	}
 	return fields
 }
 
@@ -5064,6 +5117,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.UsedFor()
 	case user.FieldLabels:
 		return m.Labels()
+	case user.FieldBalance:
+		return m.Balance()
 	}
 	return nil, false
 }
@@ -5091,6 +5146,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldUsedFor(ctx)
 	case user.FieldLabels:
 		return m.OldLabels(ctx)
+	case user.FieldBalance:
+		return m.OldBalance(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -5162,6 +5219,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLabels(v)
+		return nil
+	case user.FieldBalance:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBalance(v)
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
@@ -5250,6 +5314,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldLabels) {
 		fields = append(fields, user.FieldLabels)
 	}
+	if m.FieldCleared(user.FieldBalance) {
+		fields = append(fields, user.FieldBalance)
+	}
 	return fields
 }
 
@@ -5281,6 +5348,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldLabels:
 		m.ClearLabels()
+		return nil
+	case user.FieldBalance:
+		m.ClearBalance()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -5316,6 +5386,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldLabels:
 		m.ResetLabels()
+		return nil
+	case user.FieldBalance:
+		m.ResetBalance()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

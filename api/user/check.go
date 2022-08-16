@@ -3,6 +3,8 @@ package user
 import (
 	"fmt"
 
+	"github.com/shopspring/decimal"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -13,7 +15,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func validate(info *npool.AccountReq) error {
+func validate(info *npool.AccountReq) error { //nolint
 	if info.AppID == nil {
 		logger.Sugar().Errorw("validate", "AppID", info.AppID)
 		return status.Error(codes.InvalidArgument, "AppID is empty")
@@ -66,6 +68,18 @@ func validate(info *npool.AccountReq) error {
 	default:
 		logger.Sugar().Errorw("validate", "UsedFor", info.GetUsedFor())
 		return status.Error(codes.InvalidArgument, "AccountUsedFor is invalid")
+	}
+
+	if info.Balance != nil {
+		bal, err := decimal.NewFromString(info.GetBalance())
+		if err != nil {
+			logger.Sugar().Errorw("validate", "Balance", info.GetBalance(), "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("Balance is invalid: %v", err))
+		}
+		if bal.Cmp(decimal.NewFromInt(0)) == 0 {
+			logger.Sugar().Errorw("validate", "Balance", info.GetBalance(), "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("Balance is invalid: %v", err))
+		}
 	}
 
 	return nil

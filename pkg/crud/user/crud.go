@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/shopspring/decimal"
+
 	constant "github.com/NpoolPlatform/account-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/account-manager/pkg/tracer"
 	tracer "github.com/NpoolPlatform/account-manager/pkg/tracer/user"
@@ -44,6 +46,9 @@ func CreateSet(c *ent.UserCreate, in *npool.AccountReq) *ent.UserCreate {
 	if len(in.GetLabels()) > 0 {
 		c.SetLabels(in.GetLabels())
 	}
+
+	c.SetBalance(decimal.NewFromInt(0))
+
 	return c
 }
 
@@ -110,6 +115,10 @@ func UpdateSet(info *ent.User, in *npool.AccountReq) *ent.UserUpdateOne {
 
 	if len(in.GetLabels()) > 0 {
 		u.SetLabels(in.GetLabels())
+	}
+	if in.Balance != nil {
+		balance := decimal.RequireFromString(in.GetBalance()).Add(info.Balance)
+		u.SetBalance(balance)
 	}
 
 	return u

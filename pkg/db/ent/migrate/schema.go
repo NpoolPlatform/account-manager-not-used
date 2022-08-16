@@ -108,6 +108,7 @@ var (
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
 		{Name: "labels", Type: field.TypeJSON, Nullable: true},
+		{Name: "balance", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
