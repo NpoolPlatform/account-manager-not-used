@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func validate(info *npool.AccountReq) error { //nolint
+func validate(info *npool.AccountReq) error {
 	if info.CoinTypeID == nil {
 		logger.Sugar().Errorw("validate", "CoinTypeID", info.CoinTypeID)
 		return status.Error(codes.InvalidArgument, "CoinTypeID is empty")
@@ -23,14 +23,9 @@ func validate(info *npool.AccountReq) error { //nolint
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("CoinTypeID is invalid: %v", err))
 	}
 
-	if info.Address == nil {
+	if info.GetAddress() == "" {
 		logger.Sugar().Errorw("validate", "Address", info.Address)
 		return status.Error(codes.InvalidArgument, "Address is empty")
-	}
-
-	if _, err := uuid.Parse(info.GetAddress()); err != nil {
-		logger.Sugar().Errorw("validate", "Address", info.GetAddress(), "error", err)
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("Address is invalid: %v", err))
 	}
 
 	if info.UsedFor == nil {

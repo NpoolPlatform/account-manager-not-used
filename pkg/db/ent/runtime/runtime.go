@@ -8,6 +8,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/schema"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
 
 	"entgo.io/ent"
@@ -122,6 +123,62 @@ func init() {
 	goodbenefitDescID := goodbenefitFields[0].Descriptor()
 	// goodbenefit.DefaultID holds the default value on creation for the id field.
 	goodbenefit.DefaultID = goodbenefitDescID.Default.(func() uuid.UUID)
+	userMixin := schema.User{}.Mixin()
+	user.Policy = privacy.NewPolicies(userMixin[0], schema.User{})
+	user.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := user.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	userMixinFields0 := userMixin[0].Fields()
+	_ = userMixinFields0
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescCreatedAt is the schema descriptor for created_at field.
+	userDescCreatedAt := userMixinFields0[0].Descriptor()
+	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
+	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() uint32)
+	// userDescUpdatedAt is the schema descriptor for updated_at field.
+	userDescUpdatedAt := userMixinFields0[1].Descriptor()
+	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() uint32)
+	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() uint32)
+	// userDescDeletedAt is the schema descriptor for deleted_at field.
+	userDescDeletedAt := userMixinFields0[2].Descriptor()
+	// user.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	user.DefaultDeletedAt = userDescDeletedAt.Default.(func() uint32)
+	// userDescAppID is the schema descriptor for app_id field.
+	userDescAppID := userFields[1].Descriptor()
+	// user.DefaultAppID holds the default value on creation for the app_id field.
+	user.DefaultAppID = userDescAppID.Default.(func() uuid.UUID)
+	// userDescUserID is the schema descriptor for user_id field.
+	userDescUserID := userFields[2].Descriptor()
+	// user.DefaultUserID holds the default value on creation for the user_id field.
+	user.DefaultUserID = userDescUserID.Default.(func() uuid.UUID)
+	// userDescCoinTypeID is the schema descriptor for coin_type_id field.
+	userDescCoinTypeID := userFields[3].Descriptor()
+	// user.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	user.DefaultCoinTypeID = userDescCoinTypeID.Default.(func() uuid.UUID)
+	// userDescAccountID is the schema descriptor for account_id field.
+	userDescAccountID := userFields[4].Descriptor()
+	// user.DefaultAccountID holds the default value on creation for the account_id field.
+	user.DefaultAccountID = userDescAccountID.Default.(func() uuid.UUID)
+	// userDescUsedFor is the schema descriptor for used_for field.
+	userDescUsedFor := userFields[5].Descriptor()
+	// user.DefaultUsedFor holds the default value on creation for the used_for field.
+	user.DefaultUsedFor = userDescUsedFor.Default.(string)
+	// userDescLabels is the schema descriptor for labels field.
+	userDescLabels := userFields[6].Descriptor()
+	// user.DefaultLabels holds the default value on creation for the labels field.
+	user.DefaultLabels = userDescLabels.Default.([]string)
+	// userDescID is the schema descriptor for id field.
+	userDescID := userFields[0].Descriptor()
+	// user.DefaultID holds the default value on creation for the id field.
+	user.DefaultID = userDescID.Default.(func() uuid.UUID)
 }
 
 const (

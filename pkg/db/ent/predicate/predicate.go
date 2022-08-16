@@ -11,3 +11,6 @@ type Account func(*sql.Selector)
 
 // GoodBenefit is the predicate function for goodbenefit builders.
 type GoodBenefit func(*sql.Selector)
+
+// User is the predicate function for user builders.
+type User func(*sql.Selector)

@@ -5,6 +5,7 @@ package ent
 import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -14,7 +15,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 2)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 3)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   account.Table,
@@ -55,6 +56,28 @@ var schemaGraph = func() *sqlgraph.Schema {
 			goodbenefit.FieldGoodID:    {Type: field.TypeUUID, Column: goodbenefit.FieldGoodID},
 			goodbenefit.FieldAccountID: {Type: field.TypeUUID, Column: goodbenefit.FieldAccountID},
 			goodbenefit.FieldBackup:    {Type: field.TypeBool, Column: goodbenefit.FieldBackup},
+		},
+	}
+	graph.Nodes[2] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   user.Table,
+			Columns: user.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: user.FieldID,
+			},
+		},
+		Type: "User",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			user.FieldCreatedAt:  {Type: field.TypeUint32, Column: user.FieldCreatedAt},
+			user.FieldUpdatedAt:  {Type: field.TypeUint32, Column: user.FieldUpdatedAt},
+			user.FieldDeletedAt:  {Type: field.TypeUint32, Column: user.FieldDeletedAt},
+			user.FieldAppID:      {Type: field.TypeUUID, Column: user.FieldAppID},
+			user.FieldUserID:     {Type: field.TypeUUID, Column: user.FieldUserID},
+			user.FieldCoinTypeID: {Type: field.TypeUUID, Column: user.FieldCoinTypeID},
+			user.FieldAccountID:  {Type: field.TypeUUID, Column: user.FieldAccountID},
+			user.FieldUsedFor:    {Type: field.TypeString, Column: user.FieldUsedFor},
+			user.FieldLabels:     {Type: field.TypeJSON, Column: user.FieldLabels},
 		},
 	}
 	return graph
@@ -222,4 +245,88 @@ func (f *GoodBenefitFilter) WhereAccountID(p entql.ValueP) {
 // WhereBackup applies the entql bool predicate on the backup field.
 func (f *GoodBenefitFilter) WhereBackup(p entql.BoolP) {
 	f.Where(p.Field(goodbenefit.FieldBackup))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (uq *UserQuery) addPredicate(pred func(s *sql.Selector)) {
+	uq.predicates = append(uq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the UserQuery builder.
+func (uq *UserQuery) Filter() *UserFilter {
+	return &UserFilter{uq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *UserMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the UserMutation builder.
+func (m *UserMutation) Filter() *UserFilter {
+	return &UserFilter{m}
+}
+
+// UserFilter provides a generic filtering capability at runtime for UserQuery.
+type UserFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *UserFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *UserFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(user.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *UserFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(user.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *UserFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(user.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *UserFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(user.FieldDeletedAt))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *UserFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(user.FieldAppID))
+}
+
+// WhereUserID applies the entql [16]byte predicate on the user_id field.
+func (f *UserFilter) WhereUserID(p entql.ValueP) {
+	f.Where(p.Field(user.FieldUserID))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *UserFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(user.FieldCoinTypeID))
+}
+
+// WhereAccountID applies the entql [16]byte predicate on the account_id field.
+func (f *UserFilter) WhereAccountID(p entql.ValueP) {
+	f.Where(p.Field(user.FieldAccountID))
+}
+
+// WhereUsedFor applies the entql string predicate on the used_for field.
+func (f *UserFilter) WhereUsedFor(p entql.StringP) {
+	f.Where(p.Field(user.FieldUsedFor))
+}
+
+// WhereLabels applies the entql json.RawMessage predicate on the labels field.
+func (f *UserFilter) WhereLabels(p entql.BytesP) {
+	f.Where(p.Field(user.FieldLabels))
 }

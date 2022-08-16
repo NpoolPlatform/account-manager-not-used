@@ -7,6 +7,7 @@ import (
 
 	account1 "github.com/NpoolPlatform/account-manager/api/account"
 	"github.com/NpoolPlatform/account-manager/api/goodbenefit"
+	"github.com/NpoolPlatform/account-manager/api/user"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -20,16 +21,11 @@ func Register(server grpc.ServiceRegistrar) {
 	account.RegisterManagerServer(server, &Server{})
 	goodbenefit.Register(server)
 	account1.Register(server)
+	user.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
 	if err := account.RegisterManagerHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
-		return err
-	}
-	if err := goodbenefit.RegisterGateway(mux, endpoint, opts); err != nil {
-		return err
-	}
-	if err := account1.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
 	return nil

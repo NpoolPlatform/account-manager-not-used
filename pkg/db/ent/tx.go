@@ -16,6 +16,8 @@ type Tx struct {
 	Account *AccountClient
 	// GoodBenefit is the client for interacting with the GoodBenefit builders.
 	GoodBenefit *GoodBenefitClient
+	// User is the client for interacting with the User builders.
+	User *UserClient
 
 	// lazily loaded.
 	client     *Client
@@ -153,6 +155,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.GoodBenefit = NewGoodBenefitClient(tx.config)
+	tx.User = NewUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

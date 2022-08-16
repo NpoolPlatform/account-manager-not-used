@@ -1,4 +1,4 @@
-package account
+package user
 
 import (
 	"context"
@@ -7,49 +7,48 @@ import (
 
 	constant "github.com/NpoolPlatform/account-manager/pkg/message/const"
 	commontracer "github.com/NpoolPlatform/account-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/account-manager/pkg/tracer/account"
+	tracer "github.com/NpoolPlatform/account-manager/pkg/tracer/user"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 
 	"github.com/NpoolPlatform/account-manager/pkg/db"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent"
-	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/account"
+
+	account "github.com/NpoolPlatform/message/npool/account/mgr/v1/account"
+	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/user"
 
 	"github.com/google/uuid"
 )
 
-func CreateSet(c *ent.AccountCreate, in *npool.AccountReq) *ent.AccountCreate {
+func CreateSet(c *ent.UserCreate, in *npool.AccountReq) *ent.UserCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
+	}
+	if in.AppID != nil {
+		c.SetAppID(uuid.MustParse(in.GetAppID()))
+	}
+	if in.UserID != nil {
+		c.SetUserID(uuid.MustParse(in.GetUserID()))
 	}
 	if in.CoinTypeID != nil {
 		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
 	}
-	if in.Address != nil {
-		c.SetAddress(in.GetAddress())
+	if in.UserID != nil {
+		c.SetUserID(uuid.MustParse(in.GetUserID()))
 	}
 	if in.UsedFor != nil {
 		c.SetUsedFor(in.GetUsedFor().String())
 	}
-	if in.PlatformHoldPrivateKey != nil {
-		c.SetPlatformHoldPrivateKey(in.GetPlatformHoldPrivateKey())
-	}
-	if in.Active != nil {
-		c.SetActive(in.GetActive())
-	}
-	if in.Locked != nil {
-		c.SetLocked(in.GetLocked())
-	}
-	if in.Blocked != nil {
-		c.SetBlocked(in.GetBlocked())
+	if len(in.GetLabels()) > 0 {
+		c.SetLabels(in.GetLabels())
 	}
 	return c
 }
 
-func Create(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
-	var info *ent.Account
+func Create(ctx context.Context, in *npool.AccountReq) (*ent.User, error) {
+	var info *ent.User
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Create")
@@ -65,7 +64,7 @@ func Create(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
 	span = tracer.Trace(span, in)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		c := cli.Account.Create()
+		c := cli.User.Create()
 		info, err = CreateSet(c, in).Save(_ctx)
 		return err
 	})
@@ -76,7 +75,7 @@ func Create(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Account, error) {
+func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.User, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
@@ -91,13 +90,13 @@ func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Account, er
 
 	span = tracer.TraceMany(span, in)
 
-	rows := []*ent.Account{}
+	rows := []*ent.User{}
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		bulk := make([]*ent.AccountCreate, len(in))
+		bulk := make([]*ent.UserCreate, len(in))
 		for i, info := range in {
-			bulk[i] = CreateSet(tx.Account.Create(), info)
+			bulk[i] = CreateSet(tx.User.Create(), info)
 		}
-		rows, err = tx.Account.CreateBulk(bulk...).Save(_ctx)
+		rows, err = tx.User.CreateBulk(bulk...).Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -106,24 +105,18 @@ func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Account, er
 	return rows, nil
 }
 
-func UpdateSet(info *ent.Account, in *npool.AccountReq) *ent.AccountUpdateOne {
+func UpdateSet(info *ent.User, in *npool.AccountReq) *ent.UserUpdateOne {
 	u := info.Update()
 
-	if in.Active != nil {
-		u.SetActive(in.GetActive())
-	}
-	if in.Locked != nil {
-		u.SetLocked(in.GetLocked())
-	}
-	if in.Blocked != nil {
-		u.SetBlocked(in.GetBlocked())
+	if len(in.GetLabels()) > 0 {
+		u.SetLabels(in.GetLabels())
 	}
 
 	return u
 }
 
-func Update(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
-	var info *ent.Account
+func Update(ctx context.Context, in *npool.AccountReq) (*ent.User, error) {
+	var info *ent.User
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Update")
@@ -139,7 +132,7 @@ func Update(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
 	span = tracer.Trace(span, in)
 
 	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		info, err = tx.Account.Query().Where(account.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
+		info, err = tx.User.Query().Where(user.ID(uuid.MustParse(in.GetID()))).ForUpdate().Only(_ctx)
 		if err != nil {
 			return err
 		}
@@ -154,8 +147,8 @@ func Update(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
 	return info, nil
 }
 
-func Row(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	var info *ent.Account
+func Row(ctx context.Context, id uuid.UUID) (*ent.User, error) {
+	var info *ent.User
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Row")
@@ -171,7 +164,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Account.Query().Where(account.ID(id)).Only(_ctx)
+		info, err = cli.User.Query().Where(user.ID(id)).Only(_ctx)
 		return err
 	})
 	if err != nil {
@@ -181,76 +174,60 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, error) { // nolint
-	stm := cli.Account.Query()
+func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.UserQuery, error) {
+	stm := cli.User.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
-			stm.Where(account.ID(uuid.MustParse(conds.GetID().GetValue())))
+			stm.Where(user.ID(uuid.MustParse(conds.GetID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid account field")
+			return nil, fmt.Errorf("invalid user field")
+		}
+	}
+	if conds.AppID != nil {
+		switch conds.GetAppID().GetOp() {
+		case cruder.EQ:
+			stm.Where(user.AppID(uuid.MustParse(conds.GetAppID().GetValue())))
+		default:
+			return nil, fmt.Errorf("invalid user field")
+		}
+	}
+	if conds.UserID != nil {
+		switch conds.GetUserID().GetOp() {
+		case cruder.EQ:
+			stm.Where(user.UserID(uuid.MustParse(conds.GetUserID().GetValue())))
+		default:
+			return nil, fmt.Errorf("invalid user field")
 		}
 	}
 	if conds.CoinTypeID != nil {
 		switch conds.GetCoinTypeID().GetOp() {
 		case cruder.EQ:
-			stm.Where(account.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
+			stm.Where(user.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid account field")
+			return nil, fmt.Errorf("invalid user field")
 		}
 	}
-	if conds.Address != nil {
-		switch conds.GetAddress().GetOp() {
-		case cruder.LIKE:
-			stm.Where(account.Address(conds.GetAddress().GetValue()))
+	if conds.AccountID != nil {
+		switch conds.GetAccountID().GetOp() {
+		case cruder.EQ:
+			stm.Where(user.AccountID(uuid.MustParse(conds.GetAccountID().GetValue())))
 		default:
-			return nil, fmt.Errorf("invalid account field")
+			return nil, fmt.Errorf("invalid user field")
 		}
 	}
 	if conds.UsedFor != nil {
 		switch conds.GetUsedFor().GetOp() {
 		case cruder.LIKE:
-			stm.Where(account.UsedFor(npool.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
+			stm.Where(user.UsedFor(account.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
 		default:
-			return nil, fmt.Errorf("invalid account field")
-		}
-	}
-	if conds.PlatformHoldPrivateKey != nil {
-		switch conds.GetPlatformHoldPrivateKey().GetOp() {
-		case cruder.EQ:
-			stm.Where(account.PlatformHoldPrivateKey(conds.GetPlatformHoldPrivateKey().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid account field")
-		}
-	}
-	if conds.Active != nil {
-		switch conds.GetActive().GetOp() {
-		case cruder.EQ:
-			stm.Where(account.Active(conds.GetActive().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid account field")
-		}
-	}
-	if conds.Locked != nil {
-		switch conds.GetLocked().GetOp() {
-		case cruder.EQ:
-			stm.Where(account.Locked(conds.GetLocked().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid account field")
-		}
-	}
-	if conds.Blocked != nil {
-		switch conds.GetBlocked().GetOp() {
-		case cruder.EQ:
-			stm.Where(account.Blocked(conds.GetBlocked().GetValue()))
-		default:
-			return nil, fmt.Errorf("invalid account field")
+			return nil, fmt.Errorf("invalid user field")
 		}
 	}
 	return stm, nil
 }
 
-func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Account, int, error) {
+func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.User, int, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Rows")
@@ -266,7 +243,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Ac
 	span = tracer.TraceConds(span, conds)
 	span = commontracer.TraceOffsetLimit(span, offset, limit)
 
-	rows := []*ent.Account{}
+	rows := []*ent.User{}
 	var total int
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := setQueryConds(conds, cli)
@@ -281,7 +258,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Ac
 
 		rows, err = stm.
 			Offset(offset).
-			Order(ent.Desc(account.FieldUpdatedAt)).
+			Order(ent.Desc(user.FieldUpdatedAt)).
 			Limit(limit).
 			All(_ctx)
 		if err != nil {
@@ -296,8 +273,8 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.Ac
 	return rows, total, nil
 }
 
-func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Account, error) {
-	var info *ent.Account
+func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.User, error) {
+	var info *ent.User
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "RowOnly")
@@ -384,7 +361,7 @@ func Exist(ctx context.Context, id uuid.UUID) (bool, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		exist, err = cli.Account.Query().Where(account.ID(id)).Exist(_ctx)
+		exist, err = cli.User.Query().Where(user.ID(id)).Exist(_ctx)
 		return err
 	})
 	if err != nil {
@@ -430,8 +407,8 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return exist, nil
 }
 
-func Delete(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
-	var info *ent.Account
+func Delete(ctx context.Context, id uuid.UUID) (*ent.User, error) {
+	var info *ent.User
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "Delete")
@@ -447,7 +424,7 @@ func Delete(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	span = commontracer.TraceID(span, id.String())
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err = cli.Account.UpdateOneID(id).
+		info, err = cli.User.UpdateOneID(id).
 			SetDeletedAt(uint32(time.Now().Unix())).
 			Save(_ctx)
 		return err
