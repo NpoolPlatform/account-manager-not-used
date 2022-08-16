@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/limitation"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
@@ -35,6 +36,7 @@ func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		account.Table:     account.ValidColumn,
 		goodbenefit.Table: goodbenefit.ValidColumn,
+		limitation.Table:  limitation.ValidColumn,
 		payment.Table:     payment.ValidColumn,
 		platform.Table:    platform.ValidColumn,
 		user.Table:        user.ValidColumn,

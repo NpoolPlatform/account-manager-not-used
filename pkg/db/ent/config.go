@@ -26,6 +26,7 @@ type config struct {
 type hooks struct {
 	Account     []ent.Hook
 	GoodBenefit []ent.Hook
+	Limitation  []ent.Hook
 	Payment     []ent.Hook
 	Platform    []ent.Hook
 	User        []ent.Hook
