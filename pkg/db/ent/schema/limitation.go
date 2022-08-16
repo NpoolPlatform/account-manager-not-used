@@ -42,7 +42,7 @@ func (Limitation) Fields() []ent.Field {
 		field.
 			Other("amount", decimal.Decimal{}).
 			SchemaType(map[string]string{
-				dialect.MySQL: "decimal(37, 18)",
+				dialect.MySQL: "decimal(37,18)",
 			}).
 			Optional().
 			Default(decimal.Decimal{}),
