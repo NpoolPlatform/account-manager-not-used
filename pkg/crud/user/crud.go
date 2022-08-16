@@ -35,8 +35,8 @@ func CreateSet(c *ent.UserCreate, in *npool.AccountReq) *ent.UserCreate {
 	if in.CoinTypeID != nil {
 		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
 	}
-	if in.UserID != nil {
-		c.SetUserID(uuid.MustParse(in.GetUserID()))
+	if in.AccountID != nil {
+		c.SetAccountID(uuid.MustParse(in.GetAccountID()))
 	}
 	if in.UsedFor != nil {
 		c.SetUsedFor(in.GetUsedFor().String())
