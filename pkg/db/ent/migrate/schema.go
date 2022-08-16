@@ -52,7 +52,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "limitation", Type: field.TypeString, Nullable: true, Default: "DefaultLimitationType"},
-		{Name: "amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
+		{Name: "amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// LimitationsTable holds the schema information for the "limitations" table.
 	LimitationsTable = &schema.Table{
