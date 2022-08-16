@@ -7,6 +7,7 @@ import (
 
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
@@ -123,6 +124,62 @@ func init() {
 	goodbenefitDescID := goodbenefitFields[0].Descriptor()
 	// goodbenefit.DefaultID holds the default value on creation for the id field.
 	goodbenefit.DefaultID = goodbenefitDescID.Default.(func() uuid.UUID)
+	paymentMixin := schema.Payment{}.Mixin()
+	payment.Policy = privacy.NewPolicies(paymentMixin[0], schema.Payment{})
+	payment.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := payment.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	paymentMixinFields0 := paymentMixin[0].Fields()
+	_ = paymentMixinFields0
+	paymentFields := schema.Payment{}.Fields()
+	_ = paymentFields
+	// paymentDescCreatedAt is the schema descriptor for created_at field.
+	paymentDescCreatedAt := paymentMixinFields0[0].Descriptor()
+	// payment.DefaultCreatedAt holds the default value on creation for the created_at field.
+	payment.DefaultCreatedAt = paymentDescCreatedAt.Default.(func() uint32)
+	// paymentDescUpdatedAt is the schema descriptor for updated_at field.
+	paymentDescUpdatedAt := paymentMixinFields0[1].Descriptor()
+	// payment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	payment.DefaultUpdatedAt = paymentDescUpdatedAt.Default.(func() uint32)
+	// payment.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	payment.UpdateDefaultUpdatedAt = paymentDescUpdatedAt.UpdateDefault.(func() uint32)
+	// paymentDescDeletedAt is the schema descriptor for deleted_at field.
+	paymentDescDeletedAt := paymentMixinFields0[2].Descriptor()
+	// payment.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	payment.DefaultDeletedAt = paymentDescDeletedAt.Default.(func() uint32)
+	// paymentDescCoinTypeID is the schema descriptor for coin_type_id field.
+	paymentDescCoinTypeID := paymentFields[1].Descriptor()
+	// payment.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	payment.DefaultCoinTypeID = paymentDescCoinTypeID.Default.(func() uuid.UUID)
+	// paymentDescAccountID is the schema descriptor for account_id field.
+	paymentDescAccountID := paymentFields[2].Descriptor()
+	// payment.DefaultAccountID holds the default value on creation for the account_id field.
+	payment.DefaultAccountID = paymentDescAccountID.Default.(func() uuid.UUID)
+	// paymentDescIdle is the schema descriptor for idle field.
+	paymentDescIdle := paymentFields[3].Descriptor()
+	// payment.DefaultIdle holds the default value on creation for the idle field.
+	payment.DefaultIdle = paymentDescIdle.Default.(bool)
+	// paymentDescOccupiedBy is the schema descriptor for occupied_by field.
+	paymentDescOccupiedBy := paymentFields[4].Descriptor()
+	// payment.DefaultOccupiedBy holds the default value on creation for the occupied_by field.
+	payment.DefaultOccupiedBy = paymentDescOccupiedBy.Default.(string)
+	// paymentDescCollectingTid is the schema descriptor for collecting_tid field.
+	paymentDescCollectingTid := paymentFields[5].Descriptor()
+	// payment.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
+	payment.DefaultCollectingTid = paymentDescCollectingTid.Default.(func() uuid.UUID)
+	// paymentDescAvailableAt is the schema descriptor for available_at field.
+	paymentDescAvailableAt := paymentFields[6].Descriptor()
+	// payment.DefaultAvailableAt holds the default value on creation for the available_at field.
+	payment.DefaultAvailableAt = paymentDescAvailableAt.Default.(func() uint32)
+	// paymentDescID is the schema descriptor for id field.
+	paymentDescID := paymentFields[0].Descriptor()
+	// payment.DefaultID holds the default value on creation for the id field.
+	payment.DefaultID = paymentDescID.Default.(func() uuid.UUID)
 	userMixin := schema.User{}.Mixin()
 	user.Policy = privacy.NewPolicies(userMixin[0], schema.User{})
 	user.Hooks[0] = func(next ent.Mutator) ent.Mutator {

@@ -213,6 +213,30 @@ func (f GoodBenefitMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mut
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.GoodBenefitMutation", m)
 }
 
+// The PaymentQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type PaymentQueryRuleFunc func(context.Context, *ent.PaymentQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f PaymentQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PaymentQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PaymentQuery", q)
+}
+
+// The PaymentMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type PaymentMutationRuleFunc func(context.Context, *ent.PaymentMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f PaymentMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.PaymentMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PaymentMutation", m)
+}
+
 // The UserQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type UserQueryRuleFunc func(context.Context, *ent.UserQuery) error
@@ -276,6 +300,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.GoodBenefitQuery:
 		return q.Filter(), nil
+	case *ent.PaymentQuery:
+		return q.Filter(), nil
 	case *ent.UserQuery:
 		return q.Filter(), nil
 	default:
@@ -288,6 +314,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.AccountMutation:
 		return m.Filter(), nil
 	case *ent.GoodBenefitMutation:
+		return m.Filter(), nil
+	case *ent.PaymentMutation:
 		return m.Filter(), nil
 	case *ent.UserMutation:
 		return m.Filter(), nil

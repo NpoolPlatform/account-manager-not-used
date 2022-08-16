@@ -44,6 +44,25 @@ var (
 		Columns:    GoodBenefitsColumns,
 		PrimaryKey: []*schema.Column{GoodBenefitsColumns[0]},
 	}
+	// PaymentsColumns holds the columns for the "payments" table.
+	PaymentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "idle", Type: field.TypeBool, Nullable: true, Default: true},
+		{Name: "occupied_by", Type: field.TypeString, Nullable: true, Default: "DefaultOccupiedBy"},
+		{Name: "collecting_tid", Type: field.TypeUUID, Nullable: true},
+		{Name: "available_at", Type: field.TypeUint32, Nullable: true},
+	}
+	// PaymentsTable holds the schema information for the "payments" table.
+	PaymentsTable = &schema.Table{
+		Name:       "payments",
+		Columns:    PaymentsColumns,
+		PrimaryKey: []*schema.Column{PaymentsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -67,6 +86,7 @@ var (
 	Tables = []*schema.Table{
 		AccountsTable,
 		GoodBenefitsTable,
+		PaymentsTable,
 		UsersTable,
 	}
 )

@@ -5,6 +5,7 @@ package ent
 import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 
 	"entgo.io/ent/dialect/sql"
@@ -15,7 +16,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 3)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 4)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   account.Table,
@@ -59,6 +60,28 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   payment.Table,
+			Columns: payment.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: payment.FieldID,
+			},
+		},
+		Type: "Payment",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			payment.FieldCreatedAt:     {Type: field.TypeUint32, Column: payment.FieldCreatedAt},
+			payment.FieldUpdatedAt:     {Type: field.TypeUint32, Column: payment.FieldUpdatedAt},
+			payment.FieldDeletedAt:     {Type: field.TypeUint32, Column: payment.FieldDeletedAt},
+			payment.FieldCoinTypeID:    {Type: field.TypeUUID, Column: payment.FieldCoinTypeID},
+			payment.FieldAccountID:     {Type: field.TypeUUID, Column: payment.FieldAccountID},
+			payment.FieldIdle:          {Type: field.TypeBool, Column: payment.FieldIdle},
+			payment.FieldOccupiedBy:    {Type: field.TypeString, Column: payment.FieldOccupiedBy},
+			payment.FieldCollectingTid: {Type: field.TypeUUID, Column: payment.FieldCollectingTid},
+			payment.FieldAvailableAt:   {Type: field.TypeUint32, Column: payment.FieldAvailableAt},
+		},
+	}
+	graph.Nodes[3] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   user.Table,
 			Columns: user.Columns,
@@ -248,6 +271,90 @@ func (f *GoodBenefitFilter) WhereBackup(p entql.BoolP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (pq *PaymentQuery) addPredicate(pred func(s *sql.Selector)) {
+	pq.predicates = append(pq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the PaymentQuery builder.
+func (pq *PaymentQuery) Filter() *PaymentFilter {
+	return &PaymentFilter{pq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *PaymentMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the PaymentMutation builder.
+func (m *PaymentMutation) Filter() *PaymentFilter {
+	return &PaymentFilter{m}
+}
+
+// PaymentFilter provides a generic filtering capability at runtime for PaymentQuery.
+type PaymentFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *PaymentFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *PaymentFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(payment.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *PaymentFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(payment.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *PaymentFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(payment.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *PaymentFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(payment.FieldDeletedAt))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *PaymentFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(payment.FieldCoinTypeID))
+}
+
+// WhereAccountID applies the entql [16]byte predicate on the account_id field.
+func (f *PaymentFilter) WhereAccountID(p entql.ValueP) {
+	f.Where(p.Field(payment.FieldAccountID))
+}
+
+// WhereIdle applies the entql bool predicate on the idle field.
+func (f *PaymentFilter) WhereIdle(p entql.BoolP) {
+	f.Where(p.Field(payment.FieldIdle))
+}
+
+// WhereOccupiedBy applies the entql string predicate on the occupied_by field.
+func (f *PaymentFilter) WhereOccupiedBy(p entql.StringP) {
+	f.Where(p.Field(payment.FieldOccupiedBy))
+}
+
+// WhereCollectingTid applies the entql [16]byte predicate on the collecting_tid field.
+func (f *PaymentFilter) WhereCollectingTid(p entql.ValueP) {
+	f.Where(p.Field(payment.FieldCollectingTid))
+}
+
+// WhereAvailableAt applies the entql uint32 predicate on the available_at field.
+func (f *PaymentFilter) WhereAvailableAt(p entql.Uint32P) {
+	f.Where(p.Field(payment.FieldAvailableAt))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (uq *UserQuery) addPredicate(pred func(s *sql.Selector)) {
 	uq.predicates = append(uq.predicates, pred)
 }
@@ -275,7 +382,7 @@ type UserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
