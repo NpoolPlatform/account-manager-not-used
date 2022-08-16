@@ -1,5 +1,5 @@
 //nolint:dupl
-package account
+package user
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/account"
+	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/user"
 
 	constant "github.com/NpoolPlatform/account-manager/pkg/message/const"
 )
@@ -24,7 +24,7 @@ func withCRUD(ctx context.Context, handler handler) (cruder.Any, error) {
 
 	conn, err := grpc2.GetGRPCConn(constant.ServiceName, grpc2.GRPCTAG)
 	if err != nil {
-		return nil, fmt.Errorf("fail get account connection: %v", err)
+		return nil, fmt.Errorf("fail get user connection: %v", err)
 	}
 
 	defer conn.Close()
