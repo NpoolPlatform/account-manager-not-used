@@ -6,8 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Detail is the predicate function for detail builders.
-type Detail func(*sql.Selector)
+// Account is the predicate function for account builders.
+type Account func(*sql.Selector)
 
-// General is the predicate function for general builders.
-type General func(*sql.Selector)
+// GoodBenefit is the predicate function for goodbenefit builders.
+type GoodBenefit func(*sql.Selector)

@@ -3,33 +3,33 @@ package api
 import (
 	"context"
 
-	"github.com/NpoolPlatform/message/npool/servicetmpl"
+	account "github.com/NpoolPlatform/message/npool/account/mgr/v1"
 
-	"github.com/NpoolPlatform/service-template/api/detail"
-	"github.com/NpoolPlatform/service-template/api/general"
+	account1 "github.com/NpoolPlatform/account-manager/api/account"
+	"github.com/NpoolPlatform/account-manager/api/goodbenefit"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
 type Server struct {
-	servicetmpl.UnimplementedManagerServer
+	account.UnimplementedManagerServer
 }
 
 func Register(server grpc.ServiceRegistrar) {
-	servicetmpl.RegisterManagerServer(server, &Server{})
-	general.Register(server)
-	detail.Register(server)
+	account.RegisterManagerServer(server, &Server{})
+	goodbenefit.Register(server)
+	account1.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
-	if err := servicetmpl.RegisterManagerHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+	if err := account.RegisterManagerHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 		return err
 	}
-	if err := general.RegisterGateway(mux, endpoint, opts); err != nil {
+	if err := goodbenefit.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
-	if err := detail.RegisterGateway(mux, endpoint, opts); err != nil {
+	if err := account1.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
 	return nil

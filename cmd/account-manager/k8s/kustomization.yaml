@@ -1,0 +1,5 @@
+resources:
+  - 01-account-manager.viper.yaml
+  - 02-account-manager.yaml
+  - 03-strip-prefix.yaml
+  - 04-service-monitor.yaml

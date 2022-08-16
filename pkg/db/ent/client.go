@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/NpoolPlatform/service-template/pkg/db/ent/migrate"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/migrate"
 	"github.com/google/uuid"
 
-	"github.com/NpoolPlatform/service-template/pkg/db/ent/detail"
-	"github.com/NpoolPlatform/service-template/pkg/db/ent/general"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -22,10 +22,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Detail is the client for interacting with the Detail builders.
-	Detail *DetailClient
-	// General is the client for interacting with the General builders.
-	General *GeneralClient
+	// Account is the client for interacting with the Account builders.
+	Account *AccountClient
+	// GoodBenefit is the client for interacting with the GoodBenefit builders.
+	GoodBenefit *GoodBenefitClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -39,8 +39,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Detail = NewDetailClient(c.config)
-	c.General = NewGeneralClient(c.config)
+	c.Account = NewAccountClient(c.config)
+	c.GoodBenefit = NewGoodBenefitClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -72,10 +72,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Detail:  NewDetailClient(cfg),
-		General: NewGeneralClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		Account:     NewAccountClient(cfg),
+		GoodBenefit: NewGoodBenefitClient(cfg),
 	}, nil
 }
 
@@ -93,17 +93,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Detail:  NewDetailClient(cfg),
-		General: NewGeneralClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		Account:     NewAccountClient(cfg),
+		GoodBenefit: NewGoodBenefitClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Detail.
+//		Account.
 //		Query().
 //		Count(ctx)
 //
@@ -126,88 +126,88 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Detail.Use(hooks...)
-	c.General.Use(hooks...)
+	c.Account.Use(hooks...)
+	c.GoodBenefit.Use(hooks...)
 }
 
-// DetailClient is a client for the Detail schema.
-type DetailClient struct {
+// AccountClient is a client for the Account schema.
+type AccountClient struct {
 	config
 }
 
-// NewDetailClient returns a client for the Detail from the given config.
-func NewDetailClient(c config) *DetailClient {
-	return &DetailClient{config: c}
+// NewAccountClient returns a client for the Account from the given config.
+func NewAccountClient(c config) *AccountClient {
+	return &AccountClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `detail.Hooks(f(g(h())))`.
-func (c *DetailClient) Use(hooks ...Hook) {
-	c.hooks.Detail = append(c.hooks.Detail, hooks...)
+// A call to `Use(f, g, h)` equals to `account.Hooks(f(g(h())))`.
+func (c *AccountClient) Use(hooks ...Hook) {
+	c.hooks.Account = append(c.hooks.Account, hooks...)
 }
 
-// Create returns a create builder for Detail.
-func (c *DetailClient) Create() *DetailCreate {
-	mutation := newDetailMutation(c.config, OpCreate)
-	return &DetailCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for Account.
+func (c *AccountClient) Create() *AccountCreate {
+	mutation := newAccountMutation(c.config, OpCreate)
+	return &AccountCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Detail entities.
-func (c *DetailClient) CreateBulk(builders ...*DetailCreate) *DetailCreateBulk {
-	return &DetailCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Account entities.
+func (c *AccountClient) CreateBulk(builders ...*AccountCreate) *AccountCreateBulk {
+	return &AccountCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Detail.
-func (c *DetailClient) Update() *DetailUpdate {
-	mutation := newDetailMutation(c.config, OpUpdate)
-	return &DetailUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Account.
+func (c *AccountClient) Update() *AccountUpdate {
+	mutation := newAccountMutation(c.config, OpUpdate)
+	return &AccountUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *DetailClient) UpdateOne(d *Detail) *DetailUpdateOne {
-	mutation := newDetailMutation(c.config, OpUpdateOne, withDetail(d))
-	return &DetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AccountClient) UpdateOne(a *Account) *AccountUpdateOne {
+	mutation := newAccountMutation(c.config, OpUpdateOne, withAccount(a))
+	return &AccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *DetailClient) UpdateOneID(id uuid.UUID) *DetailUpdateOne {
-	mutation := newDetailMutation(c.config, OpUpdateOne, withDetailID(id))
-	return &DetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AccountClient) UpdateOneID(id uuid.UUID) *AccountUpdateOne {
+	mutation := newAccountMutation(c.config, OpUpdateOne, withAccountID(id))
+	return &AccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Detail.
-func (c *DetailClient) Delete() *DetailDelete {
-	mutation := newDetailMutation(c.config, OpDelete)
-	return &DetailDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Account.
+func (c *AccountClient) Delete() *AccountDelete {
+	mutation := newAccountMutation(c.config, OpDelete)
+	return &AccountDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *DetailClient) DeleteOne(d *Detail) *DetailDeleteOne {
-	return c.DeleteOneID(d.ID)
+func (c *AccountClient) DeleteOne(a *Account) *AccountDeleteOne {
+	return c.DeleteOneID(a.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *DetailClient) DeleteOneID(id uuid.UUID) *DetailDeleteOne {
-	builder := c.Delete().Where(detail.ID(id))
+func (c *AccountClient) DeleteOneID(id uuid.UUID) *AccountDeleteOne {
+	builder := c.Delete().Where(account.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &DetailDeleteOne{builder}
+	return &AccountDeleteOne{builder}
 }
 
-// Query returns a query builder for Detail.
-func (c *DetailClient) Query() *DetailQuery {
-	return &DetailQuery{
+// Query returns a query builder for Account.
+func (c *AccountClient) Query() *AccountQuery {
+	return &AccountQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Detail entity by its id.
-func (c *DetailClient) Get(ctx context.Context, id uuid.UUID) (*Detail, error) {
-	return c.Query().Where(detail.ID(id)).Only(ctx)
+// Get returns a Account entity by its id.
+func (c *AccountClient) Get(ctx context.Context, id uuid.UUID) (*Account, error) {
+	return c.Query().Where(account.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *DetailClient) GetX(ctx context.Context, id uuid.UUID) *Detail {
+func (c *AccountClient) GetX(ctx context.Context, id uuid.UUID) *Account {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -216,89 +216,89 @@ func (c *DetailClient) GetX(ctx context.Context, id uuid.UUID) *Detail {
 }
 
 // Hooks returns the client hooks.
-func (c *DetailClient) Hooks() []Hook {
-	hooks := c.hooks.Detail
-	return append(hooks[:len(hooks):len(hooks)], detail.Hooks[:]...)
+func (c *AccountClient) Hooks() []Hook {
+	hooks := c.hooks.Account
+	return append(hooks[:len(hooks):len(hooks)], account.Hooks[:]...)
 }
 
-// GeneralClient is a client for the General schema.
-type GeneralClient struct {
+// GoodBenefitClient is a client for the GoodBenefit schema.
+type GoodBenefitClient struct {
 	config
 }
 
-// NewGeneralClient returns a client for the General from the given config.
-func NewGeneralClient(c config) *GeneralClient {
-	return &GeneralClient{config: c}
+// NewGoodBenefitClient returns a client for the GoodBenefit from the given config.
+func NewGoodBenefitClient(c config) *GoodBenefitClient {
+	return &GoodBenefitClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `general.Hooks(f(g(h())))`.
-func (c *GeneralClient) Use(hooks ...Hook) {
-	c.hooks.General = append(c.hooks.General, hooks...)
+// A call to `Use(f, g, h)` equals to `goodbenefit.Hooks(f(g(h())))`.
+func (c *GoodBenefitClient) Use(hooks ...Hook) {
+	c.hooks.GoodBenefit = append(c.hooks.GoodBenefit, hooks...)
 }
 
-// Create returns a create builder for General.
-func (c *GeneralClient) Create() *GeneralCreate {
-	mutation := newGeneralMutation(c.config, OpCreate)
-	return &GeneralCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for GoodBenefit.
+func (c *GoodBenefitClient) Create() *GoodBenefitCreate {
+	mutation := newGoodBenefitMutation(c.config, OpCreate)
+	return &GoodBenefitCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of General entities.
-func (c *GeneralClient) CreateBulk(builders ...*GeneralCreate) *GeneralCreateBulk {
-	return &GeneralCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of GoodBenefit entities.
+func (c *GoodBenefitClient) CreateBulk(builders ...*GoodBenefitCreate) *GoodBenefitCreateBulk {
+	return &GoodBenefitCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for General.
-func (c *GeneralClient) Update() *GeneralUpdate {
-	mutation := newGeneralMutation(c.config, OpUpdate)
-	return &GeneralUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for GoodBenefit.
+func (c *GoodBenefitClient) Update() *GoodBenefitUpdate {
+	mutation := newGoodBenefitMutation(c.config, OpUpdate)
+	return &GoodBenefitUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *GeneralClient) UpdateOne(ge *General) *GeneralUpdateOne {
-	mutation := newGeneralMutation(c.config, OpUpdateOne, withGeneral(ge))
-	return &GeneralUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *GoodBenefitClient) UpdateOne(gb *GoodBenefit) *GoodBenefitUpdateOne {
+	mutation := newGoodBenefitMutation(c.config, OpUpdateOne, withGoodBenefit(gb))
+	return &GoodBenefitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *GeneralClient) UpdateOneID(id uuid.UUID) *GeneralUpdateOne {
-	mutation := newGeneralMutation(c.config, OpUpdateOne, withGeneralID(id))
-	return &GeneralUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *GoodBenefitClient) UpdateOneID(id uuid.UUID) *GoodBenefitUpdateOne {
+	mutation := newGoodBenefitMutation(c.config, OpUpdateOne, withGoodBenefitID(id))
+	return &GoodBenefitUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for General.
-func (c *GeneralClient) Delete() *GeneralDelete {
-	mutation := newGeneralMutation(c.config, OpDelete)
-	return &GeneralDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for GoodBenefit.
+func (c *GoodBenefitClient) Delete() *GoodBenefitDelete {
+	mutation := newGoodBenefitMutation(c.config, OpDelete)
+	return &GoodBenefitDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *GeneralClient) DeleteOne(ge *General) *GeneralDeleteOne {
-	return c.DeleteOneID(ge.ID)
+func (c *GoodBenefitClient) DeleteOne(gb *GoodBenefit) *GoodBenefitDeleteOne {
+	return c.DeleteOneID(gb.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *GeneralClient) DeleteOneID(id uuid.UUID) *GeneralDeleteOne {
-	builder := c.Delete().Where(general.ID(id))
+func (c *GoodBenefitClient) DeleteOneID(id uuid.UUID) *GoodBenefitDeleteOne {
+	builder := c.Delete().Where(goodbenefit.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &GeneralDeleteOne{builder}
+	return &GoodBenefitDeleteOne{builder}
 }
 
-// Query returns a query builder for General.
-func (c *GeneralClient) Query() *GeneralQuery {
-	return &GeneralQuery{
+// Query returns a query builder for GoodBenefit.
+func (c *GoodBenefitClient) Query() *GoodBenefitQuery {
+	return &GoodBenefitQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a General entity by its id.
-func (c *GeneralClient) Get(ctx context.Context, id uuid.UUID) (*General, error) {
-	return c.Query().Where(general.ID(id)).Only(ctx)
+// Get returns a GoodBenefit entity by its id.
+func (c *GoodBenefitClient) Get(ctx context.Context, id uuid.UUID) (*GoodBenefit, error) {
+	return c.Query().Where(goodbenefit.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *GeneralClient) GetX(ctx context.Context, id uuid.UUID) *General {
+func (c *GoodBenefitClient) GetX(ctx context.Context, id uuid.UUID) *GoodBenefit {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -307,7 +307,7 @@ func (c *GeneralClient) GetX(ctx context.Context, id uuid.UUID) *General {
 }
 
 // Hooks returns the client hooks.
-func (c *GeneralClient) Hooks() []Hook {
-	hooks := c.hooks.General
-	return append(hooks[:len(hooks):len(hooks)], general.Hooks[:]...)
+func (c *GoodBenefitClient) Hooks() []Hook {
+	hooks := c.hooks.GoodBenefit
+	return append(hooks[:len(hooks):len(hooks)], goodbenefit.Hooks[:]...)
 }

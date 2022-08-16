@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-manager
+  namespace: kube-system
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: account-manager
+  template:
+    metadata:
+      labels:
+        app: account-manager
+    spec:
+      containers:
+        - name: account-manager
+          image: uhub.service.ucloud.cn/entropypool/account-manager:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: service-config
+              mountPath: /etc/AccountManager
+          env:
+            - name: ENV_ENVIRONMENT_TARGET
+              valueFrom:
+                configMapKeyRef:
+                  name: system-environment
+                  key: environment.target
+            - name: ENV_CONSUL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: system-environment
+                  key: environment.consul_host
+            - name: ENV_CONSUL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: system-environment
+                  key: environment.consul_port
+            - name: ENV_CLUSTER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+      volumes:
+        - name: service-config
+          configMap:
+            name: account-manager-config
+            items:
+              - key: service-conf
+                path: AccountManager.viper.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-manager
+  namespace: kube-system
+spec:
+  ports:
+    - name: http
+      port: 50460
+      targetPort: 50460
+    - name: grpc
+      port: 50461
+      targetPort: 50461
+    - name: healthz
+      port: 50462
+      targetPort: 50462
+    - name: prometheus
+      port: 50463
+      targetPort: 50463
+  selector:
+    app: account-manager

@@ -8,53 +8,46 @@ import (
 )
 
 var (
-	// DetailsColumns holds the columns for the "details" table.
-	DetailsColumns = []*schema.Column{
+	// AccountsColumns holds the columns for the "accounts" table.
+	AccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
-		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "io_type", Type: field.TypeString, Nullable: true, Default: "DefaultType"},
-		{Name: "io_sub_type", Type: field.TypeString, Nullable: true, Default: "DefaultSubType"},
-		{Name: "amount", Type: field.TypeFloat64, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
-		{Name: "from_coin_type_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "coin_usd_currency", Type: field.TypeFloat64, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
-		{Name: "io_extra", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "from_old_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "address", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
+		{Name: "platform_hold_private_key", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "active", Type: field.TypeBool, Nullable: true, Default: true},
+		{Name: "locked", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "blocked", Type: field.TypeBool, Nullable: true, Default: false},
 	}
-	// DetailsTable holds the schema information for the "details" table.
-	DetailsTable = &schema.Table{
-		Name:       "details",
-		Columns:    DetailsColumns,
-		PrimaryKey: []*schema.Column{DetailsColumns[0]},
+	// AccountsTable holds the schema information for the "accounts" table.
+	AccountsTable = &schema.Table{
+		Name:       "accounts",
+		Columns:    AccountsColumns,
+		PrimaryKey: []*schema.Column{AccountsColumns[0]},
 	}
-	// GeneralsColumns holds the columns for the "generals" table.
-	GeneralsColumns = []*schema.Column{
+	// GoodBenefitsColumns holds the columns for the "good_benefits" table.
+	GoodBenefitsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
-		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "incoming", Type: field.TypeFloat64, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
-		{Name: "locked", Type: field.TypeFloat64, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
-		{Name: "outcoming", Type: field.TypeFloat64, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
-		{Name: "spendable", Type: field.TypeFloat64, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37, 18)"}},
+		{Name: "good_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "backup", Type: field.TypeBool, Nullable: true, Default: false},
 	}
-	// GeneralsTable holds the schema information for the "generals" table.
-	GeneralsTable = &schema.Table{
-		Name:       "generals",
-		Columns:    GeneralsColumns,
-		PrimaryKey: []*schema.Column{GeneralsColumns[0]},
+	// GoodBenefitsTable holds the schema information for the "good_benefits" table.
+	GoodBenefitsTable = &schema.Table{
+		Name:       "good_benefits",
+		Columns:    GoodBenefitsColumns,
+		PrimaryKey: []*schema.Column{GoodBenefitsColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		DetailsTable,
-		GeneralsTable,
+		AccountsTable,
+		GoodBenefitsTable,
 	}
 )
 

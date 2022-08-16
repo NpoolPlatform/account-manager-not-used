@@ -6,31 +6,31 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/NpoolPlatform/service-template/pkg/db/ent"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent"
 )
 
-// The DetailFunc type is an adapter to allow the use of ordinary
-// function as Detail mutator.
-type DetailFunc func(context.Context, *ent.DetailMutation) (ent.Value, error)
+// The AccountFunc type is an adapter to allow the use of ordinary
+// function as Account mutator.
+type AccountFunc func(context.Context, *ent.AccountMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f DetailFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.DetailMutation)
+func (f AccountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AccountMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DetailMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccountMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The GeneralFunc type is an adapter to allow the use of ordinary
-// function as General mutator.
-type GeneralFunc func(context.Context, *ent.GeneralMutation) (ent.Value, error)
+// The GoodBenefitFunc type is an adapter to allow the use of ordinary
+// function as GoodBenefit mutator.
+type GoodBenefitFunc func(context.Context, *ent.GoodBenefitMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f GeneralFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.GeneralMutation)
+func (f GoodBenefitFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.GoodBenefitMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GeneralMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GoodBenefitMutation", m)
 	}
 	return f(ctx, mv)
 }
