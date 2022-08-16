@@ -1,8 +1,8 @@
 package server
 
 import (
-	msgsrv "github.com/NpoolPlatform/go-service-framework/pkg/rabbitmq/server"
 	msg "github.com/NpoolPlatform/account-manager/pkg/message/message"
+	msgsrv "github.com/NpoolPlatform/go-service-framework/pkg/rabbitmq/server"
 )
 
 func Init() error {

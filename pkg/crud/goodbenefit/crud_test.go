@@ -8,8 +8,6 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent"
-	"github.com/shopspring/decimal"
-
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
 	testinit "github.com/NpoolPlatform/account-manager/pkg/testinit"
@@ -30,35 +28,20 @@ func init() {
 }
 
 var entity = ent.GoodBenefit{
-	ID:         uuid.New(),
-	AppID:      uuid.New(),
-	UserID:     uuid.New(),
-	CoinTypeID: uuid.New(),
-	Incoming:   decimal.NewFromInt(0),
-	Locked:     decimal.NewFromInt(0),
-	Outcoming:  decimal.NewFromInt(0),
-	Spendable:  decimal.NewFromInt(0),
+	ID:        uuid.New(),
+	GoodID:    uuid.New(),
+	AccountID: uuid.New(),
 }
 
 var (
-	id         = entity.ID.String()
-	appID      = entity.AppID.String()
-	userID     = entity.UserID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	incoming   = entity.Incoming.String()
-	locked     = entity.Locked.String()
-	outcoming  = entity.Outcoming.String()
-	spendable  = entity.Spendable.String()
+	id        = entity.ID.String()
+	goodID    = entity.GoodID.String()
+	accountID = entity.AccountID.String()
 
-	req = npool.GoodBenefitReq{
-		ID:         &id,
-		AppID:      &appID,
-		UserID:     &userID,
-		CoinTypeID: &coinTypeID,
-		Incoming:   &incoming,
-		Locked:     &locked,
-		Outcoming:  &outcoming,
-		Spendable:  &spendable,
+	req = npool.AccountReq{
+		ID:        &id,
+		GoodID:    &goodID,
+		AccountID: &accountID,
 	}
 )
 
@@ -77,47 +60,27 @@ func create(t *testing.T) {
 func createBulk(t *testing.T) {
 	entities := []*ent.GoodBenefit{
 		{
-			ID:         uuid.New(),
-			AppID:      uuid.New(),
-			UserID:     uuid.New(),
-			CoinTypeID: uuid.New(),
-			Incoming:   decimal.NewFromInt(0),
-			Locked:     decimal.NewFromInt(0),
-			Outcoming:  decimal.NewFromInt(0),
-			Spendable:  decimal.NewFromInt(0),
+			ID:        uuid.New(),
+			GoodID:    uuid.New(),
+			AccountID: uuid.New(),
 		},
 		{
-			ID:         uuid.New(),
-			AppID:      uuid.New(),
-			UserID:     uuid.New(),
-			CoinTypeID: uuid.New(),
-			Incoming:   decimal.NewFromInt(0),
-			Locked:     decimal.NewFromInt(0),
-			Outcoming:  decimal.NewFromInt(0),
-			Spendable:  decimal.NewFromInt(0),
+			ID:        uuid.New(),
+			GoodID:    uuid.New(),
+			AccountID: uuid.New(),
 		},
 	}
 
-	reqs := []*npool.GoodBenefitReq{}
+	reqs := []*npool.AccountReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_appID := _entity.AppID.String()
-		_userID := _entity.UserID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
-		_incoming := _entity.Incoming.String()
-		_locked := _entity.Locked.String()
-		_outcoming := _entity.Outcoming.String()
-		_spendable := _entity.Spendable.String()
+		_goodID := _entity.GoodID.String()
+		_accountID := _entity.AccountID.String()
 
-		reqs = append(reqs, &npool.GoodBenefitReq{
-			ID:         &_id,
-			AppID:      &_appID,
-			UserID:     &_userID,
-			CoinTypeID: &_coinTypeID,
-			Incoming:   &_incoming,
-			Locked:     &_locked,
-			Outcoming:  &_outcoming,
-			Spendable:  &_spendable,
+		reqs = append(reqs, &npool.AccountReq{
+			ID:        &_id,
+			GoodID:    &_goodID,
+			AccountID: &_accountID,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
@@ -126,23 +89,13 @@ func createBulk(t *testing.T) {
 	}
 }
 
-func add(t *testing.T) {
-	incoming = "30"
-	locked = "10"
-	outcoming = "10"
-	spendable = "10"
+func update(t *testing.T) {
+	backup := true
 
-	req.Incoming = &incoming
-	req.Locked = &locked
-	req.Outcoming = &outcoming
-	req.Spendable = &spendable
+	req.Backup = &backup
+	entity.Backup = backup
 
-	entity.Incoming, _ = decimal.NewFromString(incoming)
-	entity.Locked, _ = decimal.NewFromString(locked)
-	entity.Outcoming, _ = decimal.NewFromString(outcoming)
-	entity.Spendable, _ = decimal.NewFromString(spendable)
-
-	info, err := AddFields(context.Background(), &req)
+	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info.String(), entity.String())
@@ -234,7 +187,7 @@ func TestGoodBenefit(t *testing.T) {
 	}
 	t.Run("create", create)
 	t.Run("createBulk", createBulk)
-	t.Run("add", add)
+	t.Run("update", update)
 	t.Run("row", row)
 	t.Run("rows", rows)
 	t.Run("rowOnly", rowOnly)

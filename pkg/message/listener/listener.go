@@ -2,6 +2,7 @@ package listener
 
 import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
+
 	msgcli "github.com/NpoolPlatform/account-manager/pkg/message/client"
 	msg "github.com/NpoolPlatform/account-manager/pkg/message/message"
 )

@@ -105,7 +105,7 @@ func UpdateSet(info *ent.GoodBenefit, in *npool.AccountReq) *ent.GoodBenefitUpda
 	return u
 }
 
-func Update(ctx context.Context, in *npool.AccountReq) (*ent.GoodBenefit, error) { //nolint
+func Update(ctx context.Context, in *npool.AccountReq) (*ent.GoodBenefit, error) {
 	var info *ent.GoodBenefit
 	var err error
 
@@ -164,7 +164,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.GoodBenefit, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.GoodBenefitQuery, error) { //nolint
+func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.GoodBenefitQuery, error) {
 	stm := cli.GoodBenefit.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {

@@ -8,8 +8,6 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent"
-	"github.com/shopspring/decimal"
-
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
 	testinit "github.com/NpoolPlatform/account-manager/pkg/testinit"
@@ -30,44 +28,23 @@ func init() {
 }
 
 var entity = ent.Account{
-	ID:              uuid.New(),
-	AppID:           uuid.New(),
-	UserID:          uuid.New(),
-	CoinTypeID:      uuid.New(),
-	IoType:          npool.IOType_Incoming.String(),
-	IoSubType:       npool.IOSubType_Payment.String(),
-	Amount:          decimal.RequireFromString("9999999999999999999.999999999999999999"),
-	FromCoinTypeID:  uuid.New(),
-	CoinUsdCurrency: decimal.RequireFromString("1.00045000000123012"),
-	IoExtra:         uuid.New().String(),
-	FromOldID:       uuid.New(),
+	ID:         uuid.New(),
+	CoinTypeID: uuid.New(),
+	UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
+	Address:    uuid.New().String(),
 }
 
 var (
-	id              = entity.ID.String()
-	appID           = entity.AppID.String()
-	userID          = entity.UserID.String()
-	coinTypeID      = entity.CoinTypeID.String()
-	ioType          = npool.IOType(npool.IOType_value[entity.IoType])
-	ioSubType       = npool.IOSubType(npool.IOSubType_value[entity.IoSubType])
-	amount          = entity.Amount.String()
-	fromCoinTypeID  = entity.FromCoinTypeID.String()
-	coinUSDCurrency = entity.CoinUsdCurrency.String()
-	ioExtra         = entity.IoExtra
-	fromOldID       = entity.FromOldID.String()
+	id         = entity.ID.String()
+	coinTypeID = entity.CoinTypeID.String()
+	usedFor    = npool.AccountUsedFor_GoodPayment
+	address    = entity.Address
 
 	req = npool.AccountReq{
-		ID:              &id,
-		AppID:           &appID,
-		UserID:          &userID,
-		CoinTypeID:      &coinTypeID,
-		IOType:          &ioType,
-		IOSubType:       &ioSubType,
-		Amount:          &amount,
-		FromCoinTypeID:  &fromCoinTypeID,
-		CoinUSDCurrency: &coinUSDCurrency,
-		IOExtra:         &ioExtra,
-		FromOldID:       &fromOldID,
+		ID:         &id,
+		CoinTypeID: &coinTypeID,
+		UsedFor:    &usedFor,
+		Address:    &address,
 	}
 )
 
@@ -86,64 +63,54 @@ func create(t *testing.T) {
 func createBulk(t *testing.T) {
 	entities := []*ent.Account{
 		{
-			ID:              uuid.New(),
-			AppID:           uuid.New(),
-			UserID:          uuid.New(),
-			CoinTypeID:      uuid.New(),
-			IoType:          npool.IOType_Incoming.String(),
-			IoSubType:       npool.IOSubType_Payment.String(),
-			Amount:          decimal.RequireFromString("10.00896"),
-			FromCoinTypeID:  uuid.New(),
-			CoinUsdCurrency: decimal.RequireFromString("1.8902"),
-			IoExtra:         uuid.New().String(),
-			FromOldID:       uuid.New(),
+			ID:         uuid.New(),
+			CoinTypeID: uuid.New(),
+			UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
+			Address:    uuid.New().String(),
 		},
 		{
-			ID:              uuid.New(),
-			AppID:           uuid.New(),
-			UserID:          uuid.New(),
-			CoinTypeID:      uuid.New(),
-			IoType:          npool.IOType_Incoming.String(),
-			IoSubType:       npool.IOSubType_Payment.String(),
-			Amount:          decimal.RequireFromString("11.11111"),
-			FromCoinTypeID:  uuid.New(),
-			CoinUsdCurrency: decimal.RequireFromString("1.123"),
-			IoExtra:         uuid.New().String(),
-			FromOldID:       uuid.New(),
+			ID:         uuid.New(),
+			CoinTypeID: uuid.New(),
+			UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
+			Address:    uuid.New().String(),
 		},
 	}
 
 	reqs := []*npool.AccountReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_appID := _entity.AppID.String()
-		_userID := _entity.UserID.String()
 		_coinTypeID := _entity.CoinTypeID.String()
-		_ioType := npool.IOType(npool.IOType_value[_entity.IoType])
-		_ioSubType := npool.IOSubType(npool.IOSubType_value[_entity.IoSubType])
-		_amount := _entity.Amount.String()
-		_fromCoinTypeID := entity.FromCoinTypeID.String()
-		_coinUSDCurrency := _entity.CoinUsdCurrency.String()
-		_ioExtra := _entity.IoExtra
-		_fromOldID := _entity.FromOldID.String()
+		_usedFor := npool.AccountUsedFor_GoodPayment
+		_address := _entity.Address
 
 		reqs = append(reqs, &npool.AccountReq{
-			ID:              &_id,
-			AppID:           &_appID,
-			UserID:          &_userID,
-			CoinTypeID:      &_coinTypeID,
-			IOType:          &_ioType,
-			IOSubType:       &_ioSubType,
-			Amount:          &_amount,
-			FromCoinTypeID:  &_fromCoinTypeID,
-			CoinUSDCurrency: &_coinUSDCurrency,
-			IOExtra:         &_ioExtra,
-			FromOldID:       &_fromOldID,
+			ID:         &_id,
+			CoinTypeID: &_coinTypeID,
+			UsedFor:    &_usedFor,
+			Address:    &_address,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
 	if assert.Nil(t, err) {
 		assert.Equal(t, len(infos), 2)
+	}
+}
+
+func update(t *testing.T) {
+	active := true
+
+	req.Active = &active
+	req.Locked = &active
+	req.Blocked = &active
+
+	entity.Active = active
+	entity.Locked = active
+	entity.Blocked = active
+
+	info, err := Update(context.Background(), &req)
+	if assert.Nil(t, err) {
+		entity.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info.String(), entity.String())
 	}
 }
 
@@ -233,6 +200,7 @@ func TestAccount(t *testing.T) {
 	}
 	t.Run("create", create)
 	t.Run("createBulk", createBulk)
+	t.Run("update", update)
 	t.Run("row", row)
 	t.Run("rows", rows)
 	t.Run("rowOnly", rowOnly)

@@ -45,7 +45,7 @@ func CreateSet(c *ent.AccountCreate, in *npool.AccountReq) *ent.AccountCreate {
 	return c
 }
 
-func Create(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) { //nolint
+func Create(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) {
 	var info *ent.Account
 	var err error
 
@@ -73,7 +73,7 @@ func Create(ctx context.Context, in *npool.AccountReq) (*ent.Account, error) { /
 	return info, nil
 }
 
-func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Account, error) { //nolint
+func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Account, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateBulk")
@@ -178,7 +178,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Account, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, error) { //nolint
+func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, error) {
 	stm := cli.Account.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {

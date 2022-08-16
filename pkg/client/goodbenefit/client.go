@@ -34,9 +34,9 @@ func withCRUD(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateGoodBenefit(ctx context.Context, in *npool.GoodBenefitReq) (*npool.GoodBenefit, error) {
+func CreateGoodBenefit(ctx context.Context, in *npool.AccountReq) (*npool.Account, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CreateGoodBenefit(ctx, &npool.CreateGoodBenefitRequest{
+		resp, err := cli.CreateAccount(ctx, &npool.CreateAccountRequest{
 			Info: in,
 		})
 		if err != nil {
@@ -47,12 +47,12 @@ func CreateGoodBenefit(ctx context.Context, in *npool.GoodBenefitReq) (*npool.Go
 	if err != nil {
 		return nil, fmt.Errorf("fail create goodbenefit: %v", err)
 	}
-	return info.(*npool.GoodBenefit), nil
+	return info.(*npool.Account), nil
 }
 
-func CreateGoodBenefits(ctx context.Context, in []*npool.GoodBenefitReq) ([]*npool.GoodBenefit, error) {
+func CreateGoodBenefits(ctx context.Context, in []*npool.AccountReq) ([]*npool.Account, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CreateGoodBenefits(ctx, &npool.CreateGoodBenefitsRequest{
+		resp, err := cli.CreateAccounts(ctx, &npool.CreateAccountsRequest{
 			Infos: in,
 		})
 		if err != nil {
@@ -63,12 +63,12 @@ func CreateGoodBenefits(ctx context.Context, in []*npool.GoodBenefitReq) ([]*npo
 	if err != nil {
 		return nil, fmt.Errorf("fail create goodbenefits: %v", err)
 	}
-	return infos.([]*npool.GoodBenefit), nil
+	return infos.([]*npool.Account), nil
 }
 
-func GetGoodBenefit(ctx context.Context, id string) (*npool.GoodBenefit, error) {
+func GetGoodBenefit(ctx context.Context, id string) (*npool.Account, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetGoodBenefit(ctx, &npool.GetGoodBenefitRequest{
+		resp, err := cli.GetAccount(ctx, &npool.GetAccountRequest{
 			ID: id,
 		})
 		if err != nil {
@@ -79,12 +79,12 @@ func GetGoodBenefit(ctx context.Context, id string) (*npool.GoodBenefit, error) 
 	if err != nil {
 		return nil, fmt.Errorf("fail get goodbenefit: %v", err)
 	}
-	return info.(*npool.GoodBenefit), nil
+	return info.(*npool.Account), nil
 }
 
-func GetGoodBenefitOnly(ctx context.Context, conds *npool.Conds) (*npool.GoodBenefit, error) {
+func GetGoodBenefitOnly(ctx context.Context, conds *npool.Conds) (*npool.Account, error) {
 	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetGoodBenefitOnly(ctx, &npool.GetGoodBenefitOnlyRequest{
+		resp, err := cli.GetAccountOnly(ctx, &npool.GetAccountOnlyRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -95,13 +95,13 @@ func GetGoodBenefitOnly(ctx context.Context, conds *npool.Conds) (*npool.GoodBen
 	if err != nil {
 		return nil, fmt.Errorf("fail get goodbenefit: %v", err)
 	}
-	return info.(*npool.GoodBenefit), nil
+	return info.(*npool.Account), nil
 }
 
-func GetGoodBenefits(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.GoodBenefit, uint32, error) {
+func GetGoodBenefits(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.Account, uint32, error) {
 	var total uint32
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.GetGoodBenefits(ctx, &npool.GetGoodBenefitsRequest{
+		resp, err := cli.GetAccounts(ctx, &npool.GetAccountsRequest{
 			Conds:  conds,
 			Limit:  limit,
 			Offset: offset,
@@ -115,12 +115,12 @@ func GetGoodBenefits(ctx context.Context, conds *npool.Conds, limit, offset int3
 	if err != nil {
 		return nil, 0, fmt.Errorf("fail get goodbenefits: %v", err)
 	}
-	return infos.([]*npool.GoodBenefit), total, nil
+	return infos.([]*npool.Account), total, nil
 }
 
 func ExistGoodBenefit(ctx context.Context, id string) (bool, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.ExistGoodBenefit(ctx, &npool.ExistGoodBenefitRequest{
+		resp, err := cli.ExistAccount(ctx, &npool.ExistAccountRequest{
 			ID: id,
 		})
 		if err != nil {
@@ -134,9 +134,9 @@ func ExistGoodBenefit(ctx context.Context, id string) (bool, error) {
 	return infos.(bool), nil
 }
 
-func ExistGoodBenefitConds(ctx context.Context, conds *npool.Conds) (bool, error) {
+func ExistAccountConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.ExistGoodBenefitConds(ctx, &npool.ExistGoodBenefitCondsRequest{
+		resp, err := cli.ExistAccountConds(ctx, &npool.ExistAccountCondsRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -152,7 +152,7 @@ func ExistGoodBenefitConds(ctx context.Context, conds *npool.Conds) (bool, error
 
 func CountGoodBenefits(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.CountGoodBenefits(ctx, &npool.CountGoodBenefitsRequest{
+		resp, err := cli.CountAccounts(ctx, &npool.CountAccountsRequest{
 			Conds: conds,
 		})
 		if err != nil {
