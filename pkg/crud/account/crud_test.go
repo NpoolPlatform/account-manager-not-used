@@ -32,6 +32,7 @@ var entity = ent.Account{
 	CoinTypeID: uuid.New(),
 	UsedFor:    npool.AccountUsedFor_GoodPayment.String(),
 	Address:    uuid.New().String(),
+	Active:     true,
 }
 
 var (
@@ -97,15 +98,16 @@ func createBulk(t *testing.T) {
 }
 
 func update(t *testing.T) {
-	active := true
+	active := false
+	enable := true
 
 	req.Active = &active
-	req.Locked = &active
-	req.Blocked = &active
+	req.Locked = &enable
+	req.Blocked = &enable
 
 	entity.Active = active
-	entity.Locked = active
-	entity.Blocked = active
+	entity.Locked = enable
+	entity.Blocked = enable
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {

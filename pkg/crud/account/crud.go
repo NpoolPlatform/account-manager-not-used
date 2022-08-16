@@ -30,6 +30,9 @@ func CreateSet(c *ent.AccountCreate, in *npool.AccountReq) *ent.AccountCreate {
 	if in.Address != nil {
 		c.SetAddress(in.GetAddress())
 	}
+	if in.UsedFor != nil {
+		c.SetUsedFor(in.GetUsedFor().String())
+	}
 	if in.PlatformHoldPrivateKey != nil {
 		c.SetPlatformHoldPrivateKey(in.GetPlatformHoldPrivateKey())
 	}
@@ -199,7 +202,15 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 	if conds.Address != nil {
 		switch conds.GetAddress().GetOp() {
 		case cruder.LIKE:
-			stm.Where(account.AddressContains(conds.GetAddress().GetValue()))
+			stm.Where(account.Address(conds.GetAddress().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid account field")
+		}
+	}
+	if conds.UsedFor != nil {
+		switch conds.GetUsedFor().GetOp() {
+		case cruder.LIKE:
+			stm.Where(account.UsedFor(npool.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid account field")
 		}
