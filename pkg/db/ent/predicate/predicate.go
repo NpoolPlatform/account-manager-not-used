@@ -15,5 +15,8 @@ type GoodBenefit func(*sql.Selector)
 // Payment is the predicate function for payment builders.
 type Payment func(*sql.Selector)
 
+// Platform is the predicate function for platform builders.
+type Platform func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

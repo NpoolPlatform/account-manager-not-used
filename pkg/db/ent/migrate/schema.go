@@ -63,6 +63,23 @@ var (
 		Columns:    PaymentsColumns,
 		PrimaryKey: []*schema.Column{PaymentsColumns[0]},
 	}
+	// PlatformsColumns holds the columns for the "platforms" table.
+	PlatformsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
+		{Name: "backup", Type: field.TypeBool, Nullable: true, Default: false},
+	}
+	// PlatformsTable holds the schema information for the "platforms" table.
+	PlatformsTable = &schema.Table{
+		Name:       "platforms",
+		Columns:    PlatformsColumns,
+		PrimaryKey: []*schema.Column{PlatformsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -87,6 +104,7 @@ var (
 		AccountsTable,
 		GoodBenefitsTable,
 		PaymentsTable,
+		PlatformsTable,
 		UsersTable,
 	}
 )

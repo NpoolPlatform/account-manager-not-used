@@ -48,6 +48,19 @@ func (f PaymentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return f(ctx, mv)
 }
 
+// The PlatformFunc type is an adapter to allow the use of ordinary
+// function as Platform mutator.
+type PlatformFunc func(context.Context, *ent.PlatformMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PlatformFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.PlatformMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PlatformMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

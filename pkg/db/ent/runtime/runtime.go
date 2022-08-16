@@ -8,6 +8,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/schema"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
@@ -180,6 +181,54 @@ func init() {
 	paymentDescID := paymentFields[0].Descriptor()
 	// payment.DefaultID holds the default value on creation for the id field.
 	payment.DefaultID = paymentDescID.Default.(func() uuid.UUID)
+	platformMixin := schema.Platform{}.Mixin()
+	platform.Policy = privacy.NewPolicies(platformMixin[0], schema.Platform{})
+	platform.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := platform.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	platformMixinFields0 := platformMixin[0].Fields()
+	_ = platformMixinFields0
+	platformFields := schema.Platform{}.Fields()
+	_ = platformFields
+	// platformDescCreatedAt is the schema descriptor for created_at field.
+	platformDescCreatedAt := platformMixinFields0[0].Descriptor()
+	// platform.DefaultCreatedAt holds the default value on creation for the created_at field.
+	platform.DefaultCreatedAt = platformDescCreatedAt.Default.(func() uint32)
+	// platformDescUpdatedAt is the schema descriptor for updated_at field.
+	platformDescUpdatedAt := platformMixinFields0[1].Descriptor()
+	// platform.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	platform.DefaultUpdatedAt = platformDescUpdatedAt.Default.(func() uint32)
+	// platform.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	platform.UpdateDefaultUpdatedAt = platformDescUpdatedAt.UpdateDefault.(func() uint32)
+	// platformDescDeletedAt is the schema descriptor for deleted_at field.
+	platformDescDeletedAt := platformMixinFields0[2].Descriptor()
+	// platform.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	platform.DefaultDeletedAt = platformDescDeletedAt.Default.(func() uint32)
+	// platformDescCoinTypeID is the schema descriptor for coin_type_id field.
+	platformDescCoinTypeID := platformFields[1].Descriptor()
+	// platform.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	platform.DefaultCoinTypeID = platformDescCoinTypeID.Default.(func() uuid.UUID)
+	// platformDescAccountID is the schema descriptor for account_id field.
+	platformDescAccountID := platformFields[2].Descriptor()
+	// platform.DefaultAccountID holds the default value on creation for the account_id field.
+	platform.DefaultAccountID = platformDescAccountID.Default.(func() uuid.UUID)
+	// platformDescUsedFor is the schema descriptor for used_for field.
+	platformDescUsedFor := platformFields[3].Descriptor()
+	// platform.DefaultUsedFor holds the default value on creation for the used_for field.
+	platform.DefaultUsedFor = platformDescUsedFor.Default.(string)
+	// platformDescBackup is the schema descriptor for backup field.
+	platformDescBackup := platformFields[4].Descriptor()
+	// platform.DefaultBackup holds the default value on creation for the backup field.
+	platform.DefaultBackup = platformDescBackup.Default.(bool)
+	// platformDescID is the schema descriptor for id field.
+	platformDescID := platformFields[0].Descriptor()
+	// platform.DefaultID holds the default value on creation for the id field.
+	platform.DefaultID = platformDescID.Default.(func() uuid.UUID)
 	userMixin := schema.User{}.Mixin()
 	user.Policy = privacy.NewPolicies(userMixin[0], schema.User{})
 	user.Hooks[0] = func(next ent.Mutator) ent.Mutator {

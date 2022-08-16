@@ -13,6 +13,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -30,6 +31,8 @@ type Client struct {
 	GoodBenefit *GoodBenefitClient
 	// Payment is the client for interacting with the Payment builders.
 	Payment *PaymentClient
+	// Platform is the client for interacting with the Platform builders.
+	Platform *PlatformClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -48,6 +51,7 @@ func (c *Client) init() {
 	c.Account = NewAccountClient(c.config)
 	c.GoodBenefit = NewGoodBenefitClient(c.config)
 	c.Payment = NewPaymentClient(c.config)
+	c.Platform = NewPlatformClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -85,6 +89,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Account:     NewAccountClient(cfg),
 		GoodBenefit: NewGoodBenefitClient(cfg),
 		Payment:     NewPaymentClient(cfg),
+		Platform:    NewPlatformClient(cfg),
 		User:        NewUserClient(cfg),
 	}, nil
 }
@@ -108,6 +113,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Account:     NewAccountClient(cfg),
 		GoodBenefit: NewGoodBenefitClient(cfg),
 		Payment:     NewPaymentClient(cfg),
+		Platform:    NewPlatformClient(cfg),
 		User:        NewUserClient(cfg),
 	}, nil
 }
@@ -141,6 +147,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Account.Use(hooks...)
 	c.GoodBenefit.Use(hooks...)
 	c.Payment.Use(hooks...)
+	c.Platform.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -415,6 +422,97 @@ func (c *PaymentClient) GetX(ctx context.Context, id uuid.UUID) *Payment {
 func (c *PaymentClient) Hooks() []Hook {
 	hooks := c.hooks.Payment
 	return append(hooks[:len(hooks):len(hooks)], payment.Hooks[:]...)
+}
+
+// PlatformClient is a client for the Platform schema.
+type PlatformClient struct {
+	config
+}
+
+// NewPlatformClient returns a client for the Platform from the given config.
+func NewPlatformClient(c config) *PlatformClient {
+	return &PlatformClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `platform.Hooks(f(g(h())))`.
+func (c *PlatformClient) Use(hooks ...Hook) {
+	c.hooks.Platform = append(c.hooks.Platform, hooks...)
+}
+
+// Create returns a create builder for Platform.
+func (c *PlatformClient) Create() *PlatformCreate {
+	mutation := newPlatformMutation(c.config, OpCreate)
+	return &PlatformCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Platform entities.
+func (c *PlatformClient) CreateBulk(builders ...*PlatformCreate) *PlatformCreateBulk {
+	return &PlatformCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Platform.
+func (c *PlatformClient) Update() *PlatformUpdate {
+	mutation := newPlatformMutation(c.config, OpUpdate)
+	return &PlatformUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PlatformClient) UpdateOne(pl *Platform) *PlatformUpdateOne {
+	mutation := newPlatformMutation(c.config, OpUpdateOne, withPlatform(pl))
+	return &PlatformUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PlatformClient) UpdateOneID(id uuid.UUID) *PlatformUpdateOne {
+	mutation := newPlatformMutation(c.config, OpUpdateOne, withPlatformID(id))
+	return &PlatformUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Platform.
+func (c *PlatformClient) Delete() *PlatformDelete {
+	mutation := newPlatformMutation(c.config, OpDelete)
+	return &PlatformDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *PlatformClient) DeleteOne(pl *Platform) *PlatformDeleteOne {
+	return c.DeleteOneID(pl.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *PlatformClient) DeleteOneID(id uuid.UUID) *PlatformDeleteOne {
+	builder := c.Delete().Where(platform.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PlatformDeleteOne{builder}
+}
+
+// Query returns a query builder for Platform.
+func (c *PlatformClient) Query() *PlatformQuery {
+	return &PlatformQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Platform entity by its id.
+func (c *PlatformClient) Get(ctx context.Context, id uuid.UUID) (*Platform, error) {
+	return c.Query().Where(platform.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PlatformClient) GetX(ctx context.Context, id uuid.UUID) *Platform {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PlatformClient) Hooks() []Hook {
+	hooks := c.hooks.Platform
+	return append(hooks[:len(hooks):len(hooks)], platform.Hooks[:]...)
 }
 
 // UserClient is a client for the User schema.

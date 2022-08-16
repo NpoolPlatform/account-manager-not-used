@@ -6,6 +6,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/account"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 
 	"entgo.io/ent/dialect/sql"
@@ -16,7 +17,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 4)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 5)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   account.Table,
@@ -82,6 +83,26 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   platform.Table,
+			Columns: platform.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: platform.FieldID,
+			},
+		},
+		Type: "Platform",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			platform.FieldCreatedAt:  {Type: field.TypeUint32, Column: platform.FieldCreatedAt},
+			platform.FieldUpdatedAt:  {Type: field.TypeUint32, Column: platform.FieldUpdatedAt},
+			platform.FieldDeletedAt:  {Type: field.TypeUint32, Column: platform.FieldDeletedAt},
+			platform.FieldCoinTypeID: {Type: field.TypeUUID, Column: platform.FieldCoinTypeID},
+			platform.FieldAccountID:  {Type: field.TypeUUID, Column: platform.FieldAccountID},
+			platform.FieldUsedFor:    {Type: field.TypeString, Column: platform.FieldUsedFor},
+			platform.FieldBackup:     {Type: field.TypeBool, Column: platform.FieldBackup},
+		},
+	}
+	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   user.Table,
 			Columns: user.Columns,
@@ -355,6 +376,80 @@ func (f *PaymentFilter) WhereAvailableAt(p entql.Uint32P) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (pq *PlatformQuery) addPredicate(pred func(s *sql.Selector)) {
+	pq.predicates = append(pq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the PlatformQuery builder.
+func (pq *PlatformQuery) Filter() *PlatformFilter {
+	return &PlatformFilter{pq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *PlatformMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the PlatformMutation builder.
+func (m *PlatformMutation) Filter() *PlatformFilter {
+	return &PlatformFilter{m}
+}
+
+// PlatformFilter provides a generic filtering capability at runtime for PlatformQuery.
+type PlatformFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *PlatformFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *PlatformFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(platform.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *PlatformFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(platform.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *PlatformFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(platform.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *PlatformFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(platform.FieldDeletedAt))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *PlatformFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(platform.FieldCoinTypeID))
+}
+
+// WhereAccountID applies the entql [16]byte predicate on the account_id field.
+func (f *PlatformFilter) WhereAccountID(p entql.ValueP) {
+	f.Where(p.Field(platform.FieldAccountID))
+}
+
+// WhereUsedFor applies the entql string predicate on the used_for field.
+func (f *PlatformFilter) WhereUsedFor(p entql.StringP) {
+	f.Where(p.Field(platform.FieldUsedFor))
+}
+
+// WhereBackup applies the entql bool predicate on the backup field.
+func (f *PlatformFilter) WhereBackup(p entql.BoolP) {
+	f.Where(p.Field(platform.FieldBackup))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (uq *UserQuery) addPredicate(pred func(s *sql.Selector)) {
 	uq.predicates = append(uq.predicates, pred)
 }
@@ -382,7 +477,7 @@ type UserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

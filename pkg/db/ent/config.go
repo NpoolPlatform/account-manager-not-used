@@ -27,6 +27,7 @@ type hooks struct {
 	Account     []ent.Hook
 	GoodBenefit []ent.Hook
 	Payment     []ent.Hook
+	Platform    []ent.Hook
 	User        []ent.Hook
 }
 
