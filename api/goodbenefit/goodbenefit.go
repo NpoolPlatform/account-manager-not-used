@@ -22,7 +22,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Server) CreateGoodBenefit(ctx context.Context, in *npool.CreateAccountRequest) (*npool.CreateAccountResponse, error) {
+func (s *Server) CreateAccount(ctx context.Context, in *npool.CreateAccountRequest) (*npool.CreateAccountResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateGoodBenefit")
@@ -55,7 +55,7 @@ func (s *Server) CreateGoodBenefit(ctx context.Context, in *npool.CreateAccountR
 	}, nil
 }
 
-func (s *Server) CreateGoodBenefits(ctx context.Context, in *npool.CreateAccountsRequest) (*npool.CreateAccountsResponse, error) {
+func (s *Server) CreateAccounts(ctx context.Context, in *npool.CreateAccountsRequest) (*npool.CreateAccountsResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CreateGoodBenefits")
@@ -91,7 +91,40 @@ func (s *Server) CreateGoodBenefits(ctx context.Context, in *npool.CreateAccount
 	}, nil
 }
 
-func (s *Server) GetGoodBenefit(ctx context.Context, in *npool.GetAccountRequest) (*npool.GetAccountResponse, error) {
+func (s *Server) UpdateAccount(ctx context.Context, in *npool.UpdateAccountRequest) (*npool.UpdateAccountResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateAccount")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	err = validate(in.GetInfo())
+	if err != nil {
+		return &npool.UpdateAccountResponse{}, err
+	}
+
+	span = commontracer.TraceInvoker(span, "goodbenefit", "crud", "Update")
+
+	info, err := crud.Update(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail create goodbenefit: %v", err.Error())
+		return &npool.UpdateAccountResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.UpdateAccountResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
+
+func (s *Server) GetAccount(ctx context.Context, in *npool.GetAccountRequest) (*npool.GetAccountResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetGoodBenefit")
@@ -151,7 +184,7 @@ func (s *Server) GetAccountOnly(ctx context.Context, in *npool.GetAccountOnlyReq
 	}, nil
 }
 
-func (s *Server) GetGoodBenefits(ctx context.Context, in *npool.GetAccountsRequest) (*npool.GetAccountsResponse, error) {
+func (s *Server) GetAccounts(ctx context.Context, in *npool.GetAccountsRequest) (*npool.GetAccountsResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "GetGoodBenefits")
@@ -180,7 +213,7 @@ func (s *Server) GetGoodBenefits(ctx context.Context, in *npool.GetAccountsReque
 	}, nil
 }
 
-func (s *Server) ExistGoodBenefit(ctx context.Context, in *npool.ExistAccountRequest) (*npool.ExistAccountResponse, error) {
+func (s *Server) ExistAccount(ctx context.Context, in *npool.ExistAccountRequest) (*npool.ExistAccountResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistGoodBenefit")
@@ -241,7 +274,7 @@ func (s *Server) ExistAccountConds(ctx context.Context,
 	}, nil
 }
 
-func (s *Server) CountGoodBenefits(ctx context.Context, in *npool.CountAccountsRequest) (*npool.CountAccountsResponse, error) {
+func (s *Server) CountAccounts(ctx context.Context, in *npool.CountAccountsRequest) (*npool.CountAccountsResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "CountGoodBenefits")
@@ -268,7 +301,7 @@ func (s *Server) CountGoodBenefits(ctx context.Context, in *npool.CountAccountsR
 	}, nil
 }
 
-func (s *Server) DeleteGoodBenefit(ctx context.Context, in *npool.DeleteAccountRequest) (*npool.DeleteAccountResponse, error) {
+func (s *Server) DeleteAccount(ctx context.Context, in *npool.DeleteAccountRequest) (*npool.DeleteAccountResponse, error) {
 	var err error
 
 	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "DeleteGoodBenefit")

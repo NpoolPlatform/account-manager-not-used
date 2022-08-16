@@ -1,13 +1,13 @@
 //nolint:nolintlint,dupl
-package account
+package deposit
 
 import (
 	"context"
 
-	converter "github.com/NpoolPlatform/account-manager/pkg/converter/account"
-	crud "github.com/NpoolPlatform/account-manager/pkg/crud/account"
+	converter "github.com/NpoolPlatform/account-manager/pkg/converter/deposit"
+	crud "github.com/NpoolPlatform/account-manager/pkg/crud/deposit"
 	commontracer "github.com/NpoolPlatform/account-manager/pkg/tracer"
-	tracer "github.com/NpoolPlatform/account-manager/pkg/tracer/account"
+	tracer "github.com/NpoolPlatform/account-manager/pkg/tracer/deposit"
 
 	constant "github.com/NpoolPlatform/account-manager/pkg/message/const"
 
@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/account"
+	npool "github.com/NpoolPlatform/message/npool/account/mgr/v1/deposit"
 
 	"github.com/google/uuid"
 )
@@ -42,11 +42,11 @@ func (s *Server) CreateAccount(ctx context.Context, in *npool.CreateAccountReque
 		return &npool.CreateAccountResponse{}, err
 	}
 
-	span = commontracer.TraceInvoker(span, "account", "crud", "Create")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Create")
 
 	info, err := crud.Create(ctx, in.GetInfo())
 	if err != nil {
-		logger.Sugar().Errorf("fail create account: %v", err.Error())
+		logger.Sugar().Errorf("fail create deposit: %v", err.Error())
 		return &npool.CreateAccountResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -78,16 +78,49 @@ func (s *Server) CreateAccounts(ctx context.Context, in *npool.CreateAccountsReq
 	}
 
 	span = tracer.TraceMany(span, in.GetInfos())
-	span = commontracer.TraceInvoker(span, "account", "crud", "CreateBulk")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "CreateBulk")
 
 	rows, err := crud.CreateBulk(ctx, in.GetInfos())
 	if err != nil {
-		logger.Sugar().Errorf("fail create accounts: %v", err)
+		logger.Sugar().Errorf("fail create deposits: %v", err)
 		return &npool.CreateAccountsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
 	return &npool.CreateAccountsResponse{
 		Infos: converter.Ent2GrpcMany(rows),
+	}, nil
+}
+
+func (s *Server) AddAccount(ctx context.Context, in *npool.AddAccountRequest) (*npool.AddAccountResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "AddAccount")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	err = validate(in.GetInfo())
+	if err != nil {
+		return &npool.AddAccountResponse{}, err
+	}
+
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Add")
+
+	info, err := crud.AddFields(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail create deposit: %v", err.Error())
+		return &npool.AddAccountResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.AddAccountResponse{
+		Info: converter.Ent2Grpc(info),
 	}, nil
 }
 
@@ -111,11 +144,11 @@ func (s *Server) UpdateAccount(ctx context.Context, in *npool.UpdateAccountReque
 		return &npool.UpdateAccountResponse{}, err
 	}
 
-	span = commontracer.TraceInvoker(span, "account", "crud", "Update")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Update")
 
 	info, err := crud.Update(ctx, in.GetInfo())
 	if err != nil {
-		logger.Sugar().Errorf("fail create account: %v", err.Error())
+		logger.Sugar().Errorf("fail create deposit: %v", err.Error())
 		return &npool.UpdateAccountResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -144,11 +177,11 @@ func (s *Server) GetAccount(ctx context.Context, in *npool.GetAccountRequest) (*
 		return &npool.GetAccountResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	span = commontracer.TraceInvoker(span, "account", "crud", "Row")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Row")
 
 	info, err := crud.Row(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail get account: %v", err)
+		logger.Sugar().Errorf("fail get deposit: %v", err)
 		return &npool.GetAccountResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -171,11 +204,11 @@ func (s *Server) GetAccountOnly(ctx context.Context, in *npool.GetAccountOnlyReq
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
-	span = commontracer.TraceInvoker(span, "account", "crud", "RowOnly")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "RowOnly")
 
 	info, err := crud.RowOnly(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail get accounts: %v", err)
+		logger.Sugar().Errorf("fail get deposits: %v", err)
 		return &npool.GetAccountOnlyResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -199,11 +232,11 @@ func (s *Server) GetAccounts(ctx context.Context, in *npool.GetAccountsRequest) 
 
 	span = tracer.TraceConds(span, in.GetConds())
 	span = commontracer.TraceOffsetLimit(span, int(in.GetOffset()), int(in.GetLimit()))
-	span = commontracer.TraceInvoker(span, "account", "crud", "Rows")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Rows")
 
 	rows, total, err := crud.Rows(ctx, in.GetConds(), int(in.GetOffset()), int(in.GetLimit()))
 	if err != nil {
-		logger.Sugar().Errorf("fail get accounts: %v", err)
+		logger.Sugar().Errorf("fail get deposits: %v", err)
 		return &npool.GetAccountsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -233,11 +266,11 @@ func (s *Server) ExistAccount(ctx context.Context, in *npool.ExistAccountRequest
 		return &npool.ExistAccountResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	span = commontracer.TraceInvoker(span, "account", "crud", "Exist")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Exist")
 
 	exist, err := crud.Exist(ctx, id)
 	if err != nil {
-		logger.Sugar().Errorf("fail check account: %v", err)
+		logger.Sugar().Errorf("fail check deposit: %v", err)
 		return &npool.ExistAccountResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -261,11 +294,11 @@ func (s *Server) ExistAccountConds(ctx context.Context,
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
-	span = commontracer.TraceInvoker(span, "account", "crud", "ExistConds")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "ExistConds")
 
 	exist, err := crud.ExistConds(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail check account: %v", err)
+		logger.Sugar().Errorf("fail check deposit: %v", err)
 		return &npool.ExistAccountCondsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
@@ -288,11 +321,11 @@ func (s *Server) CountAccounts(ctx context.Context, in *npool.CountAccountsReque
 	}()
 
 	span = tracer.TraceConds(span, in.GetConds())
-	span = commontracer.TraceInvoker(span, "account", "crud", "Count")
+	span = commontracer.TraceInvoker(span, "deposit", "crud", "Count")
 
 	total, err := crud.Count(ctx, in.GetConds())
 	if err != nil {
-		logger.Sugar().Errorf("fail count accounts: %v", err)
+		logger.Sugar().Errorf("fail count deposits: %v", err)
 		return &npool.CountAccountsResponse{}, status.Error(codes.Internal, err.Error())
 	}
 

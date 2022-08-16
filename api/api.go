@@ -6,6 +6,7 @@ import (
 	account "github.com/NpoolPlatform/message/npool/account/mgr/v1"
 
 	account1 "github.com/NpoolPlatform/account-manager/api/account"
+	"github.com/NpoolPlatform/account-manager/api/deposit"
 	"github.com/NpoolPlatform/account-manager/api/goodbenefit"
 	"github.com/NpoolPlatform/account-manager/api/limitation"
 	"github.com/NpoolPlatform/account-manager/api/payment"
@@ -28,6 +29,7 @@ func Register(server grpc.ServiceRegistrar) {
 	payment.Register(server)
 	platform.Register(server)
 	limitation.Register(server)
+	deposit.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {

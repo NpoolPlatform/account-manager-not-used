@@ -91,6 +91,39 @@ func (s *Server) CreateAccounts(ctx context.Context, in *npool.CreateAccountsReq
 	}, nil
 }
 
+func (s *Server) UpdateAccount(ctx context.Context, in *npool.UpdateAccountRequest) (*npool.UpdateAccountResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateAccount")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	err = validate(in.GetInfo())
+	if err != nil {
+		return &npool.UpdateAccountResponse{}, err
+	}
+
+	span = commontracer.TraceInvoker(span, "user", "crud", "Update")
+
+	info, err := crud.Update(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail create user: %v", err.Error())
+		return &npool.UpdateAccountResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.UpdateAccountResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
+
 func (s *Server) GetAccount(ctx context.Context, in *npool.GetAccountRequest) (*npool.GetAccountResponse, error) {
 	var err error
 

@@ -91,6 +91,39 @@ func (s *Server) CreateLimitations(ctx context.Context, in *npool.CreateLimitati
 	}, nil
 }
 
+func (s *Server) UpdateLimitation(ctx context.Context, in *npool.UpdateLimitationRequest) (*npool.UpdateLimitationResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "UpdateLimitation")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = tracer.Trace(span, in.GetInfo())
+
+	err = validate(in.GetInfo())
+	if err != nil {
+		return &npool.UpdateLimitationResponse{}, err
+	}
+
+	span = commontracer.TraceInvoker(span, "limitation", "crud", "Update")
+
+	info, err := crud.Update(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorf("fail create limitation: %v", err.Error())
+		return &npool.UpdateLimitationResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.UpdateLimitationResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
+
 func (s *Server) GetLimitation(ctx context.Context, in *npool.GetLimitationRequest) (*npool.GetLimitationResponse, error) {
 	var err error
 
