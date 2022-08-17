@@ -3,6 +3,8 @@ package deposit
 import (
 	"fmt"
 
+	"github.com/shopspring/decimal"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -51,6 +53,25 @@ func validate(info *npool.AccountReq) error {
 	if _, err := uuid.Parse(info.GetAccountID()); err != nil {
 		logger.Sugar().Errorw("validate", "AccountID", info.GetAccountID(), "error", err)
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("AccountID is invalid: %v", err))
+	}
+
+	if info.Balance != nil {
+		amount, err := decimal.NewFromString(info.GetBalance())
+		if err != nil {
+			logger.Sugar().Errorw("validate", "Balance", info.GetBalance(), "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("Balance is invalid: %v", err))
+		}
+		if amount.Cmp(decimal.NewFromInt(0)) == 0 {
+			logger.Sugar().Errorw("validate", "Balance", info.GetBalance())
+			return status.Error(codes.InvalidArgument, "Balance is zero")
+		}
+	}
+
+	if info.CollectingTID != nil {
+		if _, err := uuid.Parse(info.GetCollectingTID()); err != nil {
+			logger.Sugar().Errorw("validate", "CollectingTID", info.GetCollectingTID(), "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("CollectingTID is invalid: %v", err))
+		}
 	}
 
 	return nil
