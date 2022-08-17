@@ -94,3 +94,7 @@ func duplicate(infos []*npool.AccountReq) error {
 
 	return nil
 }
+
+func Validate(info *npool.AccountReq) error {
+	return validate(info)
+}
