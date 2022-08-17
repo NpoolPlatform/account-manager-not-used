@@ -210,7 +210,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.Deposit, error) {
 	return info, nil
 }
 
-func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.DepositQuery, error) {
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.DepositQuery, error) {
 	stm := cli.Deposit.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
@@ -274,7 +274,7 @@ func Rows(ctx context.Context, conds *npool.Conds, offset, limit int) ([]*ent.De
 	rows := []*ent.Deposit{}
 	var total int
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -318,7 +318,7 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Deposit, error) {
 	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -354,7 +354,7 @@ func Count(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
@@ -416,7 +416,7 @@ func ExistConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	span = tracer.TraceConds(span, conds)
 
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := setQueryConds(conds, cli)
+		stm, err := SetQueryConds(conds, cli)
 		if err != nil {
 			return err
 		}
