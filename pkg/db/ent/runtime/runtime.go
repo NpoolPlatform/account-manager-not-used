@@ -132,12 +132,16 @@ func init() {
 	depositDescAccountID := depositFields[4].Descriptor()
 	// deposit.DefaultAccountID holds the default value on creation for the account_id field.
 	deposit.DefaultAccountID = depositDescAccountID.Default.(func() uuid.UUID)
-	// depositDescBalance is the schema descriptor for balance field.
-	depositDescBalance := depositFields[5].Descriptor()
-	// deposit.DefaultBalance holds the default value on creation for the balance field.
-	deposit.DefaultBalance = depositDescBalance.Default.(decimal.Decimal)
+	// depositDescIncoming is the schema descriptor for incoming field.
+	depositDescIncoming := depositFields[5].Descriptor()
+	// deposit.DefaultIncoming holds the default value on creation for the incoming field.
+	deposit.DefaultIncoming = depositDescIncoming.Default.(decimal.Decimal)
+	// depositDescOutcoming is the schema descriptor for outcoming field.
+	depositDescOutcoming := depositFields[6].Descriptor()
+	// deposit.DefaultOutcoming holds the default value on creation for the outcoming field.
+	deposit.DefaultOutcoming = depositDescOutcoming.Default.(decimal.Decimal)
 	// depositDescCollectingTid is the schema descriptor for collecting_tid field.
-	depositDescCollectingTid := depositFields[6].Descriptor()
+	depositDescCollectingTid := depositFields[7].Descriptor()
 	// deposit.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
 	deposit.DefaultCollectingTid = depositDescCollectingTid.Default.(func() uuid.UUID)
 	// depositDescID is the schema descriptor for id field.

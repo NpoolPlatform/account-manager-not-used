@@ -52,7 +52,14 @@ func (Deposit) Fields() []ent.Field {
 				return uuid.UUID{}
 			}),
 		field.
-			Other("balance", decimal.Decimal{}).
+			Other("incoming", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
+		field.
+			Other("outcoming", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
 			}).

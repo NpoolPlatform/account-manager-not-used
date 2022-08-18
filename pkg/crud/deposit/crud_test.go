@@ -117,26 +117,37 @@ func update(t *testing.T) {
 		assert.Equal(t, info.String(), entity.String())
 	}
 
-	balance := "9999.8988"
-	req.Balance = &balance
-	entity.Balance = decimal.RequireFromString(balance)
+	incoming := "9999.8988"
+	req.Incoming = &incoming
+	entity.Incoming = decimal.RequireFromString(incoming)
+
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 
-	req.Balance = &balance
-	entity.Balance = decimal.RequireFromString(balance).Add(entity.Balance)
+	req.Incoming = &incoming
+	entity.Incoming = decimal.RequireFromString(incoming).Add(entity.Incoming)
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 
-	balance = "-9999.999"
-	req.Balance = &balance
-	entity.Balance = decimal.RequireFromString(balance).Add(entity.Balance)
+	outcoming := "9999.999"
+	req.Outcoming = &outcoming
+	req.Incoming = nil
+	entity.Outcoming = decimal.RequireFromString(outcoming)
+	info, err = AddFields(context.Background(), &req)
+	if assert.Nil(t, err) {
+		entity.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info.String(), entity.String())
+	}
+
+	outcoming = "999.999"
+	req.Outcoming = &outcoming
+	entity.Outcoming = decimal.RequireFromString(outcoming).Add(entity.Outcoming)
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt

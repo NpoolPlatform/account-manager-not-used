@@ -27,8 +27,10 @@ const (
 	FieldCoinTypeID = "coin_type_id"
 	// FieldAccountID holds the string denoting the account_id field in the database.
 	FieldAccountID = "account_id"
-	// FieldBalance holds the string denoting the balance field in the database.
-	FieldBalance = "balance"
+	// FieldIncoming holds the string denoting the incoming field in the database.
+	FieldIncoming = "incoming"
+	// FieldOutcoming holds the string denoting the outcoming field in the database.
+	FieldOutcoming = "outcoming"
 	// FieldCollectingTid holds the string denoting the collecting_tid field in the database.
 	FieldCollectingTid = "collecting_tid"
 	// Table holds the table name of the deposit in the database.
@@ -45,7 +47,8 @@ var Columns = []string{
 	FieldUserID,
 	FieldCoinTypeID,
 	FieldAccountID,
-	FieldBalance,
+	FieldIncoming,
+	FieldOutcoming,
 	FieldCollectingTid,
 }
 
@@ -84,8 +87,10 @@ var (
 	DefaultCoinTypeID func() uuid.UUID
 	// DefaultAccountID holds the default value on creation for the "account_id" field.
 	DefaultAccountID func() uuid.UUID
-	// DefaultBalance holds the default value on creation for the "balance" field.
-	DefaultBalance decimal.Decimal
+	// DefaultIncoming holds the default value on creation for the "incoming" field.
+	DefaultIncoming decimal.Decimal
+	// DefaultOutcoming holds the default value on creation for the "outcoming" field.
+	DefaultOutcoming decimal.Decimal
 	// DefaultCollectingTid holds the default value on creation for the "collecting_tid" field.
 	DefaultCollectingTid func() uuid.UUID
 	// DefaultID holds the default value on creation for the "id" field.

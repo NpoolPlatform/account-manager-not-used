@@ -42,7 +42,8 @@ func CreateSet(c *ent.DepositCreate, in *npool.AccountReq) *ent.DepositCreate {
 	}
 
 	c.SetCollectingTid(uuid.UUID{})
-	c.SetBalance(decimal.NewFromInt(0))
+	c.SetIncoming(decimal.NewFromInt(0))
+	c.SetOutcoming(decimal.NewFromInt(0))
 
 	return c
 }
@@ -105,18 +106,34 @@ func CreateBulk(ctx context.Context, in []*npool.AccountReq) ([]*ent.Deposit, er
 	return rows, nil
 }
 
-func UpdateSet(info *ent.Deposit, in *npool.AccountReq) *ent.DepositUpdateOne {
+func UpdateSet(info *ent.Deposit, in *npool.AccountReq) (*ent.DepositUpdateOne, error) {
 	u := info.Update()
 
 	if in.CollectingTID != nil {
 		u.SetCollectingTid(uuid.MustParse(in.GetCollectingTID()))
 	}
-	if in.Balance != nil {
-		bal := decimal.RequireFromString(in.GetBalance()).Add(info.Balance)
-		u.SetBalance(bal)
+
+	incoming := info.Incoming
+	if in.Incoming != nil {
+		incoming = incoming.Add(decimal.RequireFromString(in.GetIncoming()))
+	}
+	outcoming := info.Outcoming
+	if in.Outcoming != nil {
+		outcoming = outcoming.Add(decimal.RequireFromString(in.GetOutcoming()))
 	}
 
-	return u
+	if incoming.Cmp(outcoming) < 0 {
+		return nil, fmt.Errorf("incoming (%v) < outcoming (%v)", incoming, outcoming)
+	}
+
+	if in.Incoming != nil {
+		u.SetIncoming(incoming)
+	}
+	if in.Outcoming != nil {
+		u.SetOutcoming(outcoming)
+	}
+
+	return u, nil
 }
 
 func AddFields(ctx context.Context, in *npool.AccountReq) (*ent.Deposit, error) {
@@ -141,7 +158,12 @@ func AddFields(ctx context.Context, in *npool.AccountReq) (*ent.Deposit, error) 
 			return err
 		}
 
-		info, err = UpdateSet(info, in).Save(_ctx)
+		stm, err := UpdateSet(info, in)
+		if err != nil {
+			return err
+		}
+
+		info, err = stm.Save(_ctx)
 		return err
 	})
 	if err != nil {
@@ -173,7 +195,12 @@ func Update(ctx context.Context, in *npool.AccountReq) (*ent.Deposit, error) {
 			return err
 		}
 
-		info, err = UpdateSet(info, in).Save(_ctx)
+		stm, err := UpdateSet(info, in)
+		if err != nil {
+			return err
+		}
+
+		info, err = stm.Save(_ctx)
 		return err
 	})
 	if err != nil {

@@ -16,7 +16,8 @@ func Ent2Grpc(row *ent.Deposit) *npool.Account {
 		UserID:        row.UserID.String(),
 		CoinTypeID:    row.CoinTypeID.String(),
 		AccountID:     row.AccountID.String(),
-		Balance:       row.Balance.String(),
+		Incoming:      row.Incoming.String(),
+		Outcoming:     row.Outcoming.String(),
 		CollectingTID: row.CollectingTid.String(),
 		CreatedAt:     row.CreatedAt,
 	}

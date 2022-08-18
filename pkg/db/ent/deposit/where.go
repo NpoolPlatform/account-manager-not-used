@@ -141,10 +141,17 @@ func AccountID(v uuid.UUID) predicate.Deposit {
 	})
 }
 
-// Balance applies equality check predicate on the "balance" field. It's identical to BalanceEQ.
-func Balance(v decimal.Decimal) predicate.Deposit {
+// Incoming applies equality check predicate on the "incoming" field. It's identical to IncomingEQ.
+func Incoming(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldBalance), v))
+		s.Where(sql.EQ(s.C(FieldIncoming), v))
+	})
+}
+
+// Outcoming applies equality check predicate on the "outcoming" field. It's identical to OutcomingEQ.
+func Outcoming(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOutcoming), v))
 	})
 }
 
@@ -743,22 +750,22 @@ func AccountIDNotNil() predicate.Deposit {
 	})
 }
 
-// BalanceEQ applies the EQ predicate on the "balance" field.
-func BalanceEQ(v decimal.Decimal) predicate.Deposit {
+// IncomingEQ applies the EQ predicate on the "incoming" field.
+func IncomingEQ(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldBalance), v))
+		s.Where(sql.EQ(s.C(FieldIncoming), v))
 	})
 }
 
-// BalanceNEQ applies the NEQ predicate on the "balance" field.
-func BalanceNEQ(v decimal.Decimal) predicate.Deposit {
+// IncomingNEQ applies the NEQ predicate on the "incoming" field.
+func IncomingNEQ(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldBalance), v))
+		s.Where(sql.NEQ(s.C(FieldIncoming), v))
 	})
 }
 
-// BalanceIn applies the In predicate on the "balance" field.
-func BalanceIn(vs ...decimal.Decimal) predicate.Deposit {
+// IncomingIn applies the In predicate on the "incoming" field.
+func IncomingIn(vs ...decimal.Decimal) predicate.Deposit {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -770,12 +777,12 @@ func BalanceIn(vs ...decimal.Decimal) predicate.Deposit {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldBalance), v...))
+		s.Where(sql.In(s.C(FieldIncoming), v...))
 	})
 }
 
-// BalanceNotIn applies the NotIn predicate on the "balance" field.
-func BalanceNotIn(vs ...decimal.Decimal) predicate.Deposit {
+// IncomingNotIn applies the NotIn predicate on the "incoming" field.
+func IncomingNotIn(vs ...decimal.Decimal) predicate.Deposit {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -787,49 +794,139 @@ func BalanceNotIn(vs ...decimal.Decimal) predicate.Deposit {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldBalance), v...))
+		s.Where(sql.NotIn(s.C(FieldIncoming), v...))
 	})
 }
 
-// BalanceGT applies the GT predicate on the "balance" field.
-func BalanceGT(v decimal.Decimal) predicate.Deposit {
+// IncomingGT applies the GT predicate on the "incoming" field.
+func IncomingGT(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldBalance), v))
+		s.Where(sql.GT(s.C(FieldIncoming), v))
 	})
 }
 
-// BalanceGTE applies the GTE predicate on the "balance" field.
-func BalanceGTE(v decimal.Decimal) predicate.Deposit {
+// IncomingGTE applies the GTE predicate on the "incoming" field.
+func IncomingGTE(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldBalance), v))
+		s.Where(sql.GTE(s.C(FieldIncoming), v))
 	})
 }
 
-// BalanceLT applies the LT predicate on the "balance" field.
-func BalanceLT(v decimal.Decimal) predicate.Deposit {
+// IncomingLT applies the LT predicate on the "incoming" field.
+func IncomingLT(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldBalance), v))
+		s.Where(sql.LT(s.C(FieldIncoming), v))
 	})
 }
 
-// BalanceLTE applies the LTE predicate on the "balance" field.
-func BalanceLTE(v decimal.Decimal) predicate.Deposit {
+// IncomingLTE applies the LTE predicate on the "incoming" field.
+func IncomingLTE(v decimal.Decimal) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldBalance), v))
+		s.Where(sql.LTE(s.C(FieldIncoming), v))
 	})
 }
 
-// BalanceIsNil applies the IsNil predicate on the "balance" field.
-func BalanceIsNil() predicate.Deposit {
+// IncomingIsNil applies the IsNil predicate on the "incoming" field.
+func IncomingIsNil() predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldBalance)))
+		s.Where(sql.IsNull(s.C(FieldIncoming)))
 	})
 }
 
-// BalanceNotNil applies the NotNil predicate on the "balance" field.
-func BalanceNotNil() predicate.Deposit {
+// IncomingNotNil applies the NotNil predicate on the "incoming" field.
+func IncomingNotNil() predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldBalance)))
+		s.Where(sql.NotNull(s.C(FieldIncoming)))
+	})
+}
+
+// OutcomingEQ applies the EQ predicate on the "outcoming" field.
+func OutcomingEQ(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldOutcoming), v))
+	})
+}
+
+// OutcomingNEQ applies the NEQ predicate on the "outcoming" field.
+func OutcomingNEQ(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldOutcoming), v))
+	})
+}
+
+// OutcomingIn applies the In predicate on the "outcoming" field.
+func OutcomingIn(vs ...decimal.Decimal) predicate.Deposit {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Deposit(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldOutcoming), v...))
+	})
+}
+
+// OutcomingNotIn applies the NotIn predicate on the "outcoming" field.
+func OutcomingNotIn(vs ...decimal.Decimal) predicate.Deposit {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Deposit(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldOutcoming), v...))
+	})
+}
+
+// OutcomingGT applies the GT predicate on the "outcoming" field.
+func OutcomingGT(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldOutcoming), v))
+	})
+}
+
+// OutcomingGTE applies the GTE predicate on the "outcoming" field.
+func OutcomingGTE(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldOutcoming), v))
+	})
+}
+
+// OutcomingLT applies the LT predicate on the "outcoming" field.
+func OutcomingLT(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldOutcoming), v))
+	})
+}
+
+// OutcomingLTE applies the LTE predicate on the "outcoming" field.
+func OutcomingLTE(v decimal.Decimal) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldOutcoming), v))
+	})
+}
+
+// OutcomingIsNil applies the IsNil predicate on the "outcoming" field.
+func OutcomingIsNil() predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldOutcoming)))
+	})
+}
+
+// OutcomingNotNil applies the NotNil predicate on the "outcoming" field.
+func OutcomingNotNil() predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldOutcoming)))
 	})
 }
 

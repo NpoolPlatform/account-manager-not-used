@@ -14,7 +14,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func validate(info *npool.AccountReq) error {
+func validate(info *npool.AccountReq) error { //nolint
 	if info.AppID == nil {
 		logger.Sugar().Errorw("validate", "AppID", info.AppID)
 		return status.Error(codes.InvalidArgument, "AppID is empty")
@@ -55,15 +55,27 @@ func validate(info *npool.AccountReq) error {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("AccountID is invalid: %v", err))
 	}
 
-	if info.Balance != nil {
-		amount, err := decimal.NewFromString(info.GetBalance())
+	if info.Incoming != nil {
+		amount, err := decimal.NewFromString(info.GetIncoming())
 		if err != nil {
-			logger.Sugar().Errorw("validate", "Balance", info.GetBalance(), "error", err)
-			return status.Error(codes.InvalidArgument, fmt.Sprintf("Balance is invalid: %v", err))
+			logger.Sugar().Errorw("validate", "Incoming", info.GetIncoming(), "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("Incoming is invalid: %v", err))
 		}
-		if amount.Cmp(decimal.NewFromInt(0)) == 0 {
-			logger.Sugar().Errorw("validate", "Balance", info.GetBalance())
-			return status.Error(codes.InvalidArgument, "Balance is zero")
+		if amount.Cmp(decimal.NewFromInt(0)) <= 0 {
+			logger.Sugar().Errorw("validate", "Incoming", info.GetIncoming())
+			return status.Error(codes.InvalidArgument, "Incoming is zero")
+		}
+	}
+
+	if info.Outcoming != nil {
+		amount, err := decimal.NewFromString(info.GetOutcoming())
+		if err != nil {
+			logger.Sugar().Errorw("validate", "Outcoming", info.GetOutcoming(), "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("Outcoming is invalid: %v", err))
+		}
+		if amount.Cmp(decimal.NewFromInt(0)) <= 0 {
+			logger.Sugar().Errorw("validate", "Outcoming", info.GetOutcoming())
+			return status.Error(codes.InvalidArgument, "Outcoming is zero")
 		}
 	}
 

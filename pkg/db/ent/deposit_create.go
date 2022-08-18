@@ -122,16 +122,30 @@ func (dc *DepositCreate) SetNillableAccountID(u *uuid.UUID) *DepositCreate {
 	return dc
 }
 
-// SetBalance sets the "balance" field.
-func (dc *DepositCreate) SetBalance(d decimal.Decimal) *DepositCreate {
-	dc.mutation.SetBalance(d)
+// SetIncoming sets the "incoming" field.
+func (dc *DepositCreate) SetIncoming(d decimal.Decimal) *DepositCreate {
+	dc.mutation.SetIncoming(d)
 	return dc
 }
 
-// SetNillableBalance sets the "balance" field if the given value is not nil.
-func (dc *DepositCreate) SetNillableBalance(d *decimal.Decimal) *DepositCreate {
+// SetNillableIncoming sets the "incoming" field if the given value is not nil.
+func (dc *DepositCreate) SetNillableIncoming(d *decimal.Decimal) *DepositCreate {
 	if d != nil {
-		dc.SetBalance(*d)
+		dc.SetIncoming(*d)
+	}
+	return dc
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (dc *DepositCreate) SetOutcoming(d decimal.Decimal) *DepositCreate {
+	dc.mutation.SetOutcoming(d)
+	return dc
+}
+
+// SetNillableOutcoming sets the "outcoming" field if the given value is not nil.
+func (dc *DepositCreate) SetNillableOutcoming(d *decimal.Decimal) *DepositCreate {
+	if d != nil {
+		dc.SetOutcoming(*d)
 	}
 	return dc
 }
@@ -286,9 +300,13 @@ func (dc *DepositCreate) defaults() error {
 		v := deposit.DefaultAccountID()
 		dc.mutation.SetAccountID(v)
 	}
-	if _, ok := dc.mutation.Balance(); !ok {
-		v := deposit.DefaultBalance
-		dc.mutation.SetBalance(v)
+	if _, ok := dc.mutation.Incoming(); !ok {
+		v := deposit.DefaultIncoming
+		dc.mutation.SetIncoming(v)
+	}
+	if _, ok := dc.mutation.Outcoming(); !ok {
+		v := deposit.DefaultOutcoming
+		dc.mutation.SetOutcoming(v)
 	}
 	if _, ok := dc.mutation.CollectingTid(); !ok {
 		if deposit.DefaultCollectingTid == nil {
@@ -411,13 +429,21 @@ func (dc *DepositCreate) createSpec() (*Deposit, *sqlgraph.CreateSpec) {
 		})
 		_node.AccountID = value
 	}
-	if value, ok := dc.mutation.Balance(); ok {
+	if value, ok := dc.mutation.Incoming(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: deposit.FieldBalance,
+			Column: deposit.FieldIncoming,
 		})
-		_node.Balance = value
+		_node.Incoming = value
+	}
+	if value, ok := dc.mutation.Outcoming(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: deposit.FieldOutcoming,
+		})
+		_node.Outcoming = value
 	}
 	if value, ok := dc.mutation.CollectingTid(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -607,21 +633,39 @@ func (u *DepositUpsert) ClearAccountID() *DepositUpsert {
 	return u
 }
 
-// SetBalance sets the "balance" field.
-func (u *DepositUpsert) SetBalance(v decimal.Decimal) *DepositUpsert {
-	u.Set(deposit.FieldBalance, v)
+// SetIncoming sets the "incoming" field.
+func (u *DepositUpsert) SetIncoming(v decimal.Decimal) *DepositUpsert {
+	u.Set(deposit.FieldIncoming, v)
 	return u
 }
 
-// UpdateBalance sets the "balance" field to the value that was provided on create.
-func (u *DepositUpsert) UpdateBalance() *DepositUpsert {
-	u.SetExcluded(deposit.FieldBalance)
+// UpdateIncoming sets the "incoming" field to the value that was provided on create.
+func (u *DepositUpsert) UpdateIncoming() *DepositUpsert {
+	u.SetExcluded(deposit.FieldIncoming)
 	return u
 }
 
-// ClearBalance clears the value of the "balance" field.
-func (u *DepositUpsert) ClearBalance() *DepositUpsert {
-	u.SetNull(deposit.FieldBalance)
+// ClearIncoming clears the value of the "incoming" field.
+func (u *DepositUpsert) ClearIncoming() *DepositUpsert {
+	u.SetNull(deposit.FieldIncoming)
+	return u
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (u *DepositUpsert) SetOutcoming(v decimal.Decimal) *DepositUpsert {
+	u.Set(deposit.FieldOutcoming, v)
+	return u
+}
+
+// UpdateOutcoming sets the "outcoming" field to the value that was provided on create.
+func (u *DepositUpsert) UpdateOutcoming() *DepositUpsert {
+	u.SetExcluded(deposit.FieldOutcoming)
+	return u
+}
+
+// ClearOutcoming clears the value of the "outcoming" field.
+func (u *DepositUpsert) ClearOutcoming() *DepositUpsert {
+	u.SetNull(deposit.FieldOutcoming)
 	return u
 }
 
@@ -840,24 +884,45 @@ func (u *DepositUpsertOne) ClearAccountID() *DepositUpsertOne {
 	})
 }
 
-// SetBalance sets the "balance" field.
-func (u *DepositUpsertOne) SetBalance(v decimal.Decimal) *DepositUpsertOne {
+// SetIncoming sets the "incoming" field.
+func (u *DepositUpsertOne) SetIncoming(v decimal.Decimal) *DepositUpsertOne {
 	return u.Update(func(s *DepositUpsert) {
-		s.SetBalance(v)
+		s.SetIncoming(v)
 	})
 }
 
-// UpdateBalance sets the "balance" field to the value that was provided on create.
-func (u *DepositUpsertOne) UpdateBalance() *DepositUpsertOne {
+// UpdateIncoming sets the "incoming" field to the value that was provided on create.
+func (u *DepositUpsertOne) UpdateIncoming() *DepositUpsertOne {
 	return u.Update(func(s *DepositUpsert) {
-		s.UpdateBalance()
+		s.UpdateIncoming()
 	})
 }
 
-// ClearBalance clears the value of the "balance" field.
-func (u *DepositUpsertOne) ClearBalance() *DepositUpsertOne {
+// ClearIncoming clears the value of the "incoming" field.
+func (u *DepositUpsertOne) ClearIncoming() *DepositUpsertOne {
 	return u.Update(func(s *DepositUpsert) {
-		s.ClearBalance()
+		s.ClearIncoming()
+	})
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (u *DepositUpsertOne) SetOutcoming(v decimal.Decimal) *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.SetOutcoming(v)
+	})
+}
+
+// UpdateOutcoming sets the "outcoming" field to the value that was provided on create.
+func (u *DepositUpsertOne) UpdateOutcoming() *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.UpdateOutcoming()
+	})
+}
+
+// ClearOutcoming clears the value of the "outcoming" field.
+func (u *DepositUpsertOne) ClearOutcoming() *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.ClearOutcoming()
 	})
 }
 
@@ -1245,24 +1310,45 @@ func (u *DepositUpsertBulk) ClearAccountID() *DepositUpsertBulk {
 	})
 }
 
-// SetBalance sets the "balance" field.
-func (u *DepositUpsertBulk) SetBalance(v decimal.Decimal) *DepositUpsertBulk {
+// SetIncoming sets the "incoming" field.
+func (u *DepositUpsertBulk) SetIncoming(v decimal.Decimal) *DepositUpsertBulk {
 	return u.Update(func(s *DepositUpsert) {
-		s.SetBalance(v)
+		s.SetIncoming(v)
 	})
 }
 
-// UpdateBalance sets the "balance" field to the value that was provided on create.
-func (u *DepositUpsertBulk) UpdateBalance() *DepositUpsertBulk {
+// UpdateIncoming sets the "incoming" field to the value that was provided on create.
+func (u *DepositUpsertBulk) UpdateIncoming() *DepositUpsertBulk {
 	return u.Update(func(s *DepositUpsert) {
-		s.UpdateBalance()
+		s.UpdateIncoming()
 	})
 }
 
-// ClearBalance clears the value of the "balance" field.
-func (u *DepositUpsertBulk) ClearBalance() *DepositUpsertBulk {
+// ClearIncoming clears the value of the "incoming" field.
+func (u *DepositUpsertBulk) ClearIncoming() *DepositUpsertBulk {
 	return u.Update(func(s *DepositUpsert) {
-		s.ClearBalance()
+		s.ClearIncoming()
+	})
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (u *DepositUpsertBulk) SetOutcoming(v decimal.Decimal) *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.SetOutcoming(v)
+	})
+}
+
+// UpdateOutcoming sets the "outcoming" field to the value that was provided on create.
+func (u *DepositUpsertBulk) UpdateOutcoming() *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.UpdateOutcoming()
+	})
+}
+
+// ClearOutcoming clears the value of the "outcoming" field.
+func (u *DepositUpsertBulk) ClearOutcoming() *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.ClearOutcoming()
 	})
 }
 

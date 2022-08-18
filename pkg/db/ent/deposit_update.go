@@ -164,23 +164,43 @@ func (du *DepositUpdate) ClearAccountID() *DepositUpdate {
 	return du
 }
 
-// SetBalance sets the "balance" field.
-func (du *DepositUpdate) SetBalance(d decimal.Decimal) *DepositUpdate {
-	du.mutation.SetBalance(d)
+// SetIncoming sets the "incoming" field.
+func (du *DepositUpdate) SetIncoming(d decimal.Decimal) *DepositUpdate {
+	du.mutation.SetIncoming(d)
 	return du
 }
 
-// SetNillableBalance sets the "balance" field if the given value is not nil.
-func (du *DepositUpdate) SetNillableBalance(d *decimal.Decimal) *DepositUpdate {
+// SetNillableIncoming sets the "incoming" field if the given value is not nil.
+func (du *DepositUpdate) SetNillableIncoming(d *decimal.Decimal) *DepositUpdate {
 	if d != nil {
-		du.SetBalance(*d)
+		du.SetIncoming(*d)
 	}
 	return du
 }
 
-// ClearBalance clears the value of the "balance" field.
-func (du *DepositUpdate) ClearBalance() *DepositUpdate {
-	du.mutation.ClearBalance()
+// ClearIncoming clears the value of the "incoming" field.
+func (du *DepositUpdate) ClearIncoming() *DepositUpdate {
+	du.mutation.ClearIncoming()
+	return du
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (du *DepositUpdate) SetOutcoming(d decimal.Decimal) *DepositUpdate {
+	du.mutation.SetOutcoming(d)
+	return du
+}
+
+// SetNillableOutcoming sets the "outcoming" field if the given value is not nil.
+func (du *DepositUpdate) SetNillableOutcoming(d *decimal.Decimal) *DepositUpdate {
+	if d != nil {
+		du.SetOutcoming(*d)
+	}
+	return du
+}
+
+// ClearOutcoming clears the value of the "outcoming" field.
+func (du *DepositUpdate) ClearOutcoming() *DepositUpdate {
+	du.mutation.ClearOutcoming()
 	return du
 }
 
@@ -390,17 +410,30 @@ func (du *DepositUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: deposit.FieldAccountID,
 		})
 	}
-	if value, ok := du.mutation.Balance(); ok {
+	if value, ok := du.mutation.Incoming(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: deposit.FieldBalance,
+			Column: deposit.FieldIncoming,
 		})
 	}
-	if du.mutation.BalanceCleared() {
+	if du.mutation.IncomingCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: deposit.FieldBalance,
+			Column: deposit.FieldIncoming,
+		})
+	}
+	if value, ok := du.mutation.Outcoming(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: deposit.FieldOutcoming,
+		})
+	}
+	if du.mutation.OutcomingCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: deposit.FieldOutcoming,
 		})
 	}
 	if value, ok := du.mutation.CollectingTid(); ok {
@@ -570,23 +603,43 @@ func (duo *DepositUpdateOne) ClearAccountID() *DepositUpdateOne {
 	return duo
 }
 
-// SetBalance sets the "balance" field.
-func (duo *DepositUpdateOne) SetBalance(d decimal.Decimal) *DepositUpdateOne {
-	duo.mutation.SetBalance(d)
+// SetIncoming sets the "incoming" field.
+func (duo *DepositUpdateOne) SetIncoming(d decimal.Decimal) *DepositUpdateOne {
+	duo.mutation.SetIncoming(d)
 	return duo
 }
 
-// SetNillableBalance sets the "balance" field if the given value is not nil.
-func (duo *DepositUpdateOne) SetNillableBalance(d *decimal.Decimal) *DepositUpdateOne {
+// SetNillableIncoming sets the "incoming" field if the given value is not nil.
+func (duo *DepositUpdateOne) SetNillableIncoming(d *decimal.Decimal) *DepositUpdateOne {
 	if d != nil {
-		duo.SetBalance(*d)
+		duo.SetIncoming(*d)
 	}
 	return duo
 }
 
-// ClearBalance clears the value of the "balance" field.
-func (duo *DepositUpdateOne) ClearBalance() *DepositUpdateOne {
-	duo.mutation.ClearBalance()
+// ClearIncoming clears the value of the "incoming" field.
+func (duo *DepositUpdateOne) ClearIncoming() *DepositUpdateOne {
+	duo.mutation.ClearIncoming()
+	return duo
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (duo *DepositUpdateOne) SetOutcoming(d decimal.Decimal) *DepositUpdateOne {
+	duo.mutation.SetOutcoming(d)
+	return duo
+}
+
+// SetNillableOutcoming sets the "outcoming" field if the given value is not nil.
+func (duo *DepositUpdateOne) SetNillableOutcoming(d *decimal.Decimal) *DepositUpdateOne {
+	if d != nil {
+		duo.SetOutcoming(*d)
+	}
+	return duo
+}
+
+// ClearOutcoming clears the value of the "outcoming" field.
+func (duo *DepositUpdateOne) ClearOutcoming() *DepositUpdateOne {
+	duo.mutation.ClearOutcoming()
 	return duo
 }
 
@@ -820,17 +873,30 @@ func (duo *DepositUpdateOne) sqlSave(ctx context.Context) (_node *Deposit, err e
 			Column: deposit.FieldAccountID,
 		})
 	}
-	if value, ok := duo.mutation.Balance(); ok {
+	if value, ok := duo.mutation.Incoming(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: deposit.FieldBalance,
+			Column: deposit.FieldIncoming,
 		})
 	}
-	if duo.mutation.BalanceCleared() {
+	if duo.mutation.IncomingCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: deposit.FieldBalance,
+			Column: deposit.FieldIncoming,
+		})
+	}
+	if value, ok := duo.mutation.Outcoming(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: deposit.FieldOutcoming,
+		})
+	}
+	if duo.mutation.OutcomingCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: deposit.FieldOutcoming,
 		})
 	}
 	if value, ok := duo.mutation.CollectingTid(); ok {

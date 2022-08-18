@@ -31,8 +31,10 @@ type Deposit struct {
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// AccountID holds the value of the "account_id" field.
 	AccountID uuid.UUID `json:"account_id,omitempty"`
-	// Balance holds the value of the "balance" field.
-	Balance decimal.Decimal `json:"balance,omitempty"`
+	// Incoming holds the value of the "incoming" field.
+	Incoming decimal.Decimal `json:"incoming,omitempty"`
+	// Outcoming holds the value of the "outcoming" field.
+	Outcoming decimal.Decimal `json:"outcoming,omitempty"`
 	// CollectingTid holds the value of the "collecting_tid" field.
 	CollectingTid uuid.UUID `json:"collecting_tid,omitempty"`
 }
@@ -42,7 +44,7 @@ func (*Deposit) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case deposit.FieldBalance:
+		case deposit.FieldIncoming, deposit.FieldOutcoming:
 			values[i] = new(decimal.Decimal)
 		case deposit.FieldCreatedAt, deposit.FieldUpdatedAt, deposit.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
@@ -111,11 +113,17 @@ func (d *Deposit) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				d.AccountID = *value
 			}
-		case deposit.FieldBalance:
+		case deposit.FieldIncoming:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field balance", values[i])
+				return fmt.Errorf("unexpected type %T for field incoming", values[i])
 			} else if value != nil {
-				d.Balance = *value
+				d.Incoming = *value
+			}
+		case deposit.FieldOutcoming:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field outcoming", values[i])
+			} else if value != nil {
+				d.Outcoming = *value
 			}
 		case deposit.FieldCollectingTid:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -165,8 +173,10 @@ func (d *Deposit) String() string {
 	builder.WriteString(fmt.Sprintf("%v", d.CoinTypeID))
 	builder.WriteString(", account_id=")
 	builder.WriteString(fmt.Sprintf("%v", d.AccountID))
-	builder.WriteString(", balance=")
-	builder.WriteString(fmt.Sprintf("%v", d.Balance))
+	builder.WriteString(", incoming=")
+	builder.WriteString(fmt.Sprintf("%v", d.Incoming))
+	builder.WriteString(", outcoming=")
+	builder.WriteString(fmt.Sprintf("%v", d.Outcoming))
 	builder.WriteString(", collecting_tid=")
 	builder.WriteString(fmt.Sprintf("%v", d.CollectingTid))
 	builder.WriteByte(')')

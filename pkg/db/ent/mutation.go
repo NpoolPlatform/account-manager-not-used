@@ -1170,7 +1170,8 @@ type DepositMutation struct {
 	user_id        *uuid.UUID
 	coin_type_id   *uuid.UUID
 	account_id     *uuid.UUID
-	balance        *decimal.Decimal
+	incoming       *decimal.Decimal
+	outcoming      *decimal.Decimal
 	collecting_tid *uuid.UUID
 	clearedFields  map[string]struct{}
 	done           bool
@@ -1646,53 +1647,102 @@ func (m *DepositMutation) ResetAccountID() {
 	delete(m.clearedFields, deposit.FieldAccountID)
 }
 
-// SetBalance sets the "balance" field.
-func (m *DepositMutation) SetBalance(d decimal.Decimal) {
-	m.balance = &d
+// SetIncoming sets the "incoming" field.
+func (m *DepositMutation) SetIncoming(d decimal.Decimal) {
+	m.incoming = &d
 }
 
-// Balance returns the value of the "balance" field in the mutation.
-func (m *DepositMutation) Balance() (r decimal.Decimal, exists bool) {
-	v := m.balance
+// Incoming returns the value of the "incoming" field in the mutation.
+func (m *DepositMutation) Incoming() (r decimal.Decimal, exists bool) {
+	v := m.incoming
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBalance returns the old "balance" field's value of the Deposit entity.
+// OldIncoming returns the old "incoming" field's value of the Deposit entity.
 // If the Deposit object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DepositMutation) OldBalance(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *DepositMutation) OldIncoming(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBalance is only allowed on UpdateOne operations")
+		return v, errors.New("OldIncoming is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBalance requires an ID field in the mutation")
+		return v, errors.New("OldIncoming requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBalance: %w", err)
+		return v, fmt.Errorf("querying old value for OldIncoming: %w", err)
 	}
-	return oldValue.Balance, nil
+	return oldValue.Incoming, nil
 }
 
-// ClearBalance clears the value of the "balance" field.
-func (m *DepositMutation) ClearBalance() {
-	m.balance = nil
-	m.clearedFields[deposit.FieldBalance] = struct{}{}
+// ClearIncoming clears the value of the "incoming" field.
+func (m *DepositMutation) ClearIncoming() {
+	m.incoming = nil
+	m.clearedFields[deposit.FieldIncoming] = struct{}{}
 }
 
-// BalanceCleared returns if the "balance" field was cleared in this mutation.
-func (m *DepositMutation) BalanceCleared() bool {
-	_, ok := m.clearedFields[deposit.FieldBalance]
+// IncomingCleared returns if the "incoming" field was cleared in this mutation.
+func (m *DepositMutation) IncomingCleared() bool {
+	_, ok := m.clearedFields[deposit.FieldIncoming]
 	return ok
 }
 
-// ResetBalance resets all changes to the "balance" field.
-func (m *DepositMutation) ResetBalance() {
-	m.balance = nil
-	delete(m.clearedFields, deposit.FieldBalance)
+// ResetIncoming resets all changes to the "incoming" field.
+func (m *DepositMutation) ResetIncoming() {
+	m.incoming = nil
+	delete(m.clearedFields, deposit.FieldIncoming)
+}
+
+// SetOutcoming sets the "outcoming" field.
+func (m *DepositMutation) SetOutcoming(d decimal.Decimal) {
+	m.outcoming = &d
+}
+
+// Outcoming returns the value of the "outcoming" field in the mutation.
+func (m *DepositMutation) Outcoming() (r decimal.Decimal, exists bool) {
+	v := m.outcoming
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutcoming returns the old "outcoming" field's value of the Deposit entity.
+// If the Deposit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DepositMutation) OldOutcoming(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutcoming is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutcoming requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutcoming: %w", err)
+	}
+	return oldValue.Outcoming, nil
+}
+
+// ClearOutcoming clears the value of the "outcoming" field.
+func (m *DepositMutation) ClearOutcoming() {
+	m.outcoming = nil
+	m.clearedFields[deposit.FieldOutcoming] = struct{}{}
+}
+
+// OutcomingCleared returns if the "outcoming" field was cleared in this mutation.
+func (m *DepositMutation) OutcomingCleared() bool {
+	_, ok := m.clearedFields[deposit.FieldOutcoming]
+	return ok
+}
+
+// ResetOutcoming resets all changes to the "outcoming" field.
+func (m *DepositMutation) ResetOutcoming() {
+	m.outcoming = nil
+	delete(m.clearedFields, deposit.FieldOutcoming)
 }
 
 // SetCollectingTid sets the "collecting_tid" field.
@@ -1763,7 +1813,7 @@ func (m *DepositMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DepositMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, deposit.FieldCreatedAt)
 	}
@@ -1785,8 +1835,11 @@ func (m *DepositMutation) Fields() []string {
 	if m.account_id != nil {
 		fields = append(fields, deposit.FieldAccountID)
 	}
-	if m.balance != nil {
-		fields = append(fields, deposit.FieldBalance)
+	if m.incoming != nil {
+		fields = append(fields, deposit.FieldIncoming)
+	}
+	if m.outcoming != nil {
+		fields = append(fields, deposit.FieldOutcoming)
 	}
 	if m.collecting_tid != nil {
 		fields = append(fields, deposit.FieldCollectingTid)
@@ -1813,8 +1866,10 @@ func (m *DepositMutation) Field(name string) (ent.Value, bool) {
 		return m.CoinTypeID()
 	case deposit.FieldAccountID:
 		return m.AccountID()
-	case deposit.FieldBalance:
-		return m.Balance()
+	case deposit.FieldIncoming:
+		return m.Incoming()
+	case deposit.FieldOutcoming:
+		return m.Outcoming()
 	case deposit.FieldCollectingTid:
 		return m.CollectingTid()
 	}
@@ -1840,8 +1895,10 @@ func (m *DepositMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCoinTypeID(ctx)
 	case deposit.FieldAccountID:
 		return m.OldAccountID(ctx)
-	case deposit.FieldBalance:
-		return m.OldBalance(ctx)
+	case deposit.FieldIncoming:
+		return m.OldIncoming(ctx)
+	case deposit.FieldOutcoming:
+		return m.OldOutcoming(ctx)
 	case deposit.FieldCollectingTid:
 		return m.OldCollectingTid(ctx)
 	}
@@ -1902,12 +1959,19 @@ func (m *DepositMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAccountID(v)
 		return nil
-	case deposit.FieldBalance:
+	case deposit.FieldIncoming:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBalance(v)
+		m.SetIncoming(v)
+		return nil
+	case deposit.FieldOutcoming:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutcoming(v)
 		return nil
 	case deposit.FieldCollectingTid:
 		v, ok := value.(uuid.UUID)
@@ -1997,8 +2061,11 @@ func (m *DepositMutation) ClearedFields() []string {
 	if m.FieldCleared(deposit.FieldAccountID) {
 		fields = append(fields, deposit.FieldAccountID)
 	}
-	if m.FieldCleared(deposit.FieldBalance) {
-		fields = append(fields, deposit.FieldBalance)
+	if m.FieldCleared(deposit.FieldIncoming) {
+		fields = append(fields, deposit.FieldIncoming)
+	}
+	if m.FieldCleared(deposit.FieldOutcoming) {
+		fields = append(fields, deposit.FieldOutcoming)
 	}
 	if m.FieldCleared(deposit.FieldCollectingTid) {
 		fields = append(fields, deposit.FieldCollectingTid)
@@ -2029,8 +2096,11 @@ func (m *DepositMutation) ClearField(name string) error {
 	case deposit.FieldAccountID:
 		m.ClearAccountID()
 		return nil
-	case deposit.FieldBalance:
-		m.ClearBalance()
+	case deposit.FieldIncoming:
+		m.ClearIncoming()
+		return nil
+	case deposit.FieldOutcoming:
+		m.ClearOutcoming()
 		return nil
 	case deposit.FieldCollectingTid:
 		m.ClearCollectingTid()
@@ -2064,8 +2134,11 @@ func (m *DepositMutation) ResetField(name string) error {
 	case deposit.FieldAccountID:
 		m.ResetAccountID()
 		return nil
-	case deposit.FieldBalance:
-		m.ResetBalance()
+	case deposit.FieldIncoming:
+		m.ResetIncoming()
+		return nil
+	case deposit.FieldOutcoming:
+		m.ResetOutcoming()
 		return nil
 	case deposit.FieldCollectingTid:
 		m.ResetCollectingTid()

@@ -62,7 +62,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 			deposit.FieldUserID:        {Type: field.TypeUUID, Column: deposit.FieldUserID},
 			deposit.FieldCoinTypeID:    {Type: field.TypeUUID, Column: deposit.FieldCoinTypeID},
 			deposit.FieldAccountID:     {Type: field.TypeUUID, Column: deposit.FieldAccountID},
-			deposit.FieldBalance:       {Type: field.TypeOther, Column: deposit.FieldBalance},
+			deposit.FieldIncoming:      {Type: field.TypeOther, Column: deposit.FieldIncoming},
+			deposit.FieldOutcoming:     {Type: field.TypeOther, Column: deposit.FieldOutcoming},
 			deposit.FieldCollectingTid: {Type: field.TypeUUID, Column: deposit.FieldCollectingTid},
 		},
 	}
@@ -343,9 +344,14 @@ func (f *DepositFilter) WhereAccountID(p entql.ValueP) {
 	f.Where(p.Field(deposit.FieldAccountID))
 }
 
-// WhereBalance applies the entql other predicate on the balance field.
-func (f *DepositFilter) WhereBalance(p entql.OtherP) {
-	f.Where(p.Field(deposit.FieldBalance))
+// WhereIncoming applies the entql other predicate on the incoming field.
+func (f *DepositFilter) WhereIncoming(p entql.OtherP) {
+	f.Where(p.Field(deposit.FieldIncoming))
+}
+
+// WhereOutcoming applies the entql other predicate on the outcoming field.
+func (f *DepositFilter) WhereOutcoming(p entql.OtherP) {
+	f.Where(p.Field(deposit.FieldOutcoming))
 }
 
 // WhereCollectingTid applies the entql [16]byte predicate on the collecting_tid field.
