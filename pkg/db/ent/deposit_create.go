@@ -164,6 +164,20 @@ func (dc *DepositCreate) SetNillableCollectingTid(u *uuid.UUID) *DepositCreate {
 	return dc
 }
 
+// SetScannableAt sets the "scannable_at" field.
+func (dc *DepositCreate) SetScannableAt(u uint32) *DepositCreate {
+	dc.mutation.SetScannableAt(u)
+	return dc
+}
+
+// SetNillableScannableAt sets the "scannable_at" field if the given value is not nil.
+func (dc *DepositCreate) SetNillableScannableAt(u *uint32) *DepositCreate {
+	if u != nil {
+		dc.SetScannableAt(*u)
+	}
+	return dc
+}
+
 // SetID sets the "id" field.
 func (dc *DepositCreate) SetID(u uuid.UUID) *DepositCreate {
 	dc.mutation.SetID(u)
@@ -315,6 +329,13 @@ func (dc *DepositCreate) defaults() error {
 		v := deposit.DefaultCollectingTid()
 		dc.mutation.SetCollectingTid(v)
 	}
+	if _, ok := dc.mutation.ScannableAt(); !ok {
+		if deposit.DefaultScannableAt == nil {
+			return fmt.Errorf("ent: uninitialized deposit.DefaultScannableAt (forgotten import ent/runtime?)")
+		}
+		v := deposit.DefaultScannableAt()
+		dc.mutation.SetScannableAt(v)
+	}
 	if _, ok := dc.mutation.ID(); !ok {
 		if deposit.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized deposit.DefaultID (forgotten import ent/runtime?)")
@@ -452,6 +473,14 @@ func (dc *DepositCreate) createSpec() (*Deposit, *sqlgraph.CreateSpec) {
 			Column: deposit.FieldCollectingTid,
 		})
 		_node.CollectingTid = value
+	}
+	if value, ok := dc.mutation.ScannableAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: deposit.FieldScannableAt,
+		})
+		_node.ScannableAt = value
 	}
 	return _node, _spec
 }
@@ -684,6 +713,30 @@ func (u *DepositUpsert) UpdateCollectingTid() *DepositUpsert {
 // ClearCollectingTid clears the value of the "collecting_tid" field.
 func (u *DepositUpsert) ClearCollectingTid() *DepositUpsert {
 	u.SetNull(deposit.FieldCollectingTid)
+	return u
+}
+
+// SetScannableAt sets the "scannable_at" field.
+func (u *DepositUpsert) SetScannableAt(v uint32) *DepositUpsert {
+	u.Set(deposit.FieldScannableAt, v)
+	return u
+}
+
+// UpdateScannableAt sets the "scannable_at" field to the value that was provided on create.
+func (u *DepositUpsert) UpdateScannableAt() *DepositUpsert {
+	u.SetExcluded(deposit.FieldScannableAt)
+	return u
+}
+
+// AddScannableAt adds v to the "scannable_at" field.
+func (u *DepositUpsert) AddScannableAt(v uint32) *DepositUpsert {
+	u.Add(deposit.FieldScannableAt, v)
+	return u
+}
+
+// ClearScannableAt clears the value of the "scannable_at" field.
+func (u *DepositUpsert) ClearScannableAt() *DepositUpsert {
+	u.SetNull(deposit.FieldScannableAt)
 	return u
 }
 
@@ -944,6 +997,34 @@ func (u *DepositUpsertOne) UpdateCollectingTid() *DepositUpsertOne {
 func (u *DepositUpsertOne) ClearCollectingTid() *DepositUpsertOne {
 	return u.Update(func(s *DepositUpsert) {
 		s.ClearCollectingTid()
+	})
+}
+
+// SetScannableAt sets the "scannable_at" field.
+func (u *DepositUpsertOne) SetScannableAt(v uint32) *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.SetScannableAt(v)
+	})
+}
+
+// AddScannableAt adds v to the "scannable_at" field.
+func (u *DepositUpsertOne) AddScannableAt(v uint32) *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.AddScannableAt(v)
+	})
+}
+
+// UpdateScannableAt sets the "scannable_at" field to the value that was provided on create.
+func (u *DepositUpsertOne) UpdateScannableAt() *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.UpdateScannableAt()
+	})
+}
+
+// ClearScannableAt clears the value of the "scannable_at" field.
+func (u *DepositUpsertOne) ClearScannableAt() *DepositUpsertOne {
+	return u.Update(func(s *DepositUpsert) {
+		s.ClearScannableAt()
 	})
 }
 
@@ -1370,6 +1451,34 @@ func (u *DepositUpsertBulk) UpdateCollectingTid() *DepositUpsertBulk {
 func (u *DepositUpsertBulk) ClearCollectingTid() *DepositUpsertBulk {
 	return u.Update(func(s *DepositUpsert) {
 		s.ClearCollectingTid()
+	})
+}
+
+// SetScannableAt sets the "scannable_at" field.
+func (u *DepositUpsertBulk) SetScannableAt(v uint32) *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.SetScannableAt(v)
+	})
+}
+
+// AddScannableAt adds v to the "scannable_at" field.
+func (u *DepositUpsertBulk) AddScannableAt(v uint32) *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.AddScannableAt(v)
+	})
+}
+
+// UpdateScannableAt sets the "scannable_at" field to the value that was provided on create.
+func (u *DepositUpsertBulk) UpdateScannableAt() *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.UpdateScannableAt()
+	})
+}
+
+// ClearScannableAt clears the value of the "scannable_at" field.
+func (u *DepositUpsertBulk) ClearScannableAt() *DepositUpsertBulk {
+	return u.Update(func(s *DepositUpsert) {
+		s.ClearScannableAt()
 	})
 }
 

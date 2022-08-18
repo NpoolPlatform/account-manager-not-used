@@ -162,6 +162,13 @@ func CollectingTid(v uuid.UUID) predicate.Deposit {
 	})
 }
 
+// ScannableAt applies equality check predicate on the "scannable_at" field. It's identical to ScannableAtEQ.
+func ScannableAt(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScannableAt), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v uint32) predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
@@ -1017,6 +1024,96 @@ func CollectingTidIsNil() predicate.Deposit {
 func CollectingTidNotNil() predicate.Deposit {
 	return predicate.Deposit(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldCollectingTid)))
+	})
+}
+
+// ScannableAtEQ applies the EQ predicate on the "scannable_at" field.
+func ScannableAtEQ(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldScannableAt), v))
+	})
+}
+
+// ScannableAtNEQ applies the NEQ predicate on the "scannable_at" field.
+func ScannableAtNEQ(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldScannableAt), v))
+	})
+}
+
+// ScannableAtIn applies the In predicate on the "scannable_at" field.
+func ScannableAtIn(vs ...uint32) predicate.Deposit {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Deposit(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldScannableAt), v...))
+	})
+}
+
+// ScannableAtNotIn applies the NotIn predicate on the "scannable_at" field.
+func ScannableAtNotIn(vs ...uint32) predicate.Deposit {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Deposit(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldScannableAt), v...))
+	})
+}
+
+// ScannableAtGT applies the GT predicate on the "scannable_at" field.
+func ScannableAtGT(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldScannableAt), v))
+	})
+}
+
+// ScannableAtGTE applies the GTE predicate on the "scannable_at" field.
+func ScannableAtGTE(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldScannableAt), v))
+	})
+}
+
+// ScannableAtLT applies the LT predicate on the "scannable_at" field.
+func ScannableAtLT(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldScannableAt), v))
+	})
+}
+
+// ScannableAtLTE applies the LTE predicate on the "scannable_at" field.
+func ScannableAtLTE(v uint32) predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldScannableAt), v))
+	})
+}
+
+// ScannableAtIsNil applies the IsNil predicate on the "scannable_at" field.
+func ScannableAtIsNil() predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldScannableAt)))
+	})
+}
+
+// ScannableAtNotNil applies the NotNil predicate on the "scannable_at" field.
+func ScannableAtNotNil() predicate.Deposit {
+	return predicate.Deposit(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldScannableAt)))
 	})
 }
 

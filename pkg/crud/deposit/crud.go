@@ -44,6 +44,7 @@ func CreateSet(c *ent.DepositCreate, in *npool.AccountReq) *ent.DepositCreate {
 	c.SetCollectingTid(uuid.UUID{})
 	c.SetIncoming(decimal.NewFromInt(0))
 	c.SetOutcoming(decimal.NewFromInt(0))
+	c.SetScannableAt(uint32(time.Now().Unix()))
 
 	return c
 }
@@ -131,6 +132,10 @@ func UpdateSet(info *ent.Deposit, in *npool.AccountReq) (*ent.DepositUpdateOne, 
 	}
 	if in.Outcoming != nil {
 		u.SetOutcoming(outcoming)
+	}
+
+	if in.ScannableAt != nil {
+		u.SetScannableAt(in.GetScannableAt())
 	}
 
 	return u, nil

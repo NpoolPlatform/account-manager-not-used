@@ -37,6 +37,8 @@ type Deposit struct {
 	Outcoming decimal.Decimal `json:"outcoming,omitempty"`
 	// CollectingTid holds the value of the "collecting_tid" field.
 	CollectingTid uuid.UUID `json:"collecting_tid,omitempty"`
+	// ScannableAt holds the value of the "scannable_at" field.
+	ScannableAt uint32 `json:"scannable_at,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -46,7 +48,7 @@ func (*Deposit) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case deposit.FieldIncoming, deposit.FieldOutcoming:
 			values[i] = new(decimal.Decimal)
-		case deposit.FieldCreatedAt, deposit.FieldUpdatedAt, deposit.FieldDeletedAt:
+		case deposit.FieldCreatedAt, deposit.FieldUpdatedAt, deposit.FieldDeletedAt, deposit.FieldScannableAt:
 			values[i] = new(sql.NullInt64)
 		case deposit.FieldID, deposit.FieldAppID, deposit.FieldUserID, deposit.FieldCoinTypeID, deposit.FieldAccountID, deposit.FieldCollectingTid:
 			values[i] = new(uuid.UUID)
@@ -131,6 +133,12 @@ func (d *Deposit) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				d.CollectingTid = *value
 			}
+		case deposit.FieldScannableAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field scannable_at", values[i])
+			} else if value.Valid {
+				d.ScannableAt = uint32(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -179,6 +187,8 @@ func (d *Deposit) String() string {
 	builder.WriteString(fmt.Sprintf("%v", d.Outcoming))
 	builder.WriteString(", collecting_tid=")
 	builder.WriteString(fmt.Sprintf("%v", d.CollectingTid))
+	builder.WriteString(", scannable_at=")
+	builder.WriteString(fmt.Sprintf("%v", d.ScannableAt))
 	builder.WriteByte(')')
 	return builder.String()
 }

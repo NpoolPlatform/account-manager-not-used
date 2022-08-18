@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
@@ -70,6 +72,12 @@ func (Deposit) Fields() []ent.Field {
 			Optional().
 			Default(func() uuid.UUID {
 				return uuid.UUID{}
+			}),
+		field.
+			Uint32("scannable_at").
+			Optional().
+			DefaultFunc(func() uint32 {
+				return uint32(time.Now().Unix())
 			}),
 	}
 }

@@ -224,6 +224,33 @@ func (du *DepositUpdate) ClearCollectingTid() *DepositUpdate {
 	return du
 }
 
+// SetScannableAt sets the "scannable_at" field.
+func (du *DepositUpdate) SetScannableAt(u uint32) *DepositUpdate {
+	du.mutation.ResetScannableAt()
+	du.mutation.SetScannableAt(u)
+	return du
+}
+
+// SetNillableScannableAt sets the "scannable_at" field if the given value is not nil.
+func (du *DepositUpdate) SetNillableScannableAt(u *uint32) *DepositUpdate {
+	if u != nil {
+		du.SetScannableAt(*u)
+	}
+	return du
+}
+
+// AddScannableAt adds u to the "scannable_at" field.
+func (du *DepositUpdate) AddScannableAt(u int32) *DepositUpdate {
+	du.mutation.AddScannableAt(u)
+	return du
+}
+
+// ClearScannableAt clears the value of the "scannable_at" field.
+func (du *DepositUpdate) ClearScannableAt() *DepositUpdate {
+	du.mutation.ClearScannableAt()
+	return du
+}
+
 // Mutation returns the DepositMutation object of the builder.
 func (du *DepositUpdate) Mutation() *DepositMutation {
 	return du.mutation
@@ -449,6 +476,26 @@ func (du *DepositUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: deposit.FieldCollectingTid,
 		})
 	}
+	if value, ok := du.mutation.ScannableAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: deposit.FieldScannableAt,
+		})
+	}
+	if value, ok := du.mutation.AddedScannableAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: deposit.FieldScannableAt,
+		})
+	}
+	if du.mutation.ScannableAtCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: deposit.FieldScannableAt,
+		})
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, du.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{deposit.Label}
@@ -660,6 +707,33 @@ func (duo *DepositUpdateOne) SetNillableCollectingTid(u *uuid.UUID) *DepositUpda
 // ClearCollectingTid clears the value of the "collecting_tid" field.
 func (duo *DepositUpdateOne) ClearCollectingTid() *DepositUpdateOne {
 	duo.mutation.ClearCollectingTid()
+	return duo
+}
+
+// SetScannableAt sets the "scannable_at" field.
+func (duo *DepositUpdateOne) SetScannableAt(u uint32) *DepositUpdateOne {
+	duo.mutation.ResetScannableAt()
+	duo.mutation.SetScannableAt(u)
+	return duo
+}
+
+// SetNillableScannableAt sets the "scannable_at" field if the given value is not nil.
+func (duo *DepositUpdateOne) SetNillableScannableAt(u *uint32) *DepositUpdateOne {
+	if u != nil {
+		duo.SetScannableAt(*u)
+	}
+	return duo
+}
+
+// AddScannableAt adds u to the "scannable_at" field.
+func (duo *DepositUpdateOne) AddScannableAt(u int32) *DepositUpdateOne {
+	duo.mutation.AddScannableAt(u)
+	return duo
+}
+
+// ClearScannableAt clears the value of the "scannable_at" field.
+func (duo *DepositUpdateOne) ClearScannableAt() *DepositUpdateOne {
+	duo.mutation.ClearScannableAt()
 	return duo
 }
 
@@ -910,6 +984,26 @@ func (duo *DepositUpdateOne) sqlSave(ctx context.Context) (_node *Deposit, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Column: deposit.FieldCollectingTid,
+		})
+	}
+	if value, ok := duo.mutation.ScannableAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: deposit.FieldScannableAt,
+		})
+	}
+	if value, ok := duo.mutation.AddedScannableAt(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: deposit.FieldScannableAt,
+		})
+	}
+	if duo.mutation.ScannableAtCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: deposit.FieldScannableAt,
 		})
 	}
 	_node = &Deposit{config: duo.config}

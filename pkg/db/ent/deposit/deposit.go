@@ -33,6 +33,8 @@ const (
 	FieldOutcoming = "outcoming"
 	// FieldCollectingTid holds the string denoting the collecting_tid field in the database.
 	FieldCollectingTid = "collecting_tid"
+	// FieldScannableAt holds the string denoting the scannable_at field in the database.
+	FieldScannableAt = "scannable_at"
 	// Table holds the table name of the deposit in the database.
 	Table = "deposits"
 )
@@ -50,6 +52,7 @@ var Columns = []string{
 	FieldIncoming,
 	FieldOutcoming,
 	FieldCollectingTid,
+	FieldScannableAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -93,6 +96,8 @@ var (
 	DefaultOutcoming decimal.Decimal
 	// DefaultCollectingTid holds the default value on creation for the "collecting_tid" field.
 	DefaultCollectingTid func() uuid.UUID
+	// DefaultScannableAt holds the default value on creation for the "scannable_at" field.
+	DefaultScannableAt func() uint32
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

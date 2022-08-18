@@ -42,6 +42,7 @@ var (
 		{Name: "incoming", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "outcoming", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "collecting_tid", Type: field.TypeUUID, Nullable: true},
+		{Name: "scannable_at", Type: field.TypeUint32, Nullable: true},
 	}
 	// DepositsTable holds the schema information for the "deposits" table.
 	DepositsTable = &schema.Table{

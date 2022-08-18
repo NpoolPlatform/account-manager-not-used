@@ -19,6 +19,7 @@ func Ent2Grpc(row *ent.Deposit) *npool.Account {
 		Incoming:      row.Incoming.String(),
 		Outcoming:     row.Outcoming.String(),
 		CollectingTID: row.CollectingTid.String(),
+		ScannableAt:   row.ScannableAt,
 		CreatedAt:     row.CreatedAt,
 	}
 }

@@ -2,6 +2,7 @@ package deposit
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/shopspring/decimal"
 
@@ -84,6 +85,11 @@ func validate(info *npool.AccountReq) error { //nolint
 			logger.Sugar().Errorw("validate", "CollectingTID", info.GetCollectingTID(), "error", err)
 			return status.Error(codes.InvalidArgument, fmt.Sprintf("CollectingTID is invalid: %v", err))
 		}
+	}
+
+	if info.ScannableAt != nil && info.GetScannableAt() <= uint32(time.Now().Unix()) {
+		logger.Sugar().Errorw("validate", "ScannableAt", info.GetScannableAt())
+		return status.Error(codes.InvalidArgument, "ScannableAt is invalid")
 	}
 
 	return nil

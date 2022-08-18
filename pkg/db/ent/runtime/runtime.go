@@ -144,6 +144,10 @@ func init() {
 	depositDescCollectingTid := depositFields[7].Descriptor()
 	// deposit.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
 	deposit.DefaultCollectingTid = depositDescCollectingTid.Default.(func() uuid.UUID)
+	// depositDescScannableAt is the schema descriptor for scannable_at field.
+	depositDescScannableAt := depositFields[8].Descriptor()
+	// deposit.DefaultScannableAt holds the default value on creation for the scannable_at field.
+	deposit.DefaultScannableAt = depositDescScannableAt.Default.(func() uint32)
 	// depositDescID is the schema descriptor for id field.
 	depositDescID := depositFields[0].Descriptor()
 	// deposit.DefaultID holds the default value on creation for the id field.

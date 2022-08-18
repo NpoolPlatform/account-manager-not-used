@@ -65,6 +65,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			deposit.FieldIncoming:      {Type: field.TypeOther, Column: deposit.FieldIncoming},
 			deposit.FieldOutcoming:     {Type: field.TypeOther, Column: deposit.FieldOutcoming},
 			deposit.FieldCollectingTid: {Type: field.TypeUUID, Column: deposit.FieldCollectingTid},
+			deposit.FieldScannableAt:   {Type: field.TypeUint32, Column: deposit.FieldScannableAt},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -357,6 +358,11 @@ func (f *DepositFilter) WhereOutcoming(p entql.OtherP) {
 // WhereCollectingTid applies the entql [16]byte predicate on the collecting_tid field.
 func (f *DepositFilter) WhereCollectingTid(p entql.ValueP) {
 	f.Where(p.Field(deposit.FieldCollectingTid))
+}
+
+// WhereScannableAt applies the entql uint32 predicate on the scannable_at field.
+func (f *DepositFilter) WhereScannableAt(p entql.Uint32P) {
+	f.Where(p.Field(deposit.FieldScannableAt))
 }
 
 // addPredicate implements the predicateAdder interface.

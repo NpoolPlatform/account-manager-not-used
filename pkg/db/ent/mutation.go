@@ -1157,26 +1157,28 @@ func (m *AccountMutation) ResetEdge(name string) error {
 // DepositMutation represents an operation that mutates the Deposit nodes in the graph.
 type DepositMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *uuid.UUID
-	created_at     *uint32
-	addcreated_at  *int32
-	updated_at     *uint32
-	addupdated_at  *int32
-	deleted_at     *uint32
-	adddeleted_at  *int32
-	app_id         *uuid.UUID
-	user_id        *uuid.UUID
-	coin_type_id   *uuid.UUID
-	account_id     *uuid.UUID
-	incoming       *decimal.Decimal
-	outcoming      *decimal.Decimal
-	collecting_tid *uuid.UUID
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*Deposit, error)
-	predicates     []predicate.Deposit
+	op              Op
+	typ             string
+	id              *uuid.UUID
+	created_at      *uint32
+	addcreated_at   *int32
+	updated_at      *uint32
+	addupdated_at   *int32
+	deleted_at      *uint32
+	adddeleted_at   *int32
+	app_id          *uuid.UUID
+	user_id         *uuid.UUID
+	coin_type_id    *uuid.UUID
+	account_id      *uuid.UUID
+	incoming        *decimal.Decimal
+	outcoming       *decimal.Decimal
+	collecting_tid  *uuid.UUID
+	scannable_at    *uint32
+	addscannable_at *int32
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Deposit, error)
+	predicates      []predicate.Deposit
 }
 
 var _ ent.Mutation = (*DepositMutation)(nil)
@@ -1794,6 +1796,76 @@ func (m *DepositMutation) ResetCollectingTid() {
 	delete(m.clearedFields, deposit.FieldCollectingTid)
 }
 
+// SetScannableAt sets the "scannable_at" field.
+func (m *DepositMutation) SetScannableAt(u uint32) {
+	m.scannable_at = &u
+	m.addscannable_at = nil
+}
+
+// ScannableAt returns the value of the "scannable_at" field in the mutation.
+func (m *DepositMutation) ScannableAt() (r uint32, exists bool) {
+	v := m.scannable_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldScannableAt returns the old "scannable_at" field's value of the Deposit entity.
+// If the Deposit object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DepositMutation) OldScannableAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldScannableAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldScannableAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldScannableAt: %w", err)
+	}
+	return oldValue.ScannableAt, nil
+}
+
+// AddScannableAt adds u to the "scannable_at" field.
+func (m *DepositMutation) AddScannableAt(u int32) {
+	if m.addscannable_at != nil {
+		*m.addscannable_at += u
+	} else {
+		m.addscannable_at = &u
+	}
+}
+
+// AddedScannableAt returns the value that was added to the "scannable_at" field in this mutation.
+func (m *DepositMutation) AddedScannableAt() (r int32, exists bool) {
+	v := m.addscannable_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearScannableAt clears the value of the "scannable_at" field.
+func (m *DepositMutation) ClearScannableAt() {
+	m.scannable_at = nil
+	m.addscannable_at = nil
+	m.clearedFields[deposit.FieldScannableAt] = struct{}{}
+}
+
+// ScannableAtCleared returns if the "scannable_at" field was cleared in this mutation.
+func (m *DepositMutation) ScannableAtCleared() bool {
+	_, ok := m.clearedFields[deposit.FieldScannableAt]
+	return ok
+}
+
+// ResetScannableAt resets all changes to the "scannable_at" field.
+func (m *DepositMutation) ResetScannableAt() {
+	m.scannable_at = nil
+	m.addscannable_at = nil
+	delete(m.clearedFields, deposit.FieldScannableAt)
+}
+
 // Where appends a list predicates to the DepositMutation builder.
 func (m *DepositMutation) Where(ps ...predicate.Deposit) {
 	m.predicates = append(m.predicates, ps...)
@@ -1813,7 +1885,7 @@ func (m *DepositMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DepositMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, deposit.FieldCreatedAt)
 	}
@@ -1844,6 +1916,9 @@ func (m *DepositMutation) Fields() []string {
 	if m.collecting_tid != nil {
 		fields = append(fields, deposit.FieldCollectingTid)
 	}
+	if m.scannable_at != nil {
+		fields = append(fields, deposit.FieldScannableAt)
+	}
 	return fields
 }
 
@@ -1872,6 +1947,8 @@ func (m *DepositMutation) Field(name string) (ent.Value, bool) {
 		return m.Outcoming()
 	case deposit.FieldCollectingTid:
 		return m.CollectingTid()
+	case deposit.FieldScannableAt:
+		return m.ScannableAt()
 	}
 	return nil, false
 }
@@ -1901,6 +1978,8 @@ func (m *DepositMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldOutcoming(ctx)
 	case deposit.FieldCollectingTid:
 		return m.OldCollectingTid(ctx)
+	case deposit.FieldScannableAt:
+		return m.OldScannableAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Deposit field %s", name)
 }
@@ -1980,6 +2059,13 @@ func (m *DepositMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCollectingTid(v)
 		return nil
+	case deposit.FieldScannableAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetScannableAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Deposit field %s", name)
 }
@@ -1997,6 +2083,9 @@ func (m *DepositMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, deposit.FieldDeletedAt)
 	}
+	if m.addscannable_at != nil {
+		fields = append(fields, deposit.FieldScannableAt)
+	}
 	return fields
 }
 
@@ -2011,6 +2100,8 @@ func (m *DepositMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case deposit.FieldDeletedAt:
 		return m.AddedDeletedAt()
+	case deposit.FieldScannableAt:
+		return m.AddedScannableAt()
 	}
 	return nil, false
 }
@@ -2041,6 +2132,13 @@ func (m *DepositMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddDeletedAt(v)
 		return nil
+	case deposit.FieldScannableAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddScannableAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Deposit numeric field %s", name)
 }
@@ -2069,6 +2167,9 @@ func (m *DepositMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(deposit.FieldCollectingTid) {
 		fields = append(fields, deposit.FieldCollectingTid)
+	}
+	if m.FieldCleared(deposit.FieldScannableAt) {
+		fields = append(fields, deposit.FieldScannableAt)
 	}
 	return fields
 }
@@ -2104,6 +2205,9 @@ func (m *DepositMutation) ClearField(name string) error {
 		return nil
 	case deposit.FieldCollectingTid:
 		m.ClearCollectingTid()
+		return nil
+	case deposit.FieldScannableAt:
+		m.ClearScannableAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Deposit nullable field %s", name)
@@ -2142,6 +2246,9 @@ func (m *DepositMutation) ResetField(name string) error {
 		return nil
 	case deposit.FieldCollectingTid:
 		m.ResetCollectingTid()
+		return nil
+	case deposit.FieldScannableAt:
+		m.ResetScannableAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Deposit field %s", name)
