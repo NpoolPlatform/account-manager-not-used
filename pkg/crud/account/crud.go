@@ -204,7 +204,7 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 	}
 	if conds.Address != nil {
 		switch conds.GetAddress().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(account.Address(conds.GetAddress().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid account field")
@@ -212,7 +212,7 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 	}
 	if conds.UsedFor != nil {
 		switch conds.GetUsedFor().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(account.UsedFor(npool.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid account field")
@@ -244,7 +244,7 @@ func setQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 	}
 	if conds.LockedBy != nil {
 		switch conds.GetLockedBy().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(account.LockedBy(npool.LockedBy(conds.GetLockedBy().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid account field")
