@@ -284,6 +284,16 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.DepositQuery, erro
 			return nil, fmt.Errorf("invalid deposit field")
 		}
 	}
+	if conds.ScannableAt != nil {
+		switch conds.GetScannableAt().GetOp() {
+		case cruder.LT:
+			stm.Where(deposit.ScannableAtLT(conds.GetScannableAt().GetValue()))
+		case cruder.GT:
+			stm.Where(deposit.ScannableAtGT(conds.GetScannableAt().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid deposit field")
+		}
+	}
 	return stm, nil
 }
 
