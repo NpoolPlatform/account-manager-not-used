@@ -42,7 +42,7 @@ func CreateGoodBenefit(ctx context.Context, in *npool.AccountReq) (*npool.Accoun
 		if err != nil {
 			return nil, fmt.Errorf("fail create goodbenefit: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail create goodbenefit: %v", err)
@@ -58,7 +58,7 @@ func CreateGoodBenefits(ctx context.Context, in []*npool.AccountReq) ([]*npool.A
 		if err != nil {
 			return nil, fmt.Errorf("fail create goodbenefits: %v", err)
 		}
-		return resp.GetInfos(), nil
+		return resp.Infos, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail create goodbenefits: %v", err)
@@ -74,7 +74,7 @@ func GetGoodBenefit(ctx context.Context, id string) (*npool.Account, error) {
 		if err != nil {
 			return nil, fmt.Errorf("fail get goodbenefit: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail get goodbenefit: %v", err)
@@ -90,7 +90,7 @@ func GetGoodBenefitOnly(ctx context.Context, conds *npool.Conds) (*npool.Account
 		if err != nil {
 			return nil, fmt.Errorf("fail get goodbenefit: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail get goodbenefit: %v", err)
@@ -110,7 +110,7 @@ func GetGoodBenefits(ctx context.Context, conds *npool.Conds, limit, offset int3
 			return nil, fmt.Errorf("fail get goodbenefits: %v", err)
 		}
 		total = resp.GetTotal()
-		return resp.GetInfos(), nil
+		return resp.Infos, nil
 	})
 	if err != nil {
 		return nil, 0, fmt.Errorf("fail get goodbenefits: %v", err)
@@ -126,7 +126,7 @@ func ExistGoodBenefit(ctx context.Context, id string) (bool, error) {
 		if err != nil {
 			return nil, fmt.Errorf("fail get goodbenefit: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return false, fmt.Errorf("fail get goodbenefit: %v", err)
@@ -142,7 +142,7 @@ func ExistAccountConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 		if err != nil {
 			return nil, fmt.Errorf("fail get goodbenefit: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return false, fmt.Errorf("fail get goodbenefit: %v", err)
@@ -158,7 +158,7 @@ func CountGoodBenefits(ctx context.Context, conds *npool.Conds) (uint32, error) 
 		if err != nil {
 			return nil, fmt.Errorf("fail count goodbenefit: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return 0, fmt.Errorf("fail count goodbenefit: %v", err)
