@@ -42,7 +42,7 @@ func CreateLimitation(ctx context.Context, in *npool.LimitationReq) (*npool.Limi
 		if err != nil {
 			return nil, fmt.Errorf("fail create account: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail create account: %v", err)
@@ -58,7 +58,7 @@ func CreateLimitations(ctx context.Context, in []*npool.LimitationReq) ([]*npool
 		if err != nil {
 			return nil, fmt.Errorf("fail create accounts: %v", err)
 		}
-		return resp.GetInfos(), nil
+		return resp.Infos, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail create accounts: %v", err)
@@ -74,7 +74,7 @@ func GetLimitation(ctx context.Context, id string) (*npool.Limitation, error) {
 		if err != nil {
 			return nil, fmt.Errorf("fail get account: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail get account: %v", err)
@@ -90,7 +90,7 @@ func GetLimitationOnly(ctx context.Context, conds *npool.Conds) (*npool.Limitati
 		if err != nil {
 			return nil, fmt.Errorf("fail get account: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fail get account: %v", err)
@@ -110,7 +110,7 @@ func GetLimitations(ctx context.Context, conds *npool.Conds, limit, offset int32
 			return nil, fmt.Errorf("fail get accounts: %v", err)
 		}
 		total = resp.GetTotal()
-		return resp.GetInfos(), nil
+		return resp.Infos, nil
 	})
 	if err != nil {
 		return nil, 0, fmt.Errorf("fail get accounts: %v", err)
@@ -126,7 +126,7 @@ func ExistLimitation(ctx context.Context, id string) (bool, error) {
 		if err != nil {
 			return nil, fmt.Errorf("fail get account: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return false, fmt.Errorf("fail get account: %v", err)
@@ -142,7 +142,7 @@ func ExistLimitationConds(ctx context.Context, conds *npool.Conds) (bool, error)
 		if err != nil {
 			return nil, fmt.Errorf("fail get account: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return false, fmt.Errorf("fail get account: %v", err)
@@ -158,7 +158,7 @@ func CountLimitations(ctx context.Context, conds *npool.Conds) (uint32, error) {
 		if err != nil {
 			return nil, fmt.Errorf("fail count account: %v", err)
 		}
-		return resp.GetInfo(), nil
+		return resp.Info, nil
 	})
 	if err != nil {
 		return 0, fmt.Errorf("fail count account: %v", err)
