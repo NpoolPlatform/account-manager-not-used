@@ -118,6 +118,9 @@ func UpdateSet(info *ent.Account, in *npool.AccountReq) *ent.AccountUpdateOne {
 	if in.Locked != nil {
 		u.SetLocked(in.GetLocked())
 	}
+	if in.LockedBy != nil {
+		u.SetLockedBy(in.GetLockedBy().String())
+	}
 	if in.Blocked != nil {
 		u.SetBlocked(in.GetBlocked())
 	}

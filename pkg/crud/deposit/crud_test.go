@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/shopspring/decimal"
 
@@ -61,6 +62,7 @@ func create(t *testing.T) {
 	info, err = Create(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		entity.CreatedAt = info.CreatedAt
 		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
@@ -109,8 +111,13 @@ func createBulk(t *testing.T) {
 
 func update(t *testing.T) {
 	collectingTID := uuid.New().String()
+	scannableAt := uint32(time.Now().Unix() + 10000)
+
 	req.CollectingTID = &collectingTID
+	req.ScannableAt = &scannableAt
+
 	entity.CollectingTid = uuid.MustParse(collectingTID)
+	entity.ScannableAt = scannableAt
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
