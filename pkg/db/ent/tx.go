@@ -24,6 +24,8 @@ type Tx struct {
 	Payment *PaymentClient
 	// Platform is the client for interacting with the Platform builders.
 	Platform *PlatformClient
+	// Transfer is the client for interacting with the Transfer builders.
+	Transfer *TransferClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -167,6 +169,7 @@ func (tx *Tx) init() {
 	tx.Limitation = NewLimitationClient(tx.config)
 	tx.Payment = NewPaymentClient(tx.config)
 	tx.Platform = NewPlatformClient(tx.config)
+	tx.Transfer = NewTransferClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

@@ -12,6 +12,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/schema"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/transfer"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -336,6 +337,50 @@ func init() {
 	platformDescID := platformFields[0].Descriptor()
 	// platform.DefaultID holds the default value on creation for the id field.
 	platform.DefaultID = platformDescID.Default.(func() uuid.UUID)
+	transferMixin := schema.Transfer{}.Mixin()
+	transfer.Policy = privacy.NewPolicies(transferMixin[0], schema.Transfer{})
+	transfer.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := transfer.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	transferMixinFields0 := transferMixin[0].Fields()
+	_ = transferMixinFields0
+	transferFields := schema.Transfer{}.Fields()
+	_ = transferFields
+	// transferDescCreatedAt is the schema descriptor for created_at field.
+	transferDescCreatedAt := transferMixinFields0[0].Descriptor()
+	// transfer.DefaultCreatedAt holds the default value on creation for the created_at field.
+	transfer.DefaultCreatedAt = transferDescCreatedAt.Default.(func() uint32)
+	// transferDescUpdatedAt is the schema descriptor for updated_at field.
+	transferDescUpdatedAt := transferMixinFields0[1].Descriptor()
+	// transfer.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	transfer.DefaultUpdatedAt = transferDescUpdatedAt.Default.(func() uint32)
+	// transfer.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	transfer.UpdateDefaultUpdatedAt = transferDescUpdatedAt.UpdateDefault.(func() uint32)
+	// transferDescDeletedAt is the schema descriptor for deleted_at field.
+	transferDescDeletedAt := transferMixinFields0[2].Descriptor()
+	// transfer.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	transfer.DefaultDeletedAt = transferDescDeletedAt.Default.(func() uint32)
+	// transferDescAppID is the schema descriptor for app_id field.
+	transferDescAppID := transferFields[1].Descriptor()
+	// transfer.DefaultAppID holds the default value on creation for the app_id field.
+	transfer.DefaultAppID = transferDescAppID.Default.(func() uuid.UUID)
+	// transferDescUserID is the schema descriptor for user_id field.
+	transferDescUserID := transferFields[2].Descriptor()
+	// transfer.DefaultUserID holds the default value on creation for the user_id field.
+	transfer.DefaultUserID = transferDescUserID.Default.(func() uuid.UUID)
+	// transferDescTargetUserID is the schema descriptor for target_user_id field.
+	transferDescTargetUserID := transferFields[3].Descriptor()
+	// transfer.DefaultTargetUserID holds the default value on creation for the target_user_id field.
+	transfer.DefaultTargetUserID = transferDescTargetUserID.Default.(func() uuid.UUID)
+	// transferDescID is the schema descriptor for id field.
+	transferDescID := transferFields[0].Descriptor()
+	// transfer.DefaultID holds the default value on creation for the id field.
+	transfer.DefaultID = transferDescID.Default.(func() uuid.UUID)
 	userMixin := schema.User{}.Mixin()
 	user.Policy = privacy.NewPolicies(userMixin[0], schema.User{})
 	user.Hooks[0] = func(next ent.Mutator) ent.Mutator {

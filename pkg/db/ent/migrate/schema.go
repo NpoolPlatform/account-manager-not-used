@@ -116,6 +116,22 @@ var (
 		Columns:    PlatformsColumns,
 		PrimaryKey: []*schema.Column{PlatformsColumns[0]},
 	}
+	// TransfersColumns holds the columns for the "transfers" table.
+	TransfersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID, Unique: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "app_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "target_user_id", Type: field.TypeUUID},
+	}
+	// TransfersTable holds the schema information for the "transfers" table.
+	TransfersTable = &schema.Table{
+		Name:       "transfers",
+		Columns:    TransfersColumns,
+		PrimaryKey: []*schema.Column{TransfersColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -143,6 +159,7 @@ var (
 		LimitationsTable,
 		PaymentsTable,
 		PlatformsTable,
+		TransfersTable,
 		UsersTable,
 	}
 )

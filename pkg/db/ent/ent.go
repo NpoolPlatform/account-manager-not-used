@@ -14,6 +14,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/limitation"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/transfer"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 )
 
@@ -41,6 +42,7 @@ func columnChecker(table string) func(string) error {
 		limitation.Table:  limitation.ValidColumn,
 		payment.Table:     payment.ValidColumn,
 		platform.Table:    platform.ValidColumn,
+		transfer.Table:    transfer.ValidColumn,
 		user.Table:        user.ValidColumn,
 	}
 	check, ok := checks[table]
