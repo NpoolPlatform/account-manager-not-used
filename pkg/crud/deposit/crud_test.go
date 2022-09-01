@@ -62,6 +62,7 @@ func create(t *testing.T) {
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
 		entity.CreatedAt = info.CreatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -114,6 +115,7 @@ func update(t *testing.T) {
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 
@@ -124,6 +126,7 @@ func update(t *testing.T) {
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 
@@ -132,6 +135,7 @@ func update(t *testing.T) {
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 
@@ -142,6 +146,7 @@ func update(t *testing.T) {
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 
@@ -151,6 +156,7 @@ func update(t *testing.T) {
 	info, err = AddFields(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -231,6 +237,8 @@ func deleteA(t *testing.T) {
 	info, err := Delete(context.Background(), entity.ID)
 	if assert.Nil(t, err) {
 		entity.DeletedAt = info.DeletedAt
+		entity.UpdatedAt = info.UpdatedAt
+		entity.ScannableAt = info.ScannableAt
 		assert.Equal(t, info.String(), entity.String())
 	}
 }

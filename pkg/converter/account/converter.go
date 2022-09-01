@@ -18,6 +18,7 @@ func Ent2Grpc(row *ent.Account) *npool.Account {
 		PlatformHoldPrivateKey: row.PlatformHoldPrivateKey,
 		Active:                 row.Active,
 		Locked:                 row.Locked,
+		LockedBy:               npool.LockedBy(npool.LockedBy_value[row.LockedBy]),
 		Blocked:                row.Blocked,
 	}
 }

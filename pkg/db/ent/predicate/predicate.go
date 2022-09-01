@@ -24,5 +24,8 @@ type Payment func(*sql.Selector)
 // Platform is the predicate function for platform builders.
 type Platform func(*sql.Selector)
 
+// Transfer is the predicate function for transfer builders.
+type Transfer func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
