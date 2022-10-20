@@ -11,10 +11,11 @@ func Ent2Grpc(row *ent.GoodBenefit) *npool.Account {
 	}
 
 	return &npool.Account{
-		ID:        row.ID.String(),
-		GoodID:    row.GoodID.String(),
-		AccountID: row.AccountID.String(),
-		Backup:    row.Backup,
+		ID:            row.ID.String(),
+		GoodID:        row.GoodID.String(),
+		AccountID:     row.AccountID.String(),
+		Backup:        row.Backup,
+		TransactionID: row.TransactionID.String(),
 	}
 }
 

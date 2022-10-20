@@ -41,6 +41,12 @@ func (GoodBenefit) Fields() []ent.Field {
 			Bool("backup").
 			Optional().
 			Default(false),
+		field.
+			UUID("transaction_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.UUID{}
+			}),
 	}
 }
 
