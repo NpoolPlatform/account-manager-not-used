@@ -34,10 +34,11 @@ func init() {
 }
 
 var accountData = npool.Account{
-	ID:        uuid.NewString(),
-	GoodID:    uuid.NewString(),
-	AccountID: uuid.NewString(),
-	Backup:    true,
+	ID:            uuid.NewString(),
+	GoodID:        uuid.NewString(),
+	AccountID:     uuid.NewString(),
+	Backup:        true,
+	TransactionID: uuid.UUID{}.String(),
 }
 
 var (
@@ -62,6 +63,16 @@ func createAccount(t *testing.T) {
 
 func updateAccount(t *testing.T) {
 	var err error
+
+	backup := true
+	tid := uuid.NewString()
+
+	accountInfo.Backup = &backup
+	accountInfo.TransactionID = &tid
+
+	accountData.Backup = backup
+	accountData.TransactionID = tid
+
 	info, err = UpdateAccount(context.Background(), &accountInfo)
 	if assert.Nil(t, err) {
 		accountData.CreatedAt = info.CreatedAt

@@ -51,6 +51,7 @@ func create(t *testing.T) {
 	var err error
 	info, err = Create(context.Background(), &req)
 	if assert.Nil(t, err) {
+		entity.TransactionID = info.TransactionID
 		entity.UpdatedAt = info.UpdatedAt
 		entity.CreatedAt = info.CreatedAt
 		assert.Equal(t, info.String(), entity.String())
@@ -91,9 +92,14 @@ func createBulk(t *testing.T) {
 
 func update(t *testing.T) {
 	backup := true
+	tid := uuid.New()
+	_tid := tid.String()
 
 	req.Backup = &backup
+	req.TransactionID = &_tid
+
 	entity.Backup = backup
+	entity.TransactionID = tid
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
