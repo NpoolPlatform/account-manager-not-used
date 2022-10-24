@@ -84,26 +84,6 @@ func (pu *PlatformUpdate) AddDeletedAt(u int32) *PlatformUpdate {
 	return pu
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (pu *PlatformUpdate) SetCoinTypeID(u uuid.UUID) *PlatformUpdate {
-	pu.mutation.SetCoinTypeID(u)
-	return pu
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (pu *PlatformUpdate) SetNillableCoinTypeID(u *uuid.UUID) *PlatformUpdate {
-	if u != nil {
-		pu.SetCoinTypeID(*u)
-	}
-	return pu
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (pu *PlatformUpdate) ClearCoinTypeID() *PlatformUpdate {
-	pu.mutation.ClearCoinTypeID()
-	return pu
-}
-
 // SetAccountID sets the "account_id" field.
 func (pu *PlatformUpdate) SetAccountID(u uuid.UUID) *PlatformUpdate {
 	pu.mutation.SetAccountID(u)
@@ -304,19 +284,6 @@ func (pu *PlatformUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: platform.FieldDeletedAt,
 		})
 	}
-	if value, ok := pu.mutation.CoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: platform.FieldCoinTypeID,
-		})
-	}
-	if pu.mutation.CoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: platform.FieldCoinTypeID,
-		})
-	}
 	if value, ok := pu.mutation.AccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -429,26 +396,6 @@ func (puo *PlatformUpdateOne) SetNillableDeletedAt(u *uint32) *PlatformUpdateOne
 // AddDeletedAt adds u to the "deleted_at" field.
 func (puo *PlatformUpdateOne) AddDeletedAt(u int32) *PlatformUpdateOne {
 	puo.mutation.AddDeletedAt(u)
-	return puo
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (puo *PlatformUpdateOne) SetCoinTypeID(u uuid.UUID) *PlatformUpdateOne {
-	puo.mutation.SetCoinTypeID(u)
-	return puo
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (puo *PlatformUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *PlatformUpdateOne {
-	if u != nil {
-		puo.SetCoinTypeID(*u)
-	}
-	return puo
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (puo *PlatformUpdateOne) ClearCoinTypeID() *PlatformUpdateOne {
-	puo.mutation.ClearCoinTypeID()
 	return puo
 }
 
@@ -680,19 +627,6 @@ func (puo *PlatformUpdateOne) sqlSave(ctx context.Context) (_node *Platform, err
 			Type:   field.TypeUint32,
 			Value:  value,
 			Column: platform.FieldDeletedAt,
-		})
-	}
-	if value, ok := puo.mutation.CoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: platform.FieldCoinTypeID,
-		})
-	}
-	if puo.mutation.CoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: platform.FieldCoinTypeID,
 		})
 	}
 	if value, ok := puo.mutation.AccountID(); ok {

@@ -65,20 +65,6 @@ func (pc *PlatformCreate) SetNillableDeletedAt(u *uint32) *PlatformCreate {
 	return pc
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (pc *PlatformCreate) SetCoinTypeID(u uuid.UUID) *PlatformCreate {
-	pc.mutation.SetCoinTypeID(u)
-	return pc
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (pc *PlatformCreate) SetNillableCoinTypeID(u *uuid.UUID) *PlatformCreate {
-	if u != nil {
-		pc.SetCoinTypeID(*u)
-	}
-	return pc
-}
-
 // SetAccountID sets the "account_id" field.
 func (pc *PlatformCreate) SetAccountID(u uuid.UUID) *PlatformCreate {
 	pc.mutation.SetAccountID(u)
@@ -235,13 +221,6 @@ func (pc *PlatformCreate) defaults() error {
 		v := platform.DefaultDeletedAt()
 		pc.mutation.SetDeletedAt(v)
 	}
-	if _, ok := pc.mutation.CoinTypeID(); !ok {
-		if platform.DefaultCoinTypeID == nil {
-			return fmt.Errorf("ent: uninitialized platform.DefaultCoinTypeID (forgotten import ent/runtime?)")
-		}
-		v := platform.DefaultCoinTypeID()
-		pc.mutation.SetCoinTypeID(v)
-	}
 	if _, ok := pc.mutation.AccountID(); !ok {
 		if platform.DefaultAccountID == nil {
 			return fmt.Errorf("ent: uninitialized platform.DefaultAccountID (forgotten import ent/runtime?)")
@@ -338,14 +317,6 @@ func (pc *PlatformCreate) createSpec() (*Platform, *sqlgraph.CreateSpec) {
 			Column: platform.FieldDeletedAt,
 		})
 		_node.DeletedAt = value
-	}
-	if value, ok := pc.mutation.CoinTypeID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: platform.FieldCoinTypeID,
-		})
-		_node.CoinTypeID = value
 	}
 	if value, ok := pc.mutation.AccountID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -476,24 +447,6 @@ func (u *PlatformUpsert) UpdateDeletedAt() *PlatformUpsert {
 // AddDeletedAt adds v to the "deleted_at" field.
 func (u *PlatformUpsert) AddDeletedAt(v uint32) *PlatformUpsert {
 	u.Add(platform.FieldDeletedAt, v)
-	return u
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *PlatformUpsert) SetCoinTypeID(v uuid.UUID) *PlatformUpsert {
-	u.Set(platform.FieldCoinTypeID, v)
-	return u
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *PlatformUpsert) UpdateCoinTypeID() *PlatformUpsert {
-	u.SetExcluded(platform.FieldCoinTypeID)
-	return u
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *PlatformUpsert) ClearCoinTypeID() *PlatformUpsert {
-	u.SetNull(platform.FieldCoinTypeID)
 	return u
 }
 
@@ -661,27 +614,6 @@ func (u *PlatformUpsertOne) AddDeletedAt(v uint32) *PlatformUpsertOne {
 func (u *PlatformUpsertOne) UpdateDeletedAt() *PlatformUpsertOne {
 	return u.Update(func(s *PlatformUpsert) {
 		s.UpdateDeletedAt()
-	})
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *PlatformUpsertOne) SetCoinTypeID(v uuid.UUID) *PlatformUpsertOne {
-	return u.Update(func(s *PlatformUpsert) {
-		s.SetCoinTypeID(v)
-	})
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *PlatformUpsertOne) UpdateCoinTypeID() *PlatformUpsertOne {
-	return u.Update(func(s *PlatformUpsert) {
-		s.UpdateCoinTypeID()
-	})
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *PlatformUpsertOne) ClearCoinTypeID() *PlatformUpsertOne {
-	return u.Update(func(s *PlatformUpsert) {
-		s.ClearCoinTypeID()
 	})
 }
 
@@ -1024,27 +956,6 @@ func (u *PlatformUpsertBulk) AddDeletedAt(v uint32) *PlatformUpsertBulk {
 func (u *PlatformUpsertBulk) UpdateDeletedAt() *PlatformUpsertBulk {
 	return u.Update(func(s *PlatformUpsert) {
 		s.UpdateDeletedAt()
-	})
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *PlatformUpsertBulk) SetCoinTypeID(v uuid.UUID) *PlatformUpsertBulk {
-	return u.Update(func(s *PlatformUpsert) {
-		s.SetCoinTypeID(v)
-	})
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *PlatformUpsertBulk) UpdateCoinTypeID() *PlatformUpsertBulk {
-	return u.Update(func(s *PlatformUpsert) {
-		s.UpdateCoinTypeID()
-	})
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *PlatformUpsertBulk) ClearCoinTypeID() *PlatformUpsertBulk {
-	return u.Update(func(s *PlatformUpsert) {
-		s.ClearCoinTypeID()
 	})
 }
 

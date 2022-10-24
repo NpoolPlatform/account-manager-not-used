@@ -30,23 +30,20 @@ func init() {
 }
 
 var entity = ent.Platform{
-	ID:         uuid.New(),
-	CoinTypeID: uuid.New(),
-	AccountID:  uuid.New(),
-	UsedFor:    account.AccountUsedFor_UserBenefitHot.String(),
+	ID:        uuid.New(),
+	AccountID: uuid.New(),
+	UsedFor:   account.AccountUsedFor_UserBenefitHot.String(),
 }
 
 var (
-	id         = entity.ID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	accountID  = entity.AccountID.String()
-	usedFor    = account.AccountUsedFor_UserBenefitHot
+	id        = entity.ID.String()
+	accountID = entity.AccountID.String()
+	usedFor   = account.AccountUsedFor_UserBenefitHot
 
 	req = npool.AccountReq{
-		ID:         &id,
-		CoinTypeID: &coinTypeID,
-		AccountID:  &accountID,
-		UsedFor:    &usedFor,
+		ID:        &id,
+		AccountID: &accountID,
+		UsedFor:   &usedFor,
 	}
 )
 
@@ -65,31 +62,27 @@ func create(t *testing.T) {
 func createBulk(t *testing.T) {
 	entities := []*ent.Platform{
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			AccountID:  uuid.New(),
-			UsedFor:    account.AccountUsedFor_UserBenefitHot.String(),
+			ID:        uuid.New(),
+			AccountID: uuid.New(),
+			UsedFor:   account.AccountUsedFor_UserBenefitHot.String(),
 		},
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			AccountID:  uuid.New(),
-			UsedFor:    account.AccountUsedFor_UserBenefitHot.String(),
+			ID:        uuid.New(),
+			AccountID: uuid.New(),
+			UsedFor:   account.AccountUsedFor_UserBenefitHot.String(),
 		},
 	}
 
 	reqs := []*npool.AccountReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
 		_accountID := _entity.AccountID.String()
 		_usedFor := account.AccountUsedFor_UserBenefitHot
 
 		reqs = append(reqs, &npool.AccountReq{
-			ID:         &_id,
-			CoinTypeID: &_coinTypeID,
-			AccountID:  &_accountID,
-			UsedFor:    &_usedFor,
+			ID:        &_id,
+			AccountID: &_accountID,
+			UsedFor:   &_usedFor,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)

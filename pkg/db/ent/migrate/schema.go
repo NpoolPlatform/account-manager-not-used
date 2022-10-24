@@ -105,7 +105,6 @@ var (
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
-		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
 		{Name: "backup", Type: field.TypeBool, Nullable: true, Default: false},

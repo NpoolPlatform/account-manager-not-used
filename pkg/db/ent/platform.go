@@ -22,8 +22,6 @@ type Platform struct {
 	UpdatedAt uint32 `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
-	// CoinTypeID holds the value of the "coin_type_id" field.
-	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// AccountID holds the value of the "account_id" field.
 	AccountID uuid.UUID `json:"account_id,omitempty"`
 	// UsedFor holds the value of the "used_for" field.
@@ -43,7 +41,7 @@ func (*Platform) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case platform.FieldUsedFor:
 			values[i] = new(sql.NullString)
-		case platform.FieldID, platform.FieldCoinTypeID, platform.FieldAccountID:
+		case platform.FieldID, platform.FieldAccountID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Platform", columns[i])
@@ -83,12 +81,6 @@ func (pl *Platform) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
 			} else if value.Valid {
 				pl.DeletedAt = uint32(value.Int64)
-			}
-		case platform.FieldCoinTypeID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
-			} else if value != nil {
-				pl.CoinTypeID = *value
 			}
 		case platform.FieldAccountID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -144,9 +136,6 @@ func (pl *Platform) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("deleted_at=")
 	builder.WriteString(fmt.Sprintf("%v", pl.DeletedAt))
-	builder.WriteString(", ")
-	builder.WriteString("coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", pl.CoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("account_id=")
 	builder.WriteString(fmt.Sprintf("%v", pl.AccountID))

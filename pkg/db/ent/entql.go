@@ -138,13 +138,12 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Platform",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			platform.FieldCreatedAt:  {Type: field.TypeUint32, Column: platform.FieldCreatedAt},
-			platform.FieldUpdatedAt:  {Type: field.TypeUint32, Column: platform.FieldUpdatedAt},
-			platform.FieldDeletedAt:  {Type: field.TypeUint32, Column: platform.FieldDeletedAt},
-			platform.FieldCoinTypeID: {Type: field.TypeUUID, Column: platform.FieldCoinTypeID},
-			platform.FieldAccountID:  {Type: field.TypeUUID, Column: platform.FieldAccountID},
-			platform.FieldUsedFor:    {Type: field.TypeString, Column: platform.FieldUsedFor},
-			platform.FieldBackup:     {Type: field.TypeBool, Column: platform.FieldBackup},
+			platform.FieldCreatedAt: {Type: field.TypeUint32, Column: platform.FieldCreatedAt},
+			platform.FieldUpdatedAt: {Type: field.TypeUint32, Column: platform.FieldUpdatedAt},
+			platform.FieldDeletedAt: {Type: field.TypeUint32, Column: platform.FieldDeletedAt},
+			platform.FieldAccountID: {Type: field.TypeUUID, Column: platform.FieldAccountID},
+			platform.FieldUsedFor:   {Type: field.TypeString, Column: platform.FieldUsedFor},
+			platform.FieldBackup:    {Type: field.TypeBool, Column: platform.FieldBackup},
 		},
 	}
 	graph.Nodes[6] = &sqlgraph.Node{
@@ -655,11 +654,6 @@ func (f *PlatformFilter) WhereUpdatedAt(p entql.Uint32P) {
 // WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
 func (f *PlatformFilter) WhereDeletedAt(p entql.Uint32P) {
 	f.Where(p.Field(platform.FieldDeletedAt))
-}
-
-// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *PlatformFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(platform.FieldCoinTypeID))
 }
 
 // WhereAccountID applies the entql [16]byte predicate on the account_id field.

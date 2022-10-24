@@ -4670,7 +4670,6 @@ type PlatformMutation struct {
 	addupdated_at *int32
 	deleted_at    *uint32
 	adddeleted_at *int32
-	coin_type_id  *uuid.UUID
 	account_id    *uuid.UUID
 	used_for      *string
 	backup        *bool
@@ -4952,55 +4951,6 @@ func (m *PlatformMutation) ResetDeletedAt() {
 	m.adddeleted_at = nil
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (m *PlatformMutation) SetCoinTypeID(u uuid.UUID) {
-	m.coin_type_id = &u
-}
-
-// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
-func (m *PlatformMutation) CoinTypeID() (r uuid.UUID, exists bool) {
-	v := m.coin_type_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCoinTypeID returns the old "coin_type_id" field's value of the Platform entity.
-// If the Platform object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PlatformMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
-	}
-	return oldValue.CoinTypeID, nil
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (m *PlatformMutation) ClearCoinTypeID() {
-	m.coin_type_id = nil
-	m.clearedFields[platform.FieldCoinTypeID] = struct{}{}
-}
-
-// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
-func (m *PlatformMutation) CoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[platform.FieldCoinTypeID]
-	return ok
-}
-
-// ResetCoinTypeID resets all changes to the "coin_type_id" field.
-func (m *PlatformMutation) ResetCoinTypeID() {
-	m.coin_type_id = nil
-	delete(m.clearedFields, platform.FieldCoinTypeID)
-}
-
 // SetAccountID sets the "account_id" field.
 func (m *PlatformMutation) SetAccountID(u uuid.UUID) {
 	m.account_id = &u
@@ -5167,7 +5117,7 @@ func (m *PlatformMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PlatformMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, platform.FieldCreatedAt)
 	}
@@ -5176,9 +5126,6 @@ func (m *PlatformMutation) Fields() []string {
 	}
 	if m.deleted_at != nil {
 		fields = append(fields, platform.FieldDeletedAt)
-	}
-	if m.coin_type_id != nil {
-		fields = append(fields, platform.FieldCoinTypeID)
 	}
 	if m.account_id != nil {
 		fields = append(fields, platform.FieldAccountID)
@@ -5203,8 +5150,6 @@ func (m *PlatformMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedAt()
 	case platform.FieldDeletedAt:
 		return m.DeletedAt()
-	case platform.FieldCoinTypeID:
-		return m.CoinTypeID()
 	case platform.FieldAccountID:
 		return m.AccountID()
 	case platform.FieldUsedFor:
@@ -5226,8 +5171,6 @@ func (m *PlatformMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldUpdatedAt(ctx)
 	case platform.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case platform.FieldCoinTypeID:
-		return m.OldCoinTypeID(ctx)
 	case platform.FieldAccountID:
 		return m.OldAccountID(ctx)
 	case platform.FieldUsedFor:
@@ -5263,13 +5206,6 @@ func (m *PlatformMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
-		return nil
-	case platform.FieldCoinTypeID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCoinTypeID(v)
 		return nil
 	case platform.FieldAccountID:
 		v, ok := value.(uuid.UUID)
@@ -5361,9 +5297,6 @@ func (m *PlatformMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *PlatformMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(platform.FieldCoinTypeID) {
-		fields = append(fields, platform.FieldCoinTypeID)
-	}
 	if m.FieldCleared(platform.FieldAccountID) {
 		fields = append(fields, platform.FieldAccountID)
 	}
@@ -5387,9 +5320,6 @@ func (m *PlatformMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *PlatformMutation) ClearField(name string) error {
 	switch name {
-	case platform.FieldCoinTypeID:
-		m.ClearCoinTypeID()
-		return nil
 	case platform.FieldAccountID:
 		m.ClearAccountID()
 		return nil
@@ -5415,9 +5345,6 @@ func (m *PlatformMutation) ResetField(name string) error {
 		return nil
 	case platform.FieldDeletedAt:
 		m.ResetDeletedAt()
-		return nil
-	case platform.FieldCoinTypeID:
-		m.ResetCoinTypeID()
 		return nil
 	case platform.FieldAccountID:
 		m.ResetAccountID()

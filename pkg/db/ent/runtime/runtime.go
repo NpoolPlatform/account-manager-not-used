@@ -317,20 +317,16 @@ func init() {
 	platformDescDeletedAt := platformMixinFields0[2].Descriptor()
 	// platform.DefaultDeletedAt holds the default value on creation for the deleted_at field.
 	platform.DefaultDeletedAt = platformDescDeletedAt.Default.(func() uint32)
-	// platformDescCoinTypeID is the schema descriptor for coin_type_id field.
-	platformDescCoinTypeID := platformFields[1].Descriptor()
-	// platform.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	platform.DefaultCoinTypeID = platformDescCoinTypeID.Default.(func() uuid.UUID)
 	// platformDescAccountID is the schema descriptor for account_id field.
-	platformDescAccountID := platformFields[2].Descriptor()
+	platformDescAccountID := platformFields[1].Descriptor()
 	// platform.DefaultAccountID holds the default value on creation for the account_id field.
 	platform.DefaultAccountID = platformDescAccountID.Default.(func() uuid.UUID)
 	// platformDescUsedFor is the schema descriptor for used_for field.
-	platformDescUsedFor := platformFields[3].Descriptor()
+	platformDescUsedFor := platformFields[2].Descriptor()
 	// platform.DefaultUsedFor holds the default value on creation for the used_for field.
 	platform.DefaultUsedFor = platformDescUsedFor.Default.(string)
 	// platformDescBackup is the schema descriptor for backup field.
-	platformDescBackup := platformFields[4].Descriptor()
+	platformDescBackup := platformFields[3].Descriptor()
 	// platform.DefaultBackup holds the default value on creation for the backup field.
 	platform.DefaultBackup = platformDescBackup.Default.(bool)
 	// platformDescID is the schema descriptor for id field.

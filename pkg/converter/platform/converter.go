@@ -12,12 +12,11 @@ func Ent2Grpc(row *ent.Platform) *npool.Account {
 	}
 
 	return &npool.Account{
-		ID:         row.ID.String(),
-		CoinTypeID: row.CoinTypeID.String(),
-		AccountID:  row.AccountID.String(),
-		UsedFor:    account.AccountUsedFor(account.AccountUsedFor_value[row.UsedFor]),
-		Backup:     row.Backup,
-		CreatedAt:  row.CreatedAt,
+		ID:        row.ID.String(),
+		AccountID: row.AccountID.String(),
+		UsedFor:   account.AccountUsedFor(account.AccountUsedFor_value[row.UsedFor]),
+		Backup:    row.Backup,
+		CreatedAt: row.CreatedAt,
 	}
 }
 
