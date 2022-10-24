@@ -23,8 +23,6 @@ const (
 	FieldAppID = "app_id"
 	// FieldUserID holds the string denoting the user_id field in the database.
 	FieldUserID = "user_id"
-	// FieldCoinTypeID holds the string denoting the coin_type_id field in the database.
-	FieldCoinTypeID = "coin_type_id"
 	// FieldAccountID holds the string denoting the account_id field in the database.
 	FieldAccountID = "account_id"
 	// FieldIncoming holds the string denoting the incoming field in the database.
@@ -47,7 +45,6 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldAppID,
 	FieldUserID,
-	FieldCoinTypeID,
 	FieldAccountID,
 	FieldIncoming,
 	FieldOutcoming,
@@ -86,8 +83,6 @@ var (
 	DefaultAppID func() uuid.UUID
 	// DefaultUserID holds the default value on creation for the "user_id" field.
 	DefaultUserID func() uuid.UUID
-	// DefaultCoinTypeID holds the default value on creation for the "coin_type_id" field.
-	DefaultCoinTypeID func() uuid.UUID
 	// DefaultAccountID holds the default value on creation for the "account_id" field.
 	DefaultAccountID func() uuid.UUID
 	// DefaultIncoming holds the default value on creation for the "incoming" field.

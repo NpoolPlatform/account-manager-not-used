@@ -61,7 +61,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			deposit.FieldDeletedAt:     {Type: field.TypeUint32, Column: deposit.FieldDeletedAt},
 			deposit.FieldAppID:         {Type: field.TypeUUID, Column: deposit.FieldAppID},
 			deposit.FieldUserID:        {Type: field.TypeUUID, Column: deposit.FieldUserID},
-			deposit.FieldCoinTypeID:    {Type: field.TypeUUID, Column: deposit.FieldCoinTypeID},
 			deposit.FieldAccountID:     {Type: field.TypeUUID, Column: deposit.FieldAccountID},
 			deposit.FieldIncoming:      {Type: field.TypeOther, Column: deposit.FieldIncoming},
 			deposit.FieldOutcoming:     {Type: field.TypeOther, Column: deposit.FieldOutcoming},
@@ -354,11 +353,6 @@ func (f *DepositFilter) WhereAppID(p entql.ValueP) {
 // WhereUserID applies the entql [16]byte predicate on the user_id field.
 func (f *DepositFilter) WhereUserID(p entql.ValueP) {
 	f.Where(p.Field(deposit.FieldUserID))
-}
-
-// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *DepositFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(deposit.FieldCoinTypeID))
 }
 
 // WhereAccountID applies the entql [16]byte predicate on the account_id field.

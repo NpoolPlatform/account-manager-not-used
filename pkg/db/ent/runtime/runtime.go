@@ -125,28 +125,24 @@ func init() {
 	depositDescUserID := depositFields[2].Descriptor()
 	// deposit.DefaultUserID holds the default value on creation for the user_id field.
 	deposit.DefaultUserID = depositDescUserID.Default.(func() uuid.UUID)
-	// depositDescCoinTypeID is the schema descriptor for coin_type_id field.
-	depositDescCoinTypeID := depositFields[3].Descriptor()
-	// deposit.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	deposit.DefaultCoinTypeID = depositDescCoinTypeID.Default.(func() uuid.UUID)
 	// depositDescAccountID is the schema descriptor for account_id field.
-	depositDescAccountID := depositFields[4].Descriptor()
+	depositDescAccountID := depositFields[3].Descriptor()
 	// deposit.DefaultAccountID holds the default value on creation for the account_id field.
 	deposit.DefaultAccountID = depositDescAccountID.Default.(func() uuid.UUID)
 	// depositDescIncoming is the schema descriptor for incoming field.
-	depositDescIncoming := depositFields[5].Descriptor()
+	depositDescIncoming := depositFields[4].Descriptor()
 	// deposit.DefaultIncoming holds the default value on creation for the incoming field.
 	deposit.DefaultIncoming = depositDescIncoming.Default.(decimal.Decimal)
 	// depositDescOutcoming is the schema descriptor for outcoming field.
-	depositDescOutcoming := depositFields[6].Descriptor()
+	depositDescOutcoming := depositFields[5].Descriptor()
 	// deposit.DefaultOutcoming holds the default value on creation for the outcoming field.
 	deposit.DefaultOutcoming = depositDescOutcoming.Default.(decimal.Decimal)
 	// depositDescCollectingTid is the schema descriptor for collecting_tid field.
-	depositDescCollectingTid := depositFields[7].Descriptor()
+	depositDescCollectingTid := depositFields[6].Descriptor()
 	// deposit.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
 	deposit.DefaultCollectingTid = depositDescCollectingTid.Default.(func() uuid.UUID)
 	// depositDescScannableAt is the schema descriptor for scannable_at field.
-	depositDescScannableAt := depositFields[8].Descriptor()
+	depositDescScannableAt := depositFields[7].Descriptor()
 	// deposit.DefaultScannableAt holds the default value on creation for the scannable_at field.
 	deposit.DefaultScannableAt = depositDescScannableAt.Default.(func() uint32)
 	// depositDescID is the schema descriptor for id field.

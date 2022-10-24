@@ -34,9 +34,6 @@ func CreateSet(c *ent.DepositCreate, in *npool.AccountReq) *ent.DepositCreate {
 	if in.UserID != nil {
 		c.SetUserID(uuid.MustParse(in.GetUserID()))
 	}
-	if in.CoinTypeID != nil {
-		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
-	}
 	if in.AccountID != nil {
 		c.SetAccountID(uuid.MustParse(in.GetAccountID()))
 	}
@@ -264,14 +261,6 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.DepositQuery, erro
 		switch conds.GetUserID().GetOp() {
 		case cruder.EQ:
 			stm.Where(deposit.UserID(uuid.MustParse(conds.GetUserID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid deposit field")
-		}
-	}
-	if conds.CoinTypeID != nil {
-		switch conds.GetCoinTypeID().GetOp() {
-		case cruder.EQ:
-			stm.Where(deposit.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
 			return nil, fmt.Errorf("invalid deposit field")
 		}

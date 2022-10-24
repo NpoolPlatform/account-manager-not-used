@@ -94,20 +94,6 @@ func (dc *DepositCreate) SetNillableUserID(u *uuid.UUID) *DepositCreate {
 	return dc
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (dc *DepositCreate) SetCoinTypeID(u uuid.UUID) *DepositCreate {
-	dc.mutation.SetCoinTypeID(u)
-	return dc
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (dc *DepositCreate) SetNillableCoinTypeID(u *uuid.UUID) *DepositCreate {
-	if u != nil {
-		dc.SetCoinTypeID(*u)
-	}
-	return dc
-}
-
 // SetAccountID sets the "account_id" field.
 func (dc *DepositCreate) SetAccountID(u uuid.UUID) *DepositCreate {
 	dc.mutation.SetAccountID(u)
@@ -306,13 +292,6 @@ func (dc *DepositCreate) defaults() error {
 		v := deposit.DefaultUserID()
 		dc.mutation.SetUserID(v)
 	}
-	if _, ok := dc.mutation.CoinTypeID(); !ok {
-		if deposit.DefaultCoinTypeID == nil {
-			return fmt.Errorf("ent: uninitialized deposit.DefaultCoinTypeID (forgotten import ent/runtime?)")
-		}
-		v := deposit.DefaultCoinTypeID()
-		dc.mutation.SetCoinTypeID(v)
-	}
 	if _, ok := dc.mutation.AccountID(); !ok {
 		if deposit.DefaultAccountID == nil {
 			return fmt.Errorf("ent: uninitialized deposit.DefaultAccountID (forgotten import ent/runtime?)")
@@ -439,14 +418,6 @@ func (dc *DepositCreate) createSpec() (*Deposit, *sqlgraph.CreateSpec) {
 			Column: deposit.FieldUserID,
 		})
 		_node.UserID = value
-	}
-	if value, ok := dc.mutation.CoinTypeID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: deposit.FieldCoinTypeID,
-		})
-		_node.CoinTypeID = value
 	}
 	if value, ok := dc.mutation.AccountID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -629,24 +600,6 @@ func (u *DepositUpsert) UpdateUserID() *DepositUpsert {
 // ClearUserID clears the value of the "user_id" field.
 func (u *DepositUpsert) ClearUserID() *DepositUpsert {
 	u.SetNull(deposit.FieldUserID)
-	return u
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *DepositUpsert) SetCoinTypeID(v uuid.UUID) *DepositUpsert {
-	u.Set(deposit.FieldCoinTypeID, v)
-	return u
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *DepositUpsert) UpdateCoinTypeID() *DepositUpsert {
-	u.SetExcluded(deposit.FieldCoinTypeID)
-	return u
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *DepositUpsert) ClearCoinTypeID() *DepositUpsert {
-	u.SetNull(deposit.FieldCoinTypeID)
 	return u
 }
 
@@ -898,27 +851,6 @@ func (u *DepositUpsertOne) UpdateUserID() *DepositUpsertOne {
 func (u *DepositUpsertOne) ClearUserID() *DepositUpsertOne {
 	return u.Update(func(s *DepositUpsert) {
 		s.ClearUserID()
-	})
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *DepositUpsertOne) SetCoinTypeID(v uuid.UUID) *DepositUpsertOne {
-	return u.Update(func(s *DepositUpsert) {
-		s.SetCoinTypeID(v)
-	})
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *DepositUpsertOne) UpdateCoinTypeID() *DepositUpsertOne {
-	return u.Update(func(s *DepositUpsert) {
-		s.UpdateCoinTypeID()
-	})
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *DepositUpsertOne) ClearCoinTypeID() *DepositUpsertOne {
-	return u.Update(func(s *DepositUpsert) {
-		s.ClearCoinTypeID()
 	})
 }
 
@@ -1352,27 +1284,6 @@ func (u *DepositUpsertBulk) UpdateUserID() *DepositUpsertBulk {
 func (u *DepositUpsertBulk) ClearUserID() *DepositUpsertBulk {
 	return u.Update(func(s *DepositUpsert) {
 		s.ClearUserID()
-	})
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *DepositUpsertBulk) SetCoinTypeID(v uuid.UUID) *DepositUpsertBulk {
-	return u.Update(func(s *DepositUpsert) {
-		s.SetCoinTypeID(v)
-	})
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *DepositUpsertBulk) UpdateCoinTypeID() *DepositUpsertBulk {
-	return u.Update(func(s *DepositUpsert) {
-		s.UpdateCoinTypeID()
-	})
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *DepositUpsertBulk) ClearCoinTypeID() *DepositUpsertBulk {
-	return u.Update(func(s *DepositUpsert) {
-		s.ClearCoinTypeID()
 	})
 }
 

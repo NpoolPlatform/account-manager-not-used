@@ -125,26 +125,6 @@ func (du *DepositUpdate) ClearUserID() *DepositUpdate {
 	return du
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (du *DepositUpdate) SetCoinTypeID(u uuid.UUID) *DepositUpdate {
-	du.mutation.SetCoinTypeID(u)
-	return du
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (du *DepositUpdate) SetNillableCoinTypeID(u *uuid.UUID) *DepositUpdate {
-	if u != nil {
-		du.SetCoinTypeID(*u)
-	}
-	return du
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (du *DepositUpdate) ClearCoinTypeID() *DepositUpdate {
-	du.mutation.ClearCoinTypeID()
-	return du
-}
-
 // SetAccountID sets the "account_id" field.
 func (du *DepositUpdate) SetAccountID(u uuid.UUID) *DepositUpdate {
 	du.mutation.SetAccountID(u)
@@ -418,19 +398,6 @@ func (du *DepositUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: deposit.FieldUserID,
 		})
 	}
-	if value, ok := du.mutation.CoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: deposit.FieldCoinTypeID,
-		})
-	}
-	if du.mutation.CoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: deposit.FieldCoinTypeID,
-		})
-	}
 	if value, ok := du.mutation.AccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -616,26 +583,6 @@ func (duo *DepositUpdateOne) SetNillableUserID(u *uuid.UUID) *DepositUpdateOne {
 // ClearUserID clears the value of the "user_id" field.
 func (duo *DepositUpdateOne) ClearUserID() *DepositUpdateOne {
 	duo.mutation.ClearUserID()
-	return duo
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (duo *DepositUpdateOne) SetCoinTypeID(u uuid.UUID) *DepositUpdateOne {
-	duo.mutation.SetCoinTypeID(u)
-	return duo
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (duo *DepositUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *DepositUpdateOne {
-	if u != nil {
-		duo.SetCoinTypeID(*u)
-	}
-	return duo
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (duo *DepositUpdateOne) ClearCoinTypeID() *DepositUpdateOne {
-	duo.mutation.ClearCoinTypeID()
 	return duo
 }
 
@@ -940,19 +887,6 @@ func (duo *DepositUpdateOne) sqlSave(ctx context.Context) (_node *Deposit, err e
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Column: deposit.FieldUserID,
-		})
-	}
-	if value, ok := duo.mutation.CoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: deposit.FieldCoinTypeID,
-		})
-	}
-	if duo.mutation.CoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: deposit.FieldCoinTypeID,
 		})
 	}
 	if value, ok := duo.mutation.AccountID(); ok {

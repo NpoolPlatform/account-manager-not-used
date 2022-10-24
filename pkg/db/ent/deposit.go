@@ -27,8 +27,6 @@ type Deposit struct {
 	AppID uuid.UUID `json:"app_id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID uuid.UUID `json:"user_id,omitempty"`
-	// CoinTypeID holds the value of the "coin_type_id" field.
-	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// AccountID holds the value of the "account_id" field.
 	AccountID uuid.UUID `json:"account_id,omitempty"`
 	// Incoming holds the value of the "incoming" field.
@@ -50,7 +48,7 @@ func (*Deposit) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(decimal.Decimal)
 		case deposit.FieldCreatedAt, deposit.FieldUpdatedAt, deposit.FieldDeletedAt, deposit.FieldScannableAt:
 			values[i] = new(sql.NullInt64)
-		case deposit.FieldID, deposit.FieldAppID, deposit.FieldUserID, deposit.FieldCoinTypeID, deposit.FieldAccountID, deposit.FieldCollectingTid:
+		case deposit.FieldID, deposit.FieldAppID, deposit.FieldUserID, deposit.FieldAccountID, deposit.FieldCollectingTid:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Deposit", columns[i])
@@ -102,12 +100,6 @@ func (d *Deposit) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
 				d.UserID = *value
-			}
-		case deposit.FieldCoinTypeID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
-			} else if value != nil {
-				d.CoinTypeID = *value
 			}
 		case deposit.FieldAccountID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -181,9 +173,6 @@ func (d *Deposit) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", d.UserID))
-	builder.WriteString(", ")
-	builder.WriteString("coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", d.CoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("account_id=")
 	builder.WriteString(fmt.Sprintf("%v", d.AccountID))

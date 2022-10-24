@@ -36,16 +36,6 @@ func validate(info *npool.AccountReq) error { //nolint
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("UserID is invalid: %v", err))
 	}
 
-	if info.CoinTypeID == nil {
-		logger.Sugar().Errorw("validate", "CoinTypeID", info.CoinTypeID)
-		return status.Error(codes.InvalidArgument, "CoinTypeID is empty")
-	}
-
-	if _, err := uuid.Parse(info.GetCoinTypeID()); err != nil {
-		logger.Sugar().Errorw("validate", "CoinTypeID", info.GetCoinTypeID(), "error", err)
-		return status.Error(codes.InvalidArgument, fmt.Sprintf("CoinTypeID is invalid: %v", err))
-	}
-
 	if info.AccountID == nil {
 		logger.Sugar().Errorw("validate", "AccountID", info.AccountID)
 		return status.Error(codes.InvalidArgument, "AccountID is empty")
@@ -104,9 +94,9 @@ func duplicate(infos []*npool.AccountReq) error {
 			return status.Error(codes.InvalidArgument, fmt.Sprintf("Infos has invalid element %v", err))
 		}
 
-		key := fmt.Sprintf("%v:%v:%v:%v", info.GetAppID(), info.GetUserID(), info.GetCoinTypeID(), info.GetAccountID())
+		key := fmt.Sprintf("%v:%v:%v", info.GetAppID(), info.GetUserID(), info.GetAccountID())
 		if _, ok := keys[key]; ok {
-			return status.Error(codes.InvalidArgument, "Infos has duplicate AppID:UserIDCoinTypeID:AccountID")
+			return status.Error(codes.InvalidArgument, "Infos has duplicate AppID:UserID:AccountID")
 		}
 
 		keys[key] = struct{}{}

@@ -37,7 +37,6 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "incoming", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "outcoming", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},

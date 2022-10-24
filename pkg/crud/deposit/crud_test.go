@@ -32,26 +32,23 @@ func init() {
 }
 
 var entity = ent.Deposit{
-	ID:         uuid.New(),
-	AppID:      uuid.New(),
-	UserID:     uuid.New(),
-	CoinTypeID: uuid.New(),
-	AccountID:  uuid.New(),
+	ID:        uuid.New(),
+	AppID:     uuid.New(),
+	UserID:    uuid.New(),
+	AccountID: uuid.New(),
 }
 
 var (
-	id         = entity.ID.String()
-	appID      = entity.AppID.String()
-	depositID  = entity.UserID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	accountID  = entity.AccountID.String()
+	id        = entity.ID.String()
+	appID     = entity.AppID.String()
+	depositID = entity.UserID.String()
+	accountID = entity.AccountID.String()
 
 	req = npool.AccountReq{
-		ID:         &id,
-		AppID:      &appID,
-		UserID:     &depositID,
-		CoinTypeID: &coinTypeID,
-		AccountID:  &accountID,
+		ID:        &id,
+		AppID:     &appID,
+		UserID:    &depositID,
+		AccountID: &accountID,
 	}
 )
 
@@ -72,18 +69,16 @@ func create(t *testing.T) {
 func createBulk(t *testing.T) {
 	entities := []*ent.Deposit{
 		{
-			ID:         uuid.New(),
-			AppID:      uuid.New(),
-			UserID:     uuid.New(),
-			CoinTypeID: uuid.New(),
-			AccountID:  uuid.New(),
+			ID:        uuid.New(),
+			AppID:     uuid.New(),
+			UserID:    uuid.New(),
+			AccountID: uuid.New(),
 		},
 		{
-			ID:         uuid.New(),
-			AppID:      uuid.New(),
-			UserID:     uuid.New(),
-			CoinTypeID: uuid.New(),
-			AccountID:  uuid.New(),
+			ID:        uuid.New(),
+			AppID:     uuid.New(),
+			UserID:    uuid.New(),
+			AccountID: uuid.New(),
 		},
 	}
 
@@ -92,15 +87,13 @@ func createBulk(t *testing.T) {
 		_id := _entity.ID.String()
 		_appID := _entity.AppID.String()
 		_depositID := _entity.UserID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
 		_accountID := _entity.AccountID.String()
 
 		reqs = append(reqs, &npool.AccountReq{
-			ID:         &_id,
-			AppID:      &_appID,
-			UserID:     &_depositID,
-			CoinTypeID: &_coinTypeID,
-			AccountID:  &_accountID,
+			ID:        &_id,
+			AppID:     &_appID,
+			UserID:    &_depositID,
+			AccountID: &_accountID,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)
