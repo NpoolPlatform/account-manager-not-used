@@ -84,26 +84,6 @@ func (pu *PaymentUpdate) AddDeletedAt(u int32) *PaymentUpdate {
 	return pu
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (pu *PaymentUpdate) SetCoinTypeID(u uuid.UUID) *PaymentUpdate {
-	pu.mutation.SetCoinTypeID(u)
-	return pu
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (pu *PaymentUpdate) SetNillableCoinTypeID(u *uuid.UUID) *PaymentUpdate {
-	if u != nil {
-		pu.SetCoinTypeID(*u)
-	}
-	return pu
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (pu *PaymentUpdate) ClearCoinTypeID() *PaymentUpdate {
-	pu.mutation.ClearCoinTypeID()
-	return pu
-}
-
 // SetAccountID sets the "account_id" field.
 func (pu *PaymentUpdate) SetAccountID(u uuid.UUID) *PaymentUpdate {
 	pu.mutation.SetAccountID(u)
@@ -311,19 +291,6 @@ func (pu *PaymentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: payment.FieldDeletedAt,
 		})
 	}
-	if value, ok := pu.mutation.CoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: payment.FieldCoinTypeID,
-		})
-	}
-	if pu.mutation.CoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: payment.FieldCoinTypeID,
-		})
-	}
 	if value, ok := pu.mutation.AccountID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -443,26 +410,6 @@ func (puo *PaymentUpdateOne) SetNillableDeletedAt(u *uint32) *PaymentUpdateOne {
 // AddDeletedAt adds u to the "deleted_at" field.
 func (puo *PaymentUpdateOne) AddDeletedAt(u int32) *PaymentUpdateOne {
 	puo.mutation.AddDeletedAt(u)
-	return puo
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (puo *PaymentUpdateOne) SetCoinTypeID(u uuid.UUID) *PaymentUpdateOne {
-	puo.mutation.SetCoinTypeID(u)
-	return puo
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (puo *PaymentUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *PaymentUpdateOne {
-	if u != nil {
-		puo.SetCoinTypeID(*u)
-	}
-	return puo
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (puo *PaymentUpdateOne) ClearCoinTypeID() *PaymentUpdateOne {
-	puo.mutation.ClearCoinTypeID()
 	return puo
 }
 
@@ -701,19 +648,6 @@ func (puo *PaymentUpdateOne) sqlSave(ctx context.Context) (_node *Payment, err e
 			Type:   field.TypeUint32,
 			Value:  value,
 			Column: payment.FieldDeletedAt,
-		})
-	}
-	if value, ok := puo.mutation.CoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: payment.FieldCoinTypeID,
-		})
-	}
-	if puo.mutation.CoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: payment.FieldCoinTypeID,
 		})
 	}
 	if value, ok := puo.mutation.AccountID(); ok {

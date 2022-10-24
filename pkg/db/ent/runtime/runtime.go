@@ -273,20 +273,16 @@ func init() {
 	paymentDescDeletedAt := paymentMixinFields0[2].Descriptor()
 	// payment.DefaultDeletedAt holds the default value on creation for the deleted_at field.
 	payment.DefaultDeletedAt = paymentDescDeletedAt.Default.(func() uint32)
-	// paymentDescCoinTypeID is the schema descriptor for coin_type_id field.
-	paymentDescCoinTypeID := paymentFields[1].Descriptor()
-	// payment.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	payment.DefaultCoinTypeID = paymentDescCoinTypeID.Default.(func() uuid.UUID)
 	// paymentDescAccountID is the schema descriptor for account_id field.
-	paymentDescAccountID := paymentFields[2].Descriptor()
+	paymentDescAccountID := paymentFields[1].Descriptor()
 	// payment.DefaultAccountID holds the default value on creation for the account_id field.
 	payment.DefaultAccountID = paymentDescAccountID.Default.(func() uuid.UUID)
 	// paymentDescCollectingTid is the schema descriptor for collecting_tid field.
-	paymentDescCollectingTid := paymentFields[3].Descriptor()
+	paymentDescCollectingTid := paymentFields[2].Descriptor()
 	// payment.DefaultCollectingTid holds the default value on creation for the collecting_tid field.
 	payment.DefaultCollectingTid = paymentDescCollectingTid.Default.(func() uuid.UUID)
 	// paymentDescAvailableAt is the schema descriptor for available_at field.
-	paymentDescAvailableAt := paymentFields[4].Descriptor()
+	paymentDescAvailableAt := paymentFields[3].Descriptor()
 	// payment.DefaultAvailableAt holds the default value on creation for the available_at field.
 	payment.DefaultAvailableAt = paymentDescAvailableAt.Default.(func() uint32)
 	// paymentDescID is the schema descriptor for id field.

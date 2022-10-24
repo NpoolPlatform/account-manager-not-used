@@ -89,7 +89,6 @@ var (
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
-		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "collecting_tid", Type: field.TypeUUID, Nullable: true},
 		{Name: "available_at", Type: field.TypeUint32, Nullable: true},

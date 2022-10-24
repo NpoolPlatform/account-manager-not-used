@@ -28,12 +28,6 @@ func (Payment) Fields() []ent.Field {
 			Default(uuid.New).
 			Unique(),
 		field.
-			UUID("coin_type_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.UUID{}
-			}),
-		field.
 			UUID("account_id", uuid.UUID{}).
 			Optional().
 			Default(func() uuid.UUID {

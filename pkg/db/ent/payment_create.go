@@ -65,20 +65,6 @@ func (pc *PaymentCreate) SetNillableDeletedAt(u *uint32) *PaymentCreate {
 	return pc
 }
 
-// SetCoinTypeID sets the "coin_type_id" field.
-func (pc *PaymentCreate) SetCoinTypeID(u uuid.UUID) *PaymentCreate {
-	pc.mutation.SetCoinTypeID(u)
-	return pc
-}
-
-// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
-func (pc *PaymentCreate) SetNillableCoinTypeID(u *uuid.UUID) *PaymentCreate {
-	if u != nil {
-		pc.SetCoinTypeID(*u)
-	}
-	return pc
-}
-
 // SetAccountID sets the "account_id" field.
 func (pc *PaymentCreate) SetAccountID(u uuid.UUID) *PaymentCreate {
 	pc.mutation.SetAccountID(u)
@@ -235,13 +221,6 @@ func (pc *PaymentCreate) defaults() error {
 		v := payment.DefaultDeletedAt()
 		pc.mutation.SetDeletedAt(v)
 	}
-	if _, ok := pc.mutation.CoinTypeID(); !ok {
-		if payment.DefaultCoinTypeID == nil {
-			return fmt.Errorf("ent: uninitialized payment.DefaultCoinTypeID (forgotten import ent/runtime?)")
-		}
-		v := payment.DefaultCoinTypeID()
-		pc.mutation.SetCoinTypeID(v)
-	}
 	if _, ok := pc.mutation.AccountID(); !ok {
 		if payment.DefaultAccountID == nil {
 			return fmt.Errorf("ent: uninitialized payment.DefaultAccountID (forgotten import ent/runtime?)")
@@ -344,14 +323,6 @@ func (pc *PaymentCreate) createSpec() (*Payment, *sqlgraph.CreateSpec) {
 			Column: payment.FieldDeletedAt,
 		})
 		_node.DeletedAt = value
-	}
-	if value, ok := pc.mutation.CoinTypeID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: payment.FieldCoinTypeID,
-		})
-		_node.CoinTypeID = value
 	}
 	if value, ok := pc.mutation.AccountID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -482,24 +453,6 @@ func (u *PaymentUpsert) UpdateDeletedAt() *PaymentUpsert {
 // AddDeletedAt adds v to the "deleted_at" field.
 func (u *PaymentUpsert) AddDeletedAt(v uint32) *PaymentUpsert {
 	u.Add(payment.FieldDeletedAt, v)
-	return u
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *PaymentUpsert) SetCoinTypeID(v uuid.UUID) *PaymentUpsert {
-	u.Set(payment.FieldCoinTypeID, v)
-	return u
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *PaymentUpsert) UpdateCoinTypeID() *PaymentUpsert {
-	u.SetExcluded(payment.FieldCoinTypeID)
-	return u
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *PaymentUpsert) ClearCoinTypeID() *PaymentUpsert {
-	u.SetNull(payment.FieldCoinTypeID)
 	return u
 }
 
@@ -673,27 +626,6 @@ func (u *PaymentUpsertOne) AddDeletedAt(v uint32) *PaymentUpsertOne {
 func (u *PaymentUpsertOne) UpdateDeletedAt() *PaymentUpsertOne {
 	return u.Update(func(s *PaymentUpsert) {
 		s.UpdateDeletedAt()
-	})
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *PaymentUpsertOne) SetCoinTypeID(v uuid.UUID) *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.SetCoinTypeID(v)
-	})
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *PaymentUpsertOne) UpdateCoinTypeID() *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.UpdateCoinTypeID()
-	})
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *PaymentUpsertOne) ClearCoinTypeID() *PaymentUpsertOne {
-	return u.Update(func(s *PaymentUpsert) {
-		s.ClearCoinTypeID()
 	})
 }
 
@@ -1043,27 +975,6 @@ func (u *PaymentUpsertBulk) AddDeletedAt(v uint32) *PaymentUpsertBulk {
 func (u *PaymentUpsertBulk) UpdateDeletedAt() *PaymentUpsertBulk {
 	return u.Update(func(s *PaymentUpsert) {
 		s.UpdateDeletedAt()
-	})
-}
-
-// SetCoinTypeID sets the "coin_type_id" field.
-func (u *PaymentUpsertBulk) SetCoinTypeID(v uuid.UUID) *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.SetCoinTypeID(v)
-	})
-}
-
-// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
-func (u *PaymentUpsertBulk) UpdateCoinTypeID() *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.UpdateCoinTypeID()
-	})
-}
-
-// ClearCoinTypeID clears the value of the "coin_type_id" field.
-func (u *PaymentUpsertBulk) ClearCoinTypeID() *PaymentUpsertBulk {
-	return u.Update(func(s *PaymentUpsert) {
-		s.ClearCoinTypeID()
 	})
 }
 
