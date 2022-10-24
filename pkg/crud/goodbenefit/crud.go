@@ -104,6 +104,9 @@ func UpdateSet(info *ent.GoodBenefit, in *npool.AccountReq) *ent.GoodBenefitUpda
 	if in.TransactionID != nil {
 		u.SetTransactionID(uuid.MustParse(in.GetTransactionID()))
 	}
+	if in.AccountID != nil {
+		u.SetAccountID(uuid.MustParse(in.GetAccountID()))
+	}
 
 	return u
 }
