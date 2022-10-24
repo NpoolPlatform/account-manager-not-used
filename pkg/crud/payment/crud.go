@@ -25,9 +25,6 @@ func CreateSet(c *ent.PaymentCreate, in *npool.AccountReq) *ent.PaymentCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
-	if in.CoinTypeID != nil {
-		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
-	}
 	if in.AccountID != nil {
 		c.SetAccountID(uuid.MustParse(in.GetAccountID()))
 	}
@@ -176,14 +173,6 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PaymentQuery, erro
 		switch conds.GetID().GetOp() {
 		case cruder.EQ:
 			stm.Where(payment.ID(uuid.MustParse(conds.GetID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid payment field")
-		}
-	}
-	if conds.CoinTypeID != nil {
-		switch conds.GetCoinTypeID().GetOp() {
-		case cruder.EQ:
-			stm.Where(payment.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
 		default:
 			return nil, fmt.Errorf("invalid payment field")
 		}

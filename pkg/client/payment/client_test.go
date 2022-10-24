@@ -35,7 +35,6 @@ func init() {
 
 var accountData = npool.Account{
 	ID:            uuid.NewString(),
-	CoinTypeID:    uuid.NewString(),
 	AccountID:     uuid.NewString(),
 	CollectingTID: uuid.NewString(),
 }
@@ -43,7 +42,6 @@ var accountData = npool.Account{
 var (
 	accountInfo = npool.AccountReq{
 		ID:            &accountData.ID,
-		CoinTypeID:    &accountData.CoinTypeID,
 		AccountID:     &accountData.AccountID,
 		CollectingTID: &accountData.CollectingTID,
 		AvailableAt:   &accountData.AvailableAt,
@@ -76,13 +74,11 @@ func createAccounts(t *testing.T) {
 	accountDatas := []npool.Account{
 		{
 			ID:            uuid.NewString(),
-			CoinTypeID:    uuid.NewString(),
 			AccountID:     uuid.NewString(),
 			CollectingTID: uuid.NewString(),
 		},
 		{
 			ID:            uuid.NewString(),
-			CoinTypeID:    uuid.NewString(),
 			AccountID:     uuid.NewString(),
 			CollectingTID: uuid.NewString(),
 		},
@@ -92,7 +88,6 @@ func createAccounts(t *testing.T) {
 	for key := range accountDatas {
 		Accounts = append(Accounts, &npool.AccountReq{
 			ID:            &accountDatas[key].ID,
-			CoinTypeID:    &accountDatas[key].CoinTypeID,
 			AccountID:     &accountDatas[key].AccountID,
 			CollectingTID: &accountDatas[key].CollectingTID,
 			AvailableAt:   &accountDatas[key].AvailableAt,
