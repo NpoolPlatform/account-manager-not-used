@@ -106,7 +106,6 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
-		{Name: "good_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "backup", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// PlatformsTable holds the schema information for the "platforms" table.

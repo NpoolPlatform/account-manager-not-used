@@ -38,12 +38,6 @@ func (Platform) Fields() []ent.Field {
 			Optional().
 			Default(account.AccountUsedFor_DefaultAccountUsedFor.String()),
 		field.
-			UUID("good_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.UUID{}
-			}),
-		field.
 			Bool("backup").
 			Optional().
 			Default(false),

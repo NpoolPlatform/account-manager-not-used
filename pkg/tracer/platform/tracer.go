@@ -14,7 +14,6 @@ func trace(span trace1.Span, in *npool.AccountReq, index int) trace1.Span {
 		attribute.String(fmt.Sprintf("ID.%v", index), in.GetID()),
 		attribute.String(fmt.Sprintf("AccountID.%v", index), in.GetAccountID()),
 		attribute.String(fmt.Sprintf("UsedFor.%v", index), in.GetUsedFor().String()),
-		attribute.String(fmt.Sprintf("GoodID.%v", index), in.GetGoodID()),
 	)
 	return span
 }
@@ -29,8 +28,6 @@ func TraceConds(span trace1.Span, in *npool.Conds) trace1.Span {
 		attribute.String("ID.Value", in.GetID().GetValue()),
 		attribute.String("AccountID.Op", in.GetAccountID().GetOp()),
 		attribute.String("AccountID.Value", in.GetAccountID().GetValue()),
-		attribute.String("GoodID.Op", in.GetGoodID().GetOp()),
-		attribute.String("GoodID.Value", in.GetGoodID().GetValue()),
 	)
 	return span
 }

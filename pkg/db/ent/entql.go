@@ -142,7 +142,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			platform.FieldDeletedAt: {Type: field.TypeUint32, Column: platform.FieldDeletedAt},
 			platform.FieldAccountID: {Type: field.TypeUUID, Column: platform.FieldAccountID},
 			platform.FieldUsedFor:   {Type: field.TypeString, Column: platform.FieldUsedFor},
-			platform.FieldGoodID:    {Type: field.TypeUUID, Column: platform.FieldGoodID},
 			platform.FieldBackup:    {Type: field.TypeBool, Column: platform.FieldBackup},
 		},
 	}
@@ -659,11 +658,6 @@ func (f *PlatformFilter) WhereAccountID(p entql.ValueP) {
 // WhereUsedFor applies the entql string predicate on the used_for field.
 func (f *PlatformFilter) WhereUsedFor(p entql.StringP) {
 	f.Where(p.Field(platform.FieldUsedFor))
-}
-
-// WhereGoodID applies the entql [16]byte predicate on the good_id field.
-func (f *PlatformFilter) WhereGoodID(p entql.ValueP) {
-	f.Where(p.Field(platform.FieldGoodID))
 }
 
 // WhereBackup applies the entql bool predicate on the backup field.

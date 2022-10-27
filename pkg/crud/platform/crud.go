@@ -32,9 +32,6 @@ func CreateSet(c *ent.PlatformCreate, in *npool.AccountReq) *ent.PlatformCreate 
 	if in.UsedFor != nil {
 		c.SetUsedFor(in.GetUsedFor().String())
 	}
-	if in.GoodID != nil {
-		c.SetGoodID(uuid.MustParse(in.GetGoodID()))
-	}
 	if in.Backup != nil {
 		c.SetBackup(in.GetBackup())
 	}

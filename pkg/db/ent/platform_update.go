@@ -124,26 +124,6 @@ func (pu *PlatformUpdate) ClearUsedFor() *PlatformUpdate {
 	return pu
 }
 
-// SetGoodID sets the "good_id" field.
-func (pu *PlatformUpdate) SetGoodID(u uuid.UUID) *PlatformUpdate {
-	pu.mutation.SetGoodID(u)
-	return pu
-}
-
-// SetNillableGoodID sets the "good_id" field if the given value is not nil.
-func (pu *PlatformUpdate) SetNillableGoodID(u *uuid.UUID) *PlatformUpdate {
-	if u != nil {
-		pu.SetGoodID(*u)
-	}
-	return pu
-}
-
-// ClearGoodID clears the value of the "good_id" field.
-func (pu *PlatformUpdate) ClearGoodID() *PlatformUpdate {
-	pu.mutation.ClearGoodID()
-	return pu
-}
-
 // SetBackup sets the "backup" field.
 func (pu *PlatformUpdate) SetBackup(b bool) *PlatformUpdate {
 	pu.mutation.SetBackup(b)
@@ -330,19 +310,6 @@ func (pu *PlatformUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: platform.FieldUsedFor,
 		})
 	}
-	if value, ok := pu.mutation.GoodID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: platform.FieldGoodID,
-		})
-	}
-	if pu.mutation.GoodIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: platform.FieldGoodID,
-		})
-	}
 	if value, ok := pu.mutation.Backup(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
@@ -469,26 +436,6 @@ func (puo *PlatformUpdateOne) SetNillableUsedFor(s *string) *PlatformUpdateOne {
 // ClearUsedFor clears the value of the "used_for" field.
 func (puo *PlatformUpdateOne) ClearUsedFor() *PlatformUpdateOne {
 	puo.mutation.ClearUsedFor()
-	return puo
-}
-
-// SetGoodID sets the "good_id" field.
-func (puo *PlatformUpdateOne) SetGoodID(u uuid.UUID) *PlatformUpdateOne {
-	puo.mutation.SetGoodID(u)
-	return puo
-}
-
-// SetNillableGoodID sets the "good_id" field if the given value is not nil.
-func (puo *PlatformUpdateOne) SetNillableGoodID(u *uuid.UUID) *PlatformUpdateOne {
-	if u != nil {
-		puo.SetGoodID(*u)
-	}
-	return puo
-}
-
-// ClearGoodID clears the value of the "good_id" field.
-func (puo *PlatformUpdateOne) ClearGoodID() *PlatformUpdateOne {
-	puo.mutation.ClearGoodID()
 	return puo
 }
 
@@ -706,19 +653,6 @@ func (puo *PlatformUpdateOne) sqlSave(ctx context.Context) (_node *Platform, err
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: platform.FieldUsedFor,
-		})
-	}
-	if value, ok := puo.mutation.GoodID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: platform.FieldGoodID,
-		})
-	}
-	if puo.mutation.GoodIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: platform.FieldGoodID,
 		})
 	}
 	if value, ok := puo.mutation.Backup(); ok {

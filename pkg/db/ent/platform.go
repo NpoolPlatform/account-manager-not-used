@@ -26,8 +26,6 @@ type Platform struct {
 	AccountID uuid.UUID `json:"account_id,omitempty"`
 	// UsedFor holds the value of the "used_for" field.
 	UsedFor string `json:"used_for,omitempty"`
-	// GoodID holds the value of the "good_id" field.
-	GoodID uuid.UUID `json:"good_id,omitempty"`
 	// Backup holds the value of the "backup" field.
 	Backup bool `json:"backup,omitempty"`
 }
@@ -43,7 +41,7 @@ func (*Platform) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case platform.FieldUsedFor:
 			values[i] = new(sql.NullString)
-		case platform.FieldID, platform.FieldAccountID, platform.FieldGoodID:
+		case platform.FieldID, platform.FieldAccountID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Platform", columns[i])
@@ -96,12 +94,6 @@ func (pl *Platform) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				pl.UsedFor = value.String
 			}
-		case platform.FieldGoodID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field good_id", values[i])
-			} else if value != nil {
-				pl.GoodID = *value
-			}
 		case platform.FieldBackup:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field backup", values[i])
@@ -150,9 +142,6 @@ func (pl *Platform) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("used_for=")
 	builder.WriteString(pl.UsedFor)
-	builder.WriteString(", ")
-	builder.WriteString("good_id=")
-	builder.WriteString(fmt.Sprintf("%v", pl.GoodID))
 	builder.WriteString(", ")
 	builder.WriteString("backup=")
 	builder.WriteString(fmt.Sprintf("%v", pl.Backup))

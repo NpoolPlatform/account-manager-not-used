@@ -15,7 +15,6 @@ func Ent2Grpc(row *ent.Platform) *npool.Account {
 		ID:        row.ID.String(),
 		AccountID: row.AccountID.String(),
 		UsedFor:   account.AccountUsedFor(account.AccountUsedFor_value[row.UsedFor]),
-		GoodID:    row.GoodID.String(),
 		Backup:    row.Backup,
 		CreatedAt: row.CreatedAt,
 	}
