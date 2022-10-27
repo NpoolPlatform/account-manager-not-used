@@ -124,6 +124,9 @@ func UpdateSet(info *ent.Account, in *npool.AccountReq) *ent.AccountUpdateOne {
 	if in.Blocked != nil {
 		u.SetBlocked(in.GetBlocked())
 	}
+	if in.DeletedAt != nil {
+		u.SetDeletedAt(in.GetDeletedAt())
+	}
 
 	return u
 }

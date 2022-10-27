@@ -112,6 +112,9 @@ func UpdateSet(info *ent.User, in *npool.AccountReq) *ent.UserUpdateOne {
 	if len(in.GetLabels()) > 0 {
 		u.SetLabels(in.GetLabels())
 	}
+	if in.DeletedAt != nil {
+		u.SetDeletedAt(in.GetDeletedAt())
+	}
 
 	return u
 }
