@@ -321,8 +321,12 @@ func init() {
 	platformDescUsedFor := platformFields[2].Descriptor()
 	// platform.DefaultUsedFor holds the default value on creation for the used_for field.
 	platform.DefaultUsedFor = platformDescUsedFor.Default.(string)
+	// platformDescGoodID is the schema descriptor for good_id field.
+	platformDescGoodID := platformFields[3].Descriptor()
+	// platform.DefaultGoodID holds the default value on creation for the good_id field.
+	platform.DefaultGoodID = platformDescGoodID.Default.(func() uuid.UUID)
 	// platformDescBackup is the schema descriptor for backup field.
-	platformDescBackup := platformFields[3].Descriptor()
+	platformDescBackup := platformFields[4].Descriptor()
 	// platform.DefaultBackup holds the default value on creation for the backup field.
 	platform.DefaultBackup = platformDescBackup.Default.(bool)
 	// platformDescID is the schema descriptor for id field.

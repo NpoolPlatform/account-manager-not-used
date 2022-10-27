@@ -22,6 +22,8 @@ const (
 	FieldAccountID = "account_id"
 	// FieldUsedFor holds the string denoting the used_for field in the database.
 	FieldUsedFor = "used_for"
+	// FieldGoodID holds the string denoting the good_id field in the database.
+	FieldGoodID = "good_id"
 	// FieldBackup holds the string denoting the backup field in the database.
 	FieldBackup = "backup"
 	// Table holds the table name of the platform in the database.
@@ -36,6 +38,7 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldAccountID,
 	FieldUsedFor,
+	FieldGoodID,
 	FieldBackup,
 }
 
@@ -70,6 +73,8 @@ var (
 	DefaultAccountID func() uuid.UUID
 	// DefaultUsedFor holds the default value on creation for the "used_for" field.
 	DefaultUsedFor string
+	// DefaultGoodID holds the default value on creation for the "good_id" field.
+	DefaultGoodID func() uuid.UUID
 	// DefaultBackup holds the default value on creation for the "backup" field.
 	DefaultBackup bool
 	// DefaultID holds the default value on creation for the "id" field.

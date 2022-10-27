@@ -4599,6 +4599,7 @@ type PlatformMutation struct {
 	adddeleted_at *int32
 	account_id    *uuid.UUID
 	used_for      *string
+	good_id       *uuid.UUID
 	backup        *bool
 	clearedFields map[string]struct{}
 	done          bool
@@ -4976,6 +4977,55 @@ func (m *PlatformMutation) ResetUsedFor() {
 	delete(m.clearedFields, platform.FieldUsedFor)
 }
 
+// SetGoodID sets the "good_id" field.
+func (m *PlatformMutation) SetGoodID(u uuid.UUID) {
+	m.good_id = &u
+}
+
+// GoodID returns the value of the "good_id" field in the mutation.
+func (m *PlatformMutation) GoodID() (r uuid.UUID, exists bool) {
+	v := m.good_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGoodID returns the old "good_id" field's value of the Platform entity.
+// If the Platform object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PlatformMutation) OldGoodID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGoodID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGoodID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGoodID: %w", err)
+	}
+	return oldValue.GoodID, nil
+}
+
+// ClearGoodID clears the value of the "good_id" field.
+func (m *PlatformMutation) ClearGoodID() {
+	m.good_id = nil
+	m.clearedFields[platform.FieldGoodID] = struct{}{}
+}
+
+// GoodIDCleared returns if the "good_id" field was cleared in this mutation.
+func (m *PlatformMutation) GoodIDCleared() bool {
+	_, ok := m.clearedFields[platform.FieldGoodID]
+	return ok
+}
+
+// ResetGoodID resets all changes to the "good_id" field.
+func (m *PlatformMutation) ResetGoodID() {
+	m.good_id = nil
+	delete(m.clearedFields, platform.FieldGoodID)
+}
+
 // SetBackup sets the "backup" field.
 func (m *PlatformMutation) SetBackup(b bool) {
 	m.backup = &b
@@ -5044,7 +5094,7 @@ func (m *PlatformMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PlatformMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, platform.FieldCreatedAt)
 	}
@@ -5059,6 +5109,9 @@ func (m *PlatformMutation) Fields() []string {
 	}
 	if m.used_for != nil {
 		fields = append(fields, platform.FieldUsedFor)
+	}
+	if m.good_id != nil {
+		fields = append(fields, platform.FieldGoodID)
 	}
 	if m.backup != nil {
 		fields = append(fields, platform.FieldBackup)
@@ -5081,6 +5134,8 @@ func (m *PlatformMutation) Field(name string) (ent.Value, bool) {
 		return m.AccountID()
 	case platform.FieldUsedFor:
 		return m.UsedFor()
+	case platform.FieldGoodID:
+		return m.GoodID()
 	case platform.FieldBackup:
 		return m.Backup()
 	}
@@ -5102,6 +5157,8 @@ func (m *PlatformMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldAccountID(ctx)
 	case platform.FieldUsedFor:
 		return m.OldUsedFor(ctx)
+	case platform.FieldGoodID:
+		return m.OldGoodID(ctx)
 	case platform.FieldBackup:
 		return m.OldBackup(ctx)
 	}
@@ -5147,6 +5204,13 @@ func (m *PlatformMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUsedFor(v)
+		return nil
+	case platform.FieldGoodID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGoodID(v)
 		return nil
 	case platform.FieldBackup:
 		v, ok := value.(bool)
@@ -5230,6 +5294,9 @@ func (m *PlatformMutation) ClearedFields() []string {
 	if m.FieldCleared(platform.FieldUsedFor) {
 		fields = append(fields, platform.FieldUsedFor)
 	}
+	if m.FieldCleared(platform.FieldGoodID) {
+		fields = append(fields, platform.FieldGoodID)
+	}
 	if m.FieldCleared(platform.FieldBackup) {
 		fields = append(fields, platform.FieldBackup)
 	}
@@ -5252,6 +5319,9 @@ func (m *PlatformMutation) ClearField(name string) error {
 		return nil
 	case platform.FieldUsedFor:
 		m.ClearUsedFor()
+		return nil
+	case platform.FieldGoodID:
+		m.ClearGoodID()
 		return nil
 	case platform.FieldBackup:
 		m.ClearBackup()
@@ -5278,6 +5348,9 @@ func (m *PlatformMutation) ResetField(name string) error {
 		return nil
 	case platform.FieldUsedFor:
 		m.ResetUsedFor()
+		return nil
+	case platform.FieldGoodID:
+		m.ResetGoodID()
 		return nil
 	case platform.FieldBackup:
 		m.ResetBackup()

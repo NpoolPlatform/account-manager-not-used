@@ -93,6 +93,20 @@ func (pc *PlatformCreate) SetNillableUsedFor(s *string) *PlatformCreate {
 	return pc
 }
 
+// SetGoodID sets the "good_id" field.
+func (pc *PlatformCreate) SetGoodID(u uuid.UUID) *PlatformCreate {
+	pc.mutation.SetGoodID(u)
+	return pc
+}
+
+// SetNillableGoodID sets the "good_id" field if the given value is not nil.
+func (pc *PlatformCreate) SetNillableGoodID(u *uuid.UUID) *PlatformCreate {
+	if u != nil {
+		pc.SetGoodID(*u)
+	}
+	return pc
+}
+
 // SetBackup sets the "backup" field.
 func (pc *PlatformCreate) SetBackup(b bool) *PlatformCreate {
 	pc.mutation.SetBackup(b)
@@ -232,6 +246,13 @@ func (pc *PlatformCreate) defaults() error {
 		v := platform.DefaultUsedFor
 		pc.mutation.SetUsedFor(v)
 	}
+	if _, ok := pc.mutation.GoodID(); !ok {
+		if platform.DefaultGoodID == nil {
+			return fmt.Errorf("ent: uninitialized platform.DefaultGoodID (forgotten import ent/runtime?)")
+		}
+		v := platform.DefaultGoodID()
+		pc.mutation.SetGoodID(v)
+	}
 	if _, ok := pc.mutation.Backup(); !ok {
 		v := platform.DefaultBackup
 		pc.mutation.SetBackup(v)
@@ -333,6 +354,14 @@ func (pc *PlatformCreate) createSpec() (*Platform, *sqlgraph.CreateSpec) {
 			Column: platform.FieldUsedFor,
 		})
 		_node.UsedFor = value
+	}
+	if value, ok := pc.mutation.GoodID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: platform.FieldGoodID,
+		})
+		_node.GoodID = value
 	}
 	if value, ok := pc.mutation.Backup(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -483,6 +512,24 @@ func (u *PlatformUpsert) UpdateUsedFor() *PlatformUpsert {
 // ClearUsedFor clears the value of the "used_for" field.
 func (u *PlatformUpsert) ClearUsedFor() *PlatformUpsert {
 	u.SetNull(platform.FieldUsedFor)
+	return u
+}
+
+// SetGoodID sets the "good_id" field.
+func (u *PlatformUpsert) SetGoodID(v uuid.UUID) *PlatformUpsert {
+	u.Set(platform.FieldGoodID, v)
+	return u
+}
+
+// UpdateGoodID sets the "good_id" field to the value that was provided on create.
+func (u *PlatformUpsert) UpdateGoodID() *PlatformUpsert {
+	u.SetExcluded(platform.FieldGoodID)
+	return u
+}
+
+// ClearGoodID clears the value of the "good_id" field.
+func (u *PlatformUpsert) ClearGoodID() *PlatformUpsert {
+	u.SetNull(platform.FieldGoodID)
 	return u
 }
 
@@ -656,6 +703,27 @@ func (u *PlatformUpsertOne) UpdateUsedFor() *PlatformUpsertOne {
 func (u *PlatformUpsertOne) ClearUsedFor() *PlatformUpsertOne {
 	return u.Update(func(s *PlatformUpsert) {
 		s.ClearUsedFor()
+	})
+}
+
+// SetGoodID sets the "good_id" field.
+func (u *PlatformUpsertOne) SetGoodID(v uuid.UUID) *PlatformUpsertOne {
+	return u.Update(func(s *PlatformUpsert) {
+		s.SetGoodID(v)
+	})
+}
+
+// UpdateGoodID sets the "good_id" field to the value that was provided on create.
+func (u *PlatformUpsertOne) UpdateGoodID() *PlatformUpsertOne {
+	return u.Update(func(s *PlatformUpsert) {
+		s.UpdateGoodID()
+	})
+}
+
+// ClearGoodID clears the value of the "good_id" field.
+func (u *PlatformUpsertOne) ClearGoodID() *PlatformUpsertOne {
+	return u.Update(func(s *PlatformUpsert) {
+		s.ClearGoodID()
 	})
 }
 
@@ -998,6 +1066,27 @@ func (u *PlatformUpsertBulk) UpdateUsedFor() *PlatformUpsertBulk {
 func (u *PlatformUpsertBulk) ClearUsedFor() *PlatformUpsertBulk {
 	return u.Update(func(s *PlatformUpsert) {
 		s.ClearUsedFor()
+	})
+}
+
+// SetGoodID sets the "good_id" field.
+func (u *PlatformUpsertBulk) SetGoodID(v uuid.UUID) *PlatformUpsertBulk {
+	return u.Update(func(s *PlatformUpsert) {
+		s.SetGoodID(v)
+	})
+}
+
+// UpdateGoodID sets the "good_id" field to the value that was provided on create.
+func (u *PlatformUpsertBulk) UpdateGoodID() *PlatformUpsertBulk {
+	return u.Update(func(s *PlatformUpsert) {
+		s.UpdateGoodID()
+	})
+}
+
+// ClearGoodID clears the value of the "good_id" field.
+func (u *PlatformUpsertBulk) ClearGoodID() *PlatformUpsertBulk {
+	return u.Update(func(s *PlatformUpsert) {
+		s.ClearGoodID()
 	})
 }
 
