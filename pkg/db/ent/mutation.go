@@ -2247,8 +2247,8 @@ type GoodBenefitMutation struct {
 	account_id        *uuid.UUID
 	backup            *bool
 	transaction_id    *uuid.UUID
-	interval_hours    *uint
-	addinterval_hours *int
+	interval_hours    *uint32
+	addinterval_hours *int32
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*GoodBenefit, error)
@@ -2724,13 +2724,13 @@ func (m *GoodBenefitMutation) ResetTransactionID() {
 }
 
 // SetIntervalHours sets the "interval_hours" field.
-func (m *GoodBenefitMutation) SetIntervalHours(u uint) {
+func (m *GoodBenefitMutation) SetIntervalHours(u uint32) {
 	m.interval_hours = &u
 	m.addinterval_hours = nil
 }
 
 // IntervalHours returns the value of the "interval_hours" field in the mutation.
-func (m *GoodBenefitMutation) IntervalHours() (r uint, exists bool) {
+func (m *GoodBenefitMutation) IntervalHours() (r uint32, exists bool) {
 	v := m.interval_hours
 	if v == nil {
 		return
@@ -2741,7 +2741,7 @@ func (m *GoodBenefitMutation) IntervalHours() (r uint, exists bool) {
 // OldIntervalHours returns the old "interval_hours" field's value of the GoodBenefit entity.
 // If the GoodBenefit object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodBenefitMutation) OldIntervalHours(ctx context.Context) (v uint, err error) {
+func (m *GoodBenefitMutation) OldIntervalHours(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIntervalHours is only allowed on UpdateOne operations")
 	}
@@ -2756,7 +2756,7 @@ func (m *GoodBenefitMutation) OldIntervalHours(ctx context.Context) (v uint, err
 }
 
 // AddIntervalHours adds u to the "interval_hours" field.
-func (m *GoodBenefitMutation) AddIntervalHours(u int) {
+func (m *GoodBenefitMutation) AddIntervalHours(u int32) {
 	if m.addinterval_hours != nil {
 		*m.addinterval_hours += u
 	} else {
@@ -2765,7 +2765,7 @@ func (m *GoodBenefitMutation) AddIntervalHours(u int) {
 }
 
 // AddedIntervalHours returns the value that was added to the "interval_hours" field in this mutation.
-func (m *GoodBenefitMutation) AddedIntervalHours() (r int, exists bool) {
+func (m *GoodBenefitMutation) AddedIntervalHours() (r int32, exists bool) {
 	v := m.addinterval_hours
 	if v == nil {
 		return
@@ -2945,7 +2945,7 @@ func (m *GoodBenefitMutation) SetField(name string, value ent.Value) error {
 		m.SetTransactionID(v)
 		return nil
 	case goodbenefit.FieldIntervalHours:
-		v, ok := value.(uint)
+		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -3018,7 +3018,7 @@ func (m *GoodBenefitMutation) AddField(name string, value ent.Value) error {
 		m.AddDeletedAt(v)
 		return nil
 	case goodbenefit.FieldIntervalHours:
-		v, ok := value.(int)
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

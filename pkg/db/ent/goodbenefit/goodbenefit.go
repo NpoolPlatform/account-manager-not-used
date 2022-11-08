@@ -81,7 +81,7 @@ var (
 	// DefaultTransactionID holds the default value on creation for the "transaction_id" field.
 	DefaultTransactionID func() uuid.UUID
 	// DefaultIntervalHours holds the default value on creation for the "interval_hours" field.
-	DefaultIntervalHours uint
+	DefaultIntervalHours uint32
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

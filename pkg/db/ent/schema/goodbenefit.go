@@ -48,7 +48,7 @@ func (GoodBenefit) Fields() []ent.Field {
 				return uuid.UUID{}
 			}),
 		field.
-			Uint("interval_hours").
+			Uint32("interval_hours").
 			Optional().
 			Default(24),
 	}
