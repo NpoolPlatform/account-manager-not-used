@@ -193,6 +193,10 @@ func init() {
 	goodbenefitDescTransactionID := goodbenefitFields[4].Descriptor()
 	// goodbenefit.DefaultTransactionID holds the default value on creation for the transaction_id field.
 	goodbenefit.DefaultTransactionID = goodbenefitDescTransactionID.Default.(func() uuid.UUID)
+	// goodbenefitDescIntervalHours is the schema descriptor for interval_hours field.
+	goodbenefitDescIntervalHours := goodbenefitFields[5].Descriptor()
+	// goodbenefit.DefaultIntervalHours holds the default value on creation for the interval_hours field.
+	goodbenefit.DefaultIntervalHours = goodbenefitDescIntervalHours.Default.(uint)
 	// goodbenefitDescID is the schema descriptor for id field.
 	goodbenefitDescID := goodbenefitFields[0].Descriptor()
 	// goodbenefit.DefaultID holds the default value on creation for the id field.

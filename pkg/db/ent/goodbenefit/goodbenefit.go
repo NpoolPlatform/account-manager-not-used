@@ -26,6 +26,8 @@ const (
 	FieldBackup = "backup"
 	// FieldTransactionID holds the string denoting the transaction_id field in the database.
 	FieldTransactionID = "transaction_id"
+	// FieldIntervalHours holds the string denoting the interval_hours field in the database.
+	FieldIntervalHours = "interval_hours"
 	// Table holds the table name of the goodbenefit in the database.
 	Table = "good_benefits"
 )
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldAccountID,
 	FieldBackup,
 	FieldTransactionID,
+	FieldIntervalHours,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -77,6 +80,8 @@ var (
 	DefaultBackup bool
 	// DefaultTransactionID holds the default value on creation for the "transaction_id" field.
 	DefaultTransactionID func() uuid.UUID
+	// DefaultIntervalHours holds the default value on creation for the "interval_hours" field.
+	DefaultIntervalHours uint
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
