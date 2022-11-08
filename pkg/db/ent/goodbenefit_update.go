@@ -165,14 +165,14 @@ func (gbu *GoodBenefitUpdate) ClearTransactionID() *GoodBenefitUpdate {
 }
 
 // SetIntervalHours sets the "interval_hours" field.
-func (gbu *GoodBenefitUpdate) SetIntervalHours(u uint) *GoodBenefitUpdate {
+func (gbu *GoodBenefitUpdate) SetIntervalHours(u uint32) *GoodBenefitUpdate {
 	gbu.mutation.ResetIntervalHours()
 	gbu.mutation.SetIntervalHours(u)
 	return gbu
 }
 
 // SetNillableIntervalHours sets the "interval_hours" field if the given value is not nil.
-func (gbu *GoodBenefitUpdate) SetNillableIntervalHours(u *uint) *GoodBenefitUpdate {
+func (gbu *GoodBenefitUpdate) SetNillableIntervalHours(u *uint32) *GoodBenefitUpdate {
 	if u != nil {
 		gbu.SetIntervalHours(*u)
 	}
@@ -180,7 +180,7 @@ func (gbu *GoodBenefitUpdate) SetNillableIntervalHours(u *uint) *GoodBenefitUpda
 }
 
 // AddIntervalHours adds u to the "interval_hours" field.
-func (gbu *GoodBenefitUpdate) AddIntervalHours(u int) *GoodBenefitUpdate {
+func (gbu *GoodBenefitUpdate) AddIntervalHours(u int32) *GoodBenefitUpdate {
 	gbu.mutation.AddIntervalHours(u)
 	return gbu
 }
@@ -385,21 +385,21 @@ func (gbu *GoodBenefitUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := gbu.mutation.IntervalHours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: goodbenefit.FieldIntervalHours,
 		})
 	}
 	if value, ok := gbu.mutation.AddedIntervalHours(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: goodbenefit.FieldIntervalHours,
 		})
 	}
 	if gbu.mutation.IntervalHoursCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
+			Type:   field.TypeUint32,
 			Column: goodbenefit.FieldIntervalHours,
 		})
 	}
@@ -560,14 +560,14 @@ func (gbuo *GoodBenefitUpdateOne) ClearTransactionID() *GoodBenefitUpdateOne {
 }
 
 // SetIntervalHours sets the "interval_hours" field.
-func (gbuo *GoodBenefitUpdateOne) SetIntervalHours(u uint) *GoodBenefitUpdateOne {
+func (gbuo *GoodBenefitUpdateOne) SetIntervalHours(u uint32) *GoodBenefitUpdateOne {
 	gbuo.mutation.ResetIntervalHours()
 	gbuo.mutation.SetIntervalHours(u)
 	return gbuo
 }
 
 // SetNillableIntervalHours sets the "interval_hours" field if the given value is not nil.
-func (gbuo *GoodBenefitUpdateOne) SetNillableIntervalHours(u *uint) *GoodBenefitUpdateOne {
+func (gbuo *GoodBenefitUpdateOne) SetNillableIntervalHours(u *uint32) *GoodBenefitUpdateOne {
 	if u != nil {
 		gbuo.SetIntervalHours(*u)
 	}
@@ -575,7 +575,7 @@ func (gbuo *GoodBenefitUpdateOne) SetNillableIntervalHours(u *uint) *GoodBenefit
 }
 
 // AddIntervalHours adds u to the "interval_hours" field.
-func (gbuo *GoodBenefitUpdateOne) AddIntervalHours(u int) *GoodBenefitUpdateOne {
+func (gbuo *GoodBenefitUpdateOne) AddIntervalHours(u int32) *GoodBenefitUpdateOne {
 	gbuo.mutation.AddIntervalHours(u)
 	return gbuo
 }
@@ -810,21 +810,21 @@ func (gbuo *GoodBenefitUpdateOne) sqlSave(ctx context.Context) (_node *GoodBenef
 	}
 	if value, ok := gbuo.mutation.IntervalHours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: goodbenefit.FieldIntervalHours,
 		})
 	}
 	if value, ok := gbuo.mutation.AddedIntervalHours(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: goodbenefit.FieldIntervalHours,
 		})
 	}
 	if gbuo.mutation.IntervalHoursCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
+			Type:   field.TypeUint32,
 			Column: goodbenefit.FieldIntervalHours,
 		})
 	}

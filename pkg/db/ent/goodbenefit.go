@@ -31,7 +31,7 @@ type GoodBenefit struct {
 	// TransactionID holds the value of the "transaction_id" field.
 	TransactionID uuid.UUID `json:"transaction_id,omitempty"`
 	// IntervalHours holds the value of the "interval_hours" field.
-	IntervalHours uint `json:"interval_hours,omitempty"`
+	IntervalHours uint32 `json:"interval_hours,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -112,7 +112,7 @@ func (gb *GoodBenefit) assignValues(columns []string, values []interface{}) erro
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field interval_hours", values[i])
 			} else if value.Valid {
-				gb.IntervalHours = uint(value.Int64)
+				gb.IntervalHours = uint32(value.Int64)
 			}
 		}
 	}

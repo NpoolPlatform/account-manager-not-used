@@ -196,7 +196,7 @@ func init() {
 	// goodbenefitDescIntervalHours is the schema descriptor for interval_hours field.
 	goodbenefitDescIntervalHours := goodbenefitFields[5].Descriptor()
 	// goodbenefit.DefaultIntervalHours holds the default value on creation for the interval_hours field.
-	goodbenefit.DefaultIntervalHours = goodbenefitDescIntervalHours.Default.(uint)
+	goodbenefit.DefaultIntervalHours = goodbenefitDescIntervalHours.Default.(uint32)
 	// goodbenefitDescID is the schema descriptor for id field.
 	goodbenefitDescID := goodbenefitFields[0].Descriptor()
 	// goodbenefit.DefaultID holds the default value on creation for the id field.
