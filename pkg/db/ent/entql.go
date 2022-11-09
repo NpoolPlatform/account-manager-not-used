@@ -9,6 +9,7 @@ import (
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/limitation"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/payment"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/platform"
+	"github.com/NpoolPlatform/account-manager/pkg/db/ent/transfer"
 	"github.com/NpoolPlatform/account-manager/pkg/db/ent/user"
 
 	"entgo.io/ent/dialect/sql"
@@ -19,7 +20,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 7)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 8)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   account.Table,
@@ -147,6 +148,25 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 	}
 	graph.Nodes[6] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   transfer.Table,
+			Columns: transfer.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUUID,
+				Column: transfer.FieldID,
+			},
+		},
+		Type: "Transfer",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			transfer.FieldCreatedAt:    {Type: field.TypeUint32, Column: transfer.FieldCreatedAt},
+			transfer.FieldUpdatedAt:    {Type: field.TypeUint32, Column: transfer.FieldUpdatedAt},
+			transfer.FieldDeletedAt:    {Type: field.TypeUint32, Column: transfer.FieldDeletedAt},
+			transfer.FieldAppID:        {Type: field.TypeUUID, Column: transfer.FieldAppID},
+			transfer.FieldUserID:       {Type: field.TypeUUID, Column: transfer.FieldUserID},
+			transfer.FieldTargetUserID: {Type: field.TypeUUID, Column: transfer.FieldTargetUserID},
+		},
+	}
+	graph.Nodes[7] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   user.Table,
 			Columns: user.Columns,
@@ -652,6 +672,75 @@ func (f *PlatformFilter) WhereBackup(p entql.BoolP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (tq *TransferQuery) addPredicate(pred func(s *sql.Selector)) {
+	tq.predicates = append(tq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the TransferQuery builder.
+func (tq *TransferQuery) Filter() *TransferFilter {
+	return &TransferFilter{tq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *TransferMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the TransferMutation builder.
+func (m *TransferMutation) Filter() *TransferFilter {
+	return &TransferFilter{m}
+}
+
+// TransferFilter provides a generic filtering capability at runtime for TransferQuery.
+type TransferFilter struct {
+	predicateAdder
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *TransferFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql [16]byte predicate on the id field.
+func (f *TransferFilter) WhereID(p entql.ValueP) {
+	f.Where(p.Field(transfer.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *TransferFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(transfer.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *TransferFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(transfer.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *TransferFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(transfer.FieldDeletedAt))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *TransferFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(transfer.FieldAppID))
+}
+
+// WhereUserID applies the entql [16]byte predicate on the user_id field.
+func (f *TransferFilter) WhereUserID(p entql.ValueP) {
+	f.Where(p.Field(transfer.FieldUserID))
+}
+
+// WhereTargetUserID applies the entql [16]byte predicate on the target_user_id field.
+func (f *TransferFilter) WhereTargetUserID(p entql.ValueP) {
+	f.Where(p.Field(transfer.FieldTargetUserID))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (uq *UserQuery) addPredicate(pred func(s *sql.Selector)) {
 	uq.predicates = append(uq.predicates, pred)
 }
@@ -679,7 +768,7 @@ type UserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *UserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

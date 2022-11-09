@@ -309,6 +309,30 @@ func (f PlatformMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutati
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PlatformMutation", m)
 }
 
+// The TransferQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type TransferQueryRuleFunc func(context.Context, *ent.TransferQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f TransferQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TransferQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TransferQuery", q)
+}
+
+// The TransferMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type TransferMutationRuleFunc func(context.Context, *ent.TransferMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f TransferMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.TransferMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TransferMutation", m)
+}
+
 // The UserQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type UserQueryRuleFunc func(context.Context, *ent.UserQuery) error
@@ -380,6 +404,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.PlatformQuery:
 		return q.Filter(), nil
+	case *ent.TransferQuery:
+		return q.Filter(), nil
 	case *ent.UserQuery:
 		return q.Filter(), nil
 	default:
@@ -400,6 +426,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.PaymentMutation:
 		return m.Filter(), nil
 	case *ent.PlatformMutation:
+		return m.Filter(), nil
+	case *ent.TransferMutation:
 		return m.Filter(), nil
 	case *ent.UserMutation:
 		return m.Filter(), nil

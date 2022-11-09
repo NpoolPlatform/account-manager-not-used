@@ -300,3 +300,36 @@ func (s *Server) CountAccounts(ctx context.Context, in *npool.CountAccountsReque
 		Info: total,
 	}, nil
 }
+
+func (s *Server) DeleteAccount(ctx context.Context, in *npool.DeleteAccountRequest) (*npool.DeleteAccountResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "DeleteGoodBenefit")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = commontracer.TraceID(span, in.GetID())
+
+	id, err := uuid.Parse(in.GetID())
+	if err != nil {
+		return &npool.DeleteAccountResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	span = commontracer.TraceInvoker(span, "goodbenefit", "crud", "Delete")
+
+	info, err := crud.Delete(ctx, id)
+	if err != nil {
+		logger.Sugar().Errorf("fail delete goodbenefit: %v", err)
+		return &npool.DeleteAccountResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.DeleteAccountResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}

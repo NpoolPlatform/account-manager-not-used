@@ -1,7 +1,9 @@
+//nolint:dupl
 package deposit
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
@@ -22,7 +24,7 @@ func withCRUD(ctx context.Context, handler handler) (cruder.Any, error) {
 
 	conn, err := grpc2.GetGRPCConn(constant.ServiceName, grpc2.GRPCTAG)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fail get deposit connection: %v", err)
 	}
 
 	defer conn.Close()
@@ -38,12 +40,28 @@ func CreateAccount(ctx context.Context, in *npool.AccountReq) (*npool.Account, e
 			Info: in,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail create account: %v", err)
 		}
 		return resp.Info, nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fail create account: %v", err)
+	}
+	return info.(*npool.Account), nil
+}
+
+func UpdateAccount(ctx context.Context, in *npool.AccountReq) (*npool.Account, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.UpdateAccount(ctx, &npool.UpdateAccountRequest{
+			Info: in,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail update account: %v", err)
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("fail update account: %v", err)
 	}
 	return info.(*npool.Account), nil
 }
@@ -54,30 +72,14 @@ func CreateAccounts(ctx context.Context, in []*npool.AccountReq) ([]*npool.Accou
 			Infos: in,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail create accounts: %v", err)
 		}
 		return resp.Infos, nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fail create accounts: %v", err)
 	}
 	return infos.([]*npool.Account), nil
-}
-
-func AddAccount(ctx context.Context, in *npool.AccountReq) (*npool.Account, error) {
-	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
-		resp, err := cli.AddAccount(ctx, &npool.AddAccountRequest{
-			Info: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return info.(*npool.Account), nil
 }
 
 func GetAccount(ctx context.Context, id string) (*npool.Account, error) {
@@ -86,12 +88,12 @@ func GetAccount(ctx context.Context, id string) (*npool.Account, error) {
 			ID: id,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail get account: %v", err)
 		}
 		return resp.Info, nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fail get account: %v", err)
 	}
 	return info.(*npool.Account), nil
 }
@@ -102,17 +104,17 @@ func GetAccountOnly(ctx context.Context, conds *npool.Conds) (*npool.Account, er
 			Conds: conds,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail get account: %v", err)
 		}
 		return resp.Info, nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fail get account: %v", err)
 	}
 	return info.(*npool.Account), nil
 }
 
-func GetAccounts(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.Account, uint32, error) {
+func GetAccounts(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.Account, uint32, error) {
 	var total uint32
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.GetAccounts(ctx, &npool.GetAccountsRequest{
@@ -121,61 +123,77 @@ func GetAccounts(ctx context.Context, conds *npool.Conds, limit, offset int32) (
 			Offset: offset,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail get accounts: %v", err)
 		}
 		total = resp.GetTotal()
 		return resp.Infos, nil
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("fail get accounts: %v", err)
 	}
 	return infos.([]*npool.Account), total, nil
 }
 
 func ExistAccount(ctx context.Context, id string) (bool, error) {
-	exist, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.ExistAccount(ctx, &npool.ExistAccountRequest{
 			ID: id,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail get account: %v", err)
 		}
 		return resp.Info, nil
 	})
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("fail get account: %v", err)
 	}
-	return exist.(bool), nil
+	return info.(bool), nil
 }
 
 func ExistAccountConds(ctx context.Context, conds *npool.Conds) (bool, error) {
-	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.ExistAccountConds(ctx, &npool.ExistAccountCondsRequest{
 			Conds: conds,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail get account: %v", err)
 		}
 		return resp.Info, nil
 	})
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("fail get account: %v", err)
 	}
-	return infos.(bool), nil
+	return info.(bool), nil
 }
 
 func CountAccounts(ctx context.Context, conds *npool.Conds) (uint32, error) {
-	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.CountAccounts(ctx, &npool.CountAccountsRequest{
 			Conds: conds,
 		})
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("fail count account: %v", err)
 		}
 		return resp.Info, nil
 	})
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("fail count account: %v", err)
 	}
-	return infos.(uint32), nil
+	return info.(uint32), nil
+}
+
+func DeleteAccount(ctx context.Context, id string) (*npool.Account, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.DeleteAccount(ctx, &npool.DeleteAccountRequest{
+			ID: id,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail delete account: %v", err)
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return &npool.Account{}, fmt.Errorf("fail delete account: %v", err)
+	}
+	return info.(*npool.Account), nil
 }

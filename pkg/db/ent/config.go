@@ -30,6 +30,7 @@ type hooks struct {
 	Limitation  []ent.Hook
 	Payment     []ent.Hook
 	Platform    []ent.Hook
+	Transfer    []ent.Hook
 	User        []ent.Hook
 }
 

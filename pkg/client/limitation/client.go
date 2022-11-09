@@ -50,6 +50,22 @@ func CreateLimitation(ctx context.Context, in *npool.LimitationReq) (*npool.Limi
 	return info.(*npool.Limitation), nil
 }
 
+func UpdateLimitation(ctx context.Context, in *npool.LimitationReq) (*npool.Limitation, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.UpdateLimitation(ctx, &npool.UpdateLimitationRequest{
+			Info: in,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail update account: %v", err)
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("fail update account: %v", err)
+	}
+	return info.(*npool.Limitation), nil
+}
+
 func CreateLimitations(ctx context.Context, in []*npool.LimitationReq) ([]*npool.Limitation, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.CreateLimitations(ctx, &npool.CreateLimitationsRequest{
@@ -98,7 +114,7 @@ func GetLimitationOnly(ctx context.Context, conds *npool.Conds) (*npool.Limitati
 	return info.(*npool.Limitation), nil
 }
 
-func GetLimitations(ctx context.Context, conds *npool.Conds, limit, offset int32) ([]*npool.Limitation, uint32, error) {
+func GetLimitations(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.Limitation, uint32, error) {
 	var total uint32
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.GetLimitations(ctx, &npool.GetLimitationsRequest{
@@ -119,7 +135,7 @@ func GetLimitations(ctx context.Context, conds *npool.Conds, limit, offset int32
 }
 
 func ExistLimitation(ctx context.Context, id string) (bool, error) {
-	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.ExistLimitation(ctx, &npool.ExistLimitationRequest{
 			ID: id,
 		})
@@ -131,11 +147,11 @@ func ExistLimitation(ctx context.Context, id string) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("fail get account: %v", err)
 	}
-	return infos.(bool), nil
+	return info.(bool), nil
 }
 
 func ExistLimitationConds(ctx context.Context, conds *npool.Conds) (bool, error) {
-	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.ExistLimitationConds(ctx, &npool.ExistLimitationCondsRequest{
 			Conds: conds,
 		})
@@ -147,11 +163,11 @@ func ExistLimitationConds(ctx context.Context, conds *npool.Conds) (bool, error)
 	if err != nil {
 		return false, fmt.Errorf("fail get account: %v", err)
 	}
-	return infos.(bool), nil
+	return info.(bool), nil
 }
 
 func CountLimitations(ctx context.Context, conds *npool.Conds) (uint32, error) {
-	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.CountLimitations(ctx, &npool.CountLimitationsRequest{
 			Conds: conds,
 		})
@@ -163,5 +179,21 @@ func CountLimitations(ctx context.Context, conds *npool.Conds) (uint32, error) {
 	if err != nil {
 		return 0, fmt.Errorf("fail count account: %v", err)
 	}
-	return infos.(uint32), nil
+	return info.(uint32), nil
+}
+
+func DeleteLimitation(ctx context.Context, id string) (*npool.Limitation, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.DeleteLimitation(ctx, &npool.DeleteLimitationRequest{
+			ID: id,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail delete account: %v", err)
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return &npool.Limitation{}, fmt.Errorf("fail delete account: %v", err)
+	}
+	return info.(*npool.Limitation), nil
 }

@@ -300,3 +300,36 @@ func (s *Server) CountLimitations(ctx context.Context, in *npool.CountLimitation
 		Info: total,
 	}, nil
 }
+
+func (s *Server) DeleteLimitation(ctx context.Context,
+	in *npool.DeleteLimitationRequest) (*npool.DeleteLimitationResponse, error) {
+	var err error
+
+	_, span := otel.Tracer(constant.ServiceName).Start(ctx, "ExistAccountConds")
+	defer span.End()
+
+	defer func() {
+		if err != nil {
+			span.SetStatus(scodes.Error, err.Error())
+			span.RecordError(err)
+		}
+	}()
+
+	span = commontracer.TraceID(span, in.GetID())
+	span = commontracer.TraceInvoker(span, "account", "crud", "ExistConds")
+
+	id, err := uuid.Parse(in.GetID())
+	if err != nil {
+		logger.Sugar().Errorw("DeleteAccount", "id", id, "err", err)
+		return &npool.DeleteLimitationResponse{}, status.Error(codes.Internal, err.Error())
+	}
+	info, err := crud.Delete(ctx, id)
+	if err != nil {
+		logger.Sugar().Errorf("fail check account: %v", err)
+		return &npool.DeleteLimitationResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.DeleteLimitationResponse{
+		Info: converter.Ent2Grpc(info),
+	}, nil
+}
