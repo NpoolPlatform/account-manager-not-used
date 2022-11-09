@@ -101,11 +101,11 @@ func createAccounts(t *testing.T) {
 	Accounts := []*npool.AccountReq{}
 	for key := range accountDatas {
 		Accounts = append(Accounts, &npool.AccountReq{
-			ID:        &accountDatas[key].ID,
-			GoodID:    &accountDatas[key].GoodID,
-			AccountID: &accountDatas[key].AccountID,
-			Backup:    &accountDatas[key].Backup,
-			IntervalHours:    &accountDatas[key].IntervalHours,
+			ID:            &accountDatas[key].ID,
+			GoodID:        &accountDatas[key].GoodID,
+			AccountID:     &accountDatas[key].AccountID,
+			Backup:        &accountDatas[key].Backup,
+			IntervalHours: &accountDatas[key].IntervalHours,
 		})
 	}
 
