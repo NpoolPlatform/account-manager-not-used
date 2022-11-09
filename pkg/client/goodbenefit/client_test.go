@@ -57,6 +57,7 @@ func createAccount(t *testing.T) {
 	info, err = CreateAccount(context.Background(), &accountInfo)
 	if assert.Nil(t, err) {
 		accountData.CreatedAt = info.CreatedAt
+		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
@@ -76,6 +77,7 @@ func updateAccount(t *testing.T) {
 	info, err = UpdateAccount(context.Background(), &accountInfo)
 	if assert.Nil(t, err) {
 		accountData.CreatedAt = info.CreatedAt
+		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
@@ -103,6 +105,7 @@ func createAccounts(t *testing.T) {
 			GoodID:    &accountDatas[key].GoodID,
 			AccountID: &accountDatas[key].AccountID,
 			Backup:    &accountDatas[key].Backup,
+			IntervalHours:    &accountDatas[key].IntervalHours,
 		})
 	}
 
@@ -116,6 +119,7 @@ func getAccount(t *testing.T) {
 	var err error
 	info, err = GetAccount(context.Background(), info.ID)
 	if assert.Nil(t, err) {
+		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
@@ -186,6 +190,7 @@ func existAccountConds(t *testing.T) {
 func deleteAccount(t *testing.T) {
 	info, err := DeleteAccount(context.Background(), info.ID)
 	if assert.Nil(t, err) {
+		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
