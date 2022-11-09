@@ -191,6 +191,7 @@ func deleteAccount(t *testing.T) {
 	info, err := DeleteAccount(context.Background(), info.ID)
 	if assert.Nil(t, err) {
 		accountData.IntervalHours = info.IntervalHours
+		accountData.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, &accountData)
 	}
 }
