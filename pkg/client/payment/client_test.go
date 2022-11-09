@@ -174,6 +174,7 @@ func existAccountConds(t *testing.T) {
 func deleteAccount(t *testing.T) {
 	info, err := DeleteAccount(context.Background(), info.ID)
 	if assert.Nil(t, err) {
+		accountData.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, &accountData)
 	}
 }
