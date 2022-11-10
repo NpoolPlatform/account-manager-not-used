@@ -222,7 +222,7 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.UserQuery, error) 
 	}
 	if conds.UsedFor != nil {
 		switch conds.GetUsedFor().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(user.UsedFor(account.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid user field")
