@@ -264,6 +264,18 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 			return nil, fmt.Errorf("invalid account field")
 		}
 	}
+	if conds.IDs != nil {
+		switch conds.GetIDs().GetOp() {
+		case cruder.IN:
+			ids := []uuid.UUID{}
+			for _, id := range conds.GetIDs().GetValue() {
+				ids = append(ids, uuid.MustParse(id))
+			}
+			stm.Where(account.IDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid account field")
+		}
+	}
 	return stm, nil
 }
 
