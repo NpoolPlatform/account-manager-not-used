@@ -349,7 +349,10 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Account, error) {
 
 		info, err = stm.Only(_ctx)
 		if err != nil {
-			return err
+			if ent.IsNotFound(err) {
+				return nil
+ 			}
+ 			return err
 		}
 
 		return nil
