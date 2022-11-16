@@ -351,8 +351,8 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Account, error) {
 		if err != nil {
 			if ent.IsNotFound(err) {
 				return nil
- 			}
- 			return err
+			}
+			return err
 		}
 
 		return nil
