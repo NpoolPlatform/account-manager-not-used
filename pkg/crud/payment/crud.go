@@ -185,6 +185,19 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PaymentQuery, erro
 			return nil, fmt.Errorf("invalid payment field")
 		}
 	}
+	if conds.AccountIDs != nil {
+		ids := []uuid.UUID{}
+		for _, id := range conds.GetAccountIDs().GetValue() {
+			ids = append(ids, uuid.MustParse(id))
+		}
+
+		switch conds.GetAccountID().GetOp() {
+		case cruder.EQ:
+			stm.Where(payment.AccountIDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid payment field")
+		}
+	}
 	return stm, nil
 }
 
