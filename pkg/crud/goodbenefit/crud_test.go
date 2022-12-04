@@ -28,15 +28,17 @@ func init() {
 }
 
 var entity = ent.GoodBenefit{
-	ID:        uuid.New(),
-	GoodID:    uuid.New(),
-	AccountID: uuid.New(),
+	ID:            uuid.New(),
+	GoodID:        uuid.New(),
+	AccountID:     uuid.New(),
+	IntervalHours: 24,
 }
 
 var (
-	id        = entity.ID.String()
-	goodID    = entity.GoodID.String()
-	accountID = entity.AccountID.String()
+	id            = entity.ID.String()
+	goodID        = entity.GoodID.String()
+	accountID     = entity.AccountID.String()
+	intervalHours = entity.IntervalHours
 
 	req = npool.AccountReq{
 		ID:        &id,
@@ -54,7 +56,6 @@ func create(t *testing.T) {
 		entity.TransactionID = info.TransactionID
 		entity.UpdatedAt = info.UpdatedAt
 		entity.CreatedAt = info.CreatedAt
-		entity.IntervalHours = info.IntervalHours
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -95,12 +96,15 @@ func update(t *testing.T) {
 	backup := true
 	tid := uuid.New()
 	_tid := tid.String()
+	hours := uint32(10)
 
 	req.Backup = &backup
 	req.TransactionID = &_tid
+	req.IntervalHours = &hours
 
 	entity.Backup = backup
 	entity.TransactionID = tid
+	entity.IntervalHours = hours
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {

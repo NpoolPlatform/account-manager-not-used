@@ -40,6 +40,11 @@ func validate(info *npool.AccountReq) error {
 		}
 	}
 
+	if info.IntervalHours != nil && info.GetIntervalHours() < 1 {
+		logger.Sugar().Errorw("validate", "IntervalHours", info.GetIntervalHours(), "error", "IntervalHours < 1")
+		return status.Error(codes.InvalidArgument, "IntarvalHours < 1")
+	}
+
 	return nil
 }
 

@@ -16,6 +16,7 @@ func Ent2Grpc(row *ent.GoodBenefit) *npool.Account {
 		AccountID:     row.AccountID.String(),
 		Backup:        row.Backup,
 		TransactionID: row.TransactionID.String(),
+		IntervalHours: row.IntervalHours,
 	}
 }
 

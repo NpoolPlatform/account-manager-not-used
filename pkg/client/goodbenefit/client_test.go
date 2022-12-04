@@ -39,6 +39,7 @@ var accountData = npool.Account{
 	AccountID:     uuid.NewString(),
 	Backup:        true,
 	TransactionID: uuid.UUID{}.String(),
+	IntervalHours: 24,
 }
 
 var (
@@ -57,7 +58,6 @@ func createAccount(t *testing.T) {
 	info, err = CreateAccount(context.Background(), &accountInfo)
 	if assert.Nil(t, err) {
 		accountData.CreatedAt = info.CreatedAt
-		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
@@ -67,17 +67,19 @@ func updateAccount(t *testing.T) {
 
 	backup := true
 	tid := uuid.NewString()
+	hours := uint32(10)
 
 	accountInfo.Backup = &backup
 	accountInfo.TransactionID = &tid
+	accountInfo.IntervalHours = &hours
 
 	accountData.Backup = backup
 	accountData.TransactionID = tid
+	accountData.IntervalHours = hours
 
 	info, err = UpdateAccount(context.Background(), &accountInfo)
 	if assert.Nil(t, err) {
 		accountData.CreatedAt = info.CreatedAt
-		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
@@ -85,27 +87,28 @@ func updateAccount(t *testing.T) {
 func createAccounts(t *testing.T) {
 	accountDatas := []npool.Account{
 		{
-			ID:        uuid.NewString(),
-			GoodID:    uuid.NewString(),
-			AccountID: uuid.NewString(),
-			Backup:    true,
+			ID:            uuid.NewString(),
+			GoodID:        uuid.NewString(),
+			AccountID:     uuid.NewString(),
+			Backup:        true,
+			IntervalHours: 24,
 		},
 		{
-			ID:        uuid.NewString(),
-			GoodID:    uuid.NewString(),
-			AccountID: uuid.NewString(),
-			Backup:    true,
+			ID:            uuid.NewString(),
+			GoodID:        uuid.NewString(),
+			AccountID:     uuid.NewString(),
+			Backup:        true,
+			IntervalHours: 24,
 		},
 	}
 
 	Accounts := []*npool.AccountReq{}
 	for key := range accountDatas {
 		Accounts = append(Accounts, &npool.AccountReq{
-			ID:            &accountDatas[key].ID,
-			GoodID:        &accountDatas[key].GoodID,
-			AccountID:     &accountDatas[key].AccountID,
-			Backup:        &accountDatas[key].Backup,
-			IntervalHours: &accountDatas[key].IntervalHours,
+			ID:        &accountDatas[key].ID,
+			GoodID:    &accountDatas[key].GoodID,
+			AccountID: &accountDatas[key].AccountID,
+			Backup:    &accountDatas[key].Backup,
 		})
 	}
 
@@ -119,7 +122,6 @@ func getAccount(t *testing.T) {
 	var err error
 	info, err = GetAccount(context.Background(), info.ID)
 	if assert.Nil(t, err) {
-		accountData.IntervalHours = info.IntervalHours
 		assert.Equal(t, info, &accountData)
 	}
 }
@@ -190,7 +192,6 @@ func existAccountConds(t *testing.T) {
 func deleteAccount(t *testing.T) {
 	info, err := DeleteAccount(context.Background(), info.ID)
 	if assert.Nil(t, err) {
-		accountData.IntervalHours = info.IntervalHours
 		accountData.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, &accountData)
 	}
