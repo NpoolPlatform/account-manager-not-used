@@ -35,10 +35,9 @@ var entity = ent.GoodBenefit{
 }
 
 var (
-	id            = entity.ID.String()
-	goodID        = entity.GoodID.String()
-	accountID     = entity.AccountID.String()
-	intervalHours = entity.IntervalHours
+	id        = entity.ID.String()
+	goodID    = entity.GoodID.String()
+	accountID = entity.AccountID.String()
 
 	req = npool.AccountReq{
 		ID:        &id,
