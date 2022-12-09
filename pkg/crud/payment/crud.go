@@ -191,7 +191,7 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PaymentQuery, erro
 			ids = append(ids, uuid.MustParse(id))
 		}
 
-		switch conds.GetAccountID().GetOp() {
+		switch conds.GetAccountIDs().GetOp() {
 		case cruder.IN:
 			stm.Where(payment.AccountIDIn(ids...))
 		default:
