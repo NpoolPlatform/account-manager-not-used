@@ -198,6 +198,16 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PaymentQuery, erro
 			return nil, fmt.Errorf("invalid payment field")
 		}
 	}
+	if conds.AvailableAt != nil {
+		switch conds.GetAvailableAt().GetOp() {
+		case cruder.GTE:
+			stm.Where(payment.AvailableAtGTE(conds.GetAvailableAt().GetValue()))
+		case cruder.LTE:
+			stm.Where(payment.AvailableAtLTE(conds.GetAvailableAt().GetValue()))
+		default:
+			return nil, fmt.Errorf("invalid payment field")
+		}
+	}
 	return stm, nil
 }
 
