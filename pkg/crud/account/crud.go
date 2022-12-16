@@ -124,6 +124,9 @@ func UpdateSet(info *ent.Account, in *npool.AccountReq) *ent.AccountUpdateOne {
 	if in.Blocked != nil {
 		u.SetBlocked(in.GetBlocked())
 	}
+	if in.DeletedAt != nil {
+		u.SetDeletedAt(in.GetDeletedAt())
+	}
 
 	return u
 }
@@ -261,6 +264,18 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.AccountQuery, erro
 			return nil, fmt.Errorf("invalid account field")
 		}
 	}
+	if conds.IDs != nil {
+		switch conds.GetIDs().GetOp() {
+		case cruder.IN:
+			ids := []uuid.UUID{}
+			for _, id := range conds.GetIDs().GetValue() {
+				ids = append(ids, uuid.MustParse(id))
+			}
+			stm.Where(account.IDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid account field")
+		}
+	}
 	return stm, nil
 }
 
@@ -334,6 +349,9 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Account, error) {
 
 		info, err = stm.Only(_ctx)
 		if err != nil {
+			if ent.IsNotFound(err) {
+				return nil
+			}
 			return err
 		}
 

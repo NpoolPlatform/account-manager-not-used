@@ -33,6 +33,18 @@ func validate(info *npool.AccountReq) error {
 		return status.Error(codes.InvalidArgument, fmt.Sprintf("AccountID is invalid: %v", err))
 	}
 
+	if info.TransactionID != nil {
+		if _, err := uuid.Parse(info.GetTransactionID()); err != nil {
+			logger.Sugar().Errorw("validate", "TransactionID", info.TransactionID, "error", err)
+			return status.Error(codes.InvalidArgument, fmt.Sprintf("TransactionID is invalid: %v", err))
+		}
+	}
+
+	if info.IntervalHours != nil && info.GetIntervalHours() < 1 {
+		logger.Sugar().Errorw("validate", "IntervalHours", info.GetIntervalHours(), "error", "IntervalHours < 1")
+		return status.Error(codes.InvalidArgument, "IntarvalHours < 1")
+	}
+
 	return nil
 }
 

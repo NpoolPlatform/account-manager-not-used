@@ -112,6 +112,9 @@ func UpdateSet(info *ent.User, in *npool.AccountReq) *ent.UserUpdateOne {
 	if len(in.GetLabels()) > 0 {
 		u.SetLabels(in.GetLabels())
 	}
+	if in.DeletedAt != nil {
+		u.SetDeletedAt(in.GetDeletedAt())
+	}
 
 	return u
 }
@@ -175,7 +178,7 @@ func Row(ctx context.Context, id uuid.UUID) (*ent.User, error) {
 	return info, nil
 }
 
-func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.UserQuery, error) {
+func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.UserQuery, error) { //nolint
 	stm := cli.User.Query()
 	if conds.ID != nil {
 		switch conds.GetID().GetOp() {
@@ -219,8 +222,32 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.UserQuery, error) 
 	}
 	if conds.UsedFor != nil {
 		switch conds.GetUsedFor().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(user.UsedFor(account.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
+		default:
+			return nil, fmt.Errorf("invalid user field")
+		}
+	}
+	if conds.IDs != nil {
+		switch conds.GetIDs().GetOp() {
+		case cruder.IN:
+			ids := []uuid.UUID{}
+			for _, id := range conds.GetIDs().GetValue() {
+				ids = append(ids, uuid.MustParse(id))
+			}
+			stm.Where(user.IDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid user field")
+		}
+	}
+	if conds.AccountIDs != nil {
+		switch conds.GetAccountIDs().GetOp() {
+		case cruder.IN:
+			ids := []uuid.UUID{}
+			for _, id := range conds.GetAccountIDs().GetValue() {
+				ids = append(ids, uuid.MustParse(id))
+			}
+			stm.Where(user.AccountIDIn(ids...))
 		default:
 			return nil, fmt.Errorf("invalid user field")
 		}
@@ -298,6 +325,9 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.User, error) {
 
 		info, err = stm.Only(_ctx)
 		if err != nil {
+			if ent.IsNotFound(err) {
+				return nil
+			}
 			return err
 		}
 

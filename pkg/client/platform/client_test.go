@@ -35,20 +35,18 @@ func init() {
 }
 
 var accountData = npool.Account{
-	ID:         uuid.NewString(),
-	CoinTypeID: uuid.NewString(),
-	UsedFor:    account.AccountUsedFor_PlatformBenefitCold,
-	AccountID:  uuid.NewString(),
-	Backup:     true,
+	ID:        uuid.NewString(),
+	UsedFor:   account.AccountUsedFor_PlatformBenefitCold,
+	AccountID: uuid.NewString(),
+	Backup:    true,
 }
 
 var (
 	accountInfo = npool.AccountReq{
-		ID:         &accountData.ID,
-		CoinTypeID: &accountData.CoinTypeID,
-		UsedFor:    &accountData.UsedFor,
-		AccountID:  &accountData.AccountID,
-		Backup:     &accountData.Backup,
+		ID:        &accountData.ID,
+		UsedFor:   &accountData.UsedFor,
+		AccountID: &accountData.AccountID,
+		Backup:    &accountData.Backup,
 	}
 )
 
@@ -75,29 +73,26 @@ func updateAccount(t *testing.T) {
 func createAccounts(t *testing.T) {
 	accountDatas := []npool.Account{
 		{
-			ID:         uuid.NewString(),
-			CoinTypeID: uuid.NewString(),
-			UsedFor:    account.AccountUsedFor_PlatformBenefitCold,
-			AccountID:  uuid.NewString(),
-			Backup:     true,
+			ID:        uuid.NewString(),
+			UsedFor:   account.AccountUsedFor_PlatformBenefitCold,
+			AccountID: uuid.NewString(),
+			Backup:    true,
 		},
 		{
-			ID:         uuid.NewString(),
-			CoinTypeID: uuid.NewString(),
-			UsedFor:    account.AccountUsedFor_PlatformBenefitCold,
-			AccountID:  uuid.NewString(),
-			Backup:     true,
+			ID:        uuid.NewString(),
+			UsedFor:   account.AccountUsedFor_PlatformBenefitCold,
+			AccountID: uuid.NewString(),
+			Backup:    true,
 		},
 	}
 
 	Accounts := []*npool.AccountReq{}
 	for key := range accountDatas {
 		Accounts = append(Accounts, &npool.AccountReq{
-			ID:         &accountDatas[key].ID,
-			CoinTypeID: &accountDatas[key].CoinTypeID,
-			UsedFor:    &accountDatas[key].UsedFor,
-			AccountID:  &accountDatas[key].AccountID,
-			Backup:     &accountDatas[key].Backup,
+			ID:        &accountDatas[key].ID,
+			UsedFor:   &accountDatas[key].UsedFor,
+			AccountID: &accountDatas[key].AccountID,
+			Backup:    &accountDatas[key].Backup,
 		})
 	}
 

@@ -19,6 +19,7 @@ func (GoodBenefit) Mixin() []ent.Mixin {
 }
 
 // Fields of the GoodBenefit.
+// nolint
 func (GoodBenefit) Fields() []ent.Field {
 	return []ent.Field{
 		field.
@@ -41,6 +42,16 @@ func (GoodBenefit) Fields() []ent.Field {
 			Bool("backup").
 			Optional().
 			Default(false),
+		field.
+			UUID("transaction_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.UUID{}
+			}),
+		field.
+			Uint32("interval_hours").
+			Optional().
+			Default(24),
 	}
 }
 

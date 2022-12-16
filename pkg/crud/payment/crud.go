@@ -25,9 +25,6 @@ func CreateSet(c *ent.PaymentCreate, in *npool.AccountReq) *ent.PaymentCreate {
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
-	if in.CoinTypeID != nil {
-		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
-	}
 	if in.AccountID != nil {
 		c.SetAccountID(uuid.MustParse(in.GetAccountID()))
 	}
@@ -180,18 +177,33 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PaymentQuery, erro
 			return nil, fmt.Errorf("invalid payment field")
 		}
 	}
-	if conds.CoinTypeID != nil {
-		switch conds.GetCoinTypeID().GetOp() {
-		case cruder.EQ:
-			stm.Where(payment.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid payment field")
-		}
-	}
 	if conds.AccountID != nil {
 		switch conds.GetAccountID().GetOp() {
 		case cruder.EQ:
 			stm.Where(payment.AccountID(uuid.MustParse(conds.GetAccountID().GetValue())))
+		default:
+			return nil, fmt.Errorf("invalid payment field")
+		}
+	}
+	if conds.AccountIDs != nil {
+		ids := []uuid.UUID{}
+		for _, id := range conds.GetAccountIDs().GetValue() {
+			ids = append(ids, uuid.MustParse(id))
+		}
+
+		switch conds.GetAccountIDs().GetOp() {
+		case cruder.IN:
+			stm.Where(payment.AccountIDIn(ids...))
+		default:
+			return nil, fmt.Errorf("invalid payment field")
+		}
+	}
+	if conds.AvailableAt != nil {
+		switch conds.GetAvailableAt().GetOp() {
+		case cruder.GTE:
+			stm.Where(payment.AvailableAtGTE(conds.GetAvailableAt().GetValue()))
+		case cruder.LTE:
+			stm.Where(payment.AvailableAtLTE(conds.GetAvailableAt().GetValue()))
 		default:
 			return nil, fmt.Errorf("invalid payment field")
 		}
@@ -269,6 +281,9 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Payment, error) {
 
 		info, err = stm.Only(_ctx)
 		if err != nil {
+			if ent.IsNotFound(err) {
+				return nil
+			}
 			return err
 		}
 

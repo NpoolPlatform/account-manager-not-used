@@ -28,9 +28,10 @@ func init() {
 }
 
 var entity = ent.GoodBenefit{
-	ID:        uuid.New(),
-	GoodID:    uuid.New(),
-	AccountID: uuid.New(),
+	ID:            uuid.New(),
+	GoodID:        uuid.New(),
+	AccountID:     uuid.New(),
+	IntervalHours: 24,
 }
 
 var (
@@ -51,6 +52,7 @@ func create(t *testing.T) {
 	var err error
 	info, err = Create(context.Background(), &req)
 	if assert.Nil(t, err) {
+		entity.TransactionID = info.TransactionID
 		entity.UpdatedAt = info.UpdatedAt
 		entity.CreatedAt = info.CreatedAt
 		assert.Equal(t, info.String(), entity.String())
@@ -91,13 +93,22 @@ func createBulk(t *testing.T) {
 
 func update(t *testing.T) {
 	backup := true
+	tid := uuid.New()
+	_tid := tid.String()
+	hours := uint32(10)
 
 	req.Backup = &backup
+	req.TransactionID = &_tid
+	req.IntervalHours = &hours
+
 	entity.Backup = backup
+	entity.TransactionID = tid
+	entity.IntervalHours = hours
 
 	info, err := Update(context.Background(), &req)
 	if assert.Nil(t, err) {
 		entity.UpdatedAt = info.UpdatedAt
+		entity.IntervalHours = info.IntervalHours
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -106,6 +117,7 @@ func row(t *testing.T) {
 	var err error
 	info, err = Row(context.Background(), info.ID)
 	if assert.Nil(t, err) {
+		entity.IntervalHours = info.IntervalHours
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -120,6 +132,7 @@ func rows(t *testing.T) {
 		}, 0, 0)
 	if assert.Nil(t, err) {
 		assert.Equal(t, total, 1)
+		entity.IntervalHours = infos[0].IntervalHours
 		assert.Equal(t, infos[0].String(), entity.String())
 	}
 }
@@ -134,6 +147,7 @@ func rowOnly(t *testing.T) {
 			},
 		})
 	if assert.Nil(t, err) {
+		entity.IntervalHours = info.IntervalHours
 		assert.Equal(t, info.String(), entity.String())
 	}
 }
@@ -177,6 +191,7 @@ func deleteA(t *testing.T) {
 	info, err := Delete(context.Background(), entity.ID)
 	if assert.Nil(t, err) {
 		entity.DeletedAt = info.DeletedAt
+		entity.IntervalHours = info.IntervalHours
 		assert.Equal(t, info.String(), entity.String())
 	}
 }

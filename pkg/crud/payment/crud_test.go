@@ -30,20 +30,17 @@ func init() {
 }
 
 var entity = ent.Payment{
-	ID:         uuid.New(),
-	CoinTypeID: uuid.New(),
-	AccountID:  uuid.New(),
+	ID:        uuid.New(),
+	AccountID: uuid.New(),
 }
 
 var (
-	id         = entity.ID.String()
-	coinTypeID = entity.CoinTypeID.String()
-	accountID  = entity.AccountID.String()
+	id        = entity.ID.String()
+	accountID = entity.AccountID.String()
 
 	req = npool.AccountReq{
-		ID:         &id,
-		CoinTypeID: &coinTypeID,
-		AccountID:  &accountID,
+		ID:        &id,
+		AccountID: &accountID,
 	}
 )
 
@@ -63,27 +60,23 @@ func create(t *testing.T) {
 func createBulk(t *testing.T) {
 	entities := []*ent.Payment{
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			AccountID:  uuid.New(),
+			ID:        uuid.New(),
+			AccountID: uuid.New(),
 		},
 		{
-			ID:         uuid.New(),
-			CoinTypeID: uuid.New(),
-			AccountID:  uuid.New(),
+			ID:        uuid.New(),
+			AccountID: uuid.New(),
 		},
 	}
 
 	reqs := []*npool.AccountReq{}
 	for _, _entity := range entities {
 		_id := _entity.ID.String()
-		_coinTypeID := _entity.CoinTypeID.String()
 		_accountID := _entity.AccountID.String()
 
 		reqs = append(reqs, &npool.AccountReq{
-			ID:         &_id,
-			CoinTypeID: &_coinTypeID,
-			AccountID:  &_accountID,
+			ID:        &_id,
+			AccountID: &_accountID,
 		})
 	}
 	infos, err := CreateBulk(context.Background(), reqs)

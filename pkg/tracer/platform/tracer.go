@@ -12,7 +12,6 @@ import (
 func trace(span trace1.Span, in *npool.AccountReq, index int) trace1.Span {
 	span.SetAttributes(
 		attribute.String(fmt.Sprintf("ID.%v", index), in.GetID()),
-		attribute.String(fmt.Sprintf("CoinTypeID.%v", index), in.GetCoinTypeID()),
 		attribute.String(fmt.Sprintf("AccountID.%v", index), in.GetAccountID()),
 		attribute.String(fmt.Sprintf("UsedFor.%v", index), in.GetUsedFor().String()),
 	)
@@ -27,8 +26,6 @@ func TraceConds(span trace1.Span, in *npool.Conds) trace1.Span {
 	span.SetAttributes(
 		attribute.String("ID.Op", in.GetID().GetOp()),
 		attribute.String("ID.Value", in.GetID().GetValue()),
-		attribute.String("CoinTypeID.Op", in.GetCoinTypeID().GetOp()),
-		attribute.String("CoinTypeID.Value", in.GetCoinTypeID().GetValue()),
 		attribute.String("AccountID.Op", in.GetAccountID().GetOp()),
 		attribute.String("AccountID.Value", in.GetAccountID().GetValue()),
 	)

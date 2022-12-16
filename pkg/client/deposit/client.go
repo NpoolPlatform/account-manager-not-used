@@ -66,6 +66,22 @@ func UpdateAccount(ctx context.Context, in *npool.AccountReq) (*npool.Account, e
 	return info.(*npool.Account), nil
 }
 
+func AddAccount(ctx context.Context, in *npool.AccountReq) (*npool.Account, error) {
+	info, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
+		resp, err := cli.AddAccount(ctx, &npool.AddAccountRequest{
+			Info: in,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("fail add account: %v", err)
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("fail add account: %v", err)
+	}
+	return info.(*npool.Account), nil
+}
+
 func CreateAccounts(ctx context.Context, in []*npool.AccountReq) ([]*npool.Account, error) {
 	infos, err := withCRUD(ctx, func(_ctx context.Context, cli npool.ManagerClient) (cruder.Any, error) {
 		resp, err := cli.CreateAccounts(ctx, &npool.CreateAccountsRequest{

@@ -26,9 +26,6 @@ func CreateSet(c *ent.PlatformCreate, in *npool.AccountReq) *ent.PlatformCreate 
 	if in.ID != nil {
 		c.SetID(uuid.MustParse(in.GetID()))
 	}
-	if in.CoinTypeID != nil {
-		c.SetCoinTypeID(uuid.MustParse(in.GetCoinTypeID()))
-	}
 	if in.AccountID != nil {
 		c.SetAccountID(uuid.MustParse(in.GetAccountID()))
 	}
@@ -178,14 +175,6 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PlatformQuery, err
 			return nil, fmt.Errorf("invalid platform field")
 		}
 	}
-	if conds.CoinTypeID != nil {
-		switch conds.GetCoinTypeID().GetOp() {
-		case cruder.EQ:
-			stm.Where(platform.CoinTypeID(uuid.MustParse(conds.GetCoinTypeID().GetValue())))
-		default:
-			return nil, fmt.Errorf("invalid platform field")
-		}
-	}
 	if conds.AccountID != nil {
 		switch conds.GetAccountID().GetOp() {
 		case cruder.EQ:
@@ -196,7 +185,7 @@ func SetQueryConds(conds *npool.Conds, cli *ent.Client) (*ent.PlatformQuery, err
 	}
 	if conds.UsedFor != nil {
 		switch conds.GetUsedFor().GetOp() {
-		case cruder.LIKE:
+		case cruder.EQ:
 			stm.Where(platform.UsedFor(account.AccountUsedFor(conds.GetUsedFor().GetValue()).String()))
 		default:
 			return nil, fmt.Errorf("invalid platform field")
@@ -283,6 +272,9 @@ func RowOnly(ctx context.Context, conds *npool.Conds) (*ent.Platform, error) {
 
 		info, err = stm.Only(_ctx)
 		if err != nil {
+			if ent.IsNotFound(err) {
+				return nil
+			}
 			return err
 		}
 

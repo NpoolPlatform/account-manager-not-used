@@ -42,12 +42,6 @@ func (Deposit) Fields() []ent.Field {
 				return uuid.UUID{}
 			}),
 		field.
-			UUID("coin_type_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.UUID{}
-			}),
-		field.
 			UUID("account_id", uuid.UUID{}).
 			Optional().
 			Default(func() uuid.UUID {
