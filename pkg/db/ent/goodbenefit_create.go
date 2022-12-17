@@ -121,20 +121,6 @@ func (gbc *GoodBenefitCreate) SetNillableTransactionID(u *uuid.UUID) *GoodBenefi
 	return gbc
 }
 
-// SetIntervalHours sets the "interval_hours" field.
-func (gbc *GoodBenefitCreate) SetIntervalHours(u uint32) *GoodBenefitCreate {
-	gbc.mutation.SetIntervalHours(u)
-	return gbc
-}
-
-// SetNillableIntervalHours sets the "interval_hours" field if the given value is not nil.
-func (gbc *GoodBenefitCreate) SetNillableIntervalHours(u *uint32) *GoodBenefitCreate {
-	if u != nil {
-		gbc.SetIntervalHours(*u)
-	}
-	return gbc
-}
-
 // SetID sets the "id" field.
 func (gbc *GoodBenefitCreate) SetID(u uuid.UUID) *GoodBenefitCreate {
 	gbc.mutation.SetID(u)
@@ -274,10 +260,6 @@ func (gbc *GoodBenefitCreate) defaults() error {
 		v := goodbenefit.DefaultTransactionID()
 		gbc.mutation.SetTransactionID(v)
 	}
-	if _, ok := gbc.mutation.IntervalHours(); !ok {
-		v := goodbenefit.DefaultIntervalHours
-		gbc.mutation.SetIntervalHours(v)
-	}
 	if _, ok := gbc.mutation.ID(); !ok {
 		if goodbenefit.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized goodbenefit.DefaultID (forgotten import ent/runtime?)")
@@ -391,14 +373,6 @@ func (gbc *GoodBenefitCreate) createSpec() (*GoodBenefit, *sqlgraph.CreateSpec) 
 			Column: goodbenefit.FieldTransactionID,
 		})
 		_node.TransactionID = value
-	}
-	if value, ok := gbc.mutation.IntervalHours(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: goodbenefit.FieldIntervalHours,
-		})
-		_node.IntervalHours = value
 	}
 	return _node, _spec
 }
@@ -577,30 +551,6 @@ func (u *GoodBenefitUpsert) UpdateTransactionID() *GoodBenefitUpsert {
 // ClearTransactionID clears the value of the "transaction_id" field.
 func (u *GoodBenefitUpsert) ClearTransactionID() *GoodBenefitUpsert {
 	u.SetNull(goodbenefit.FieldTransactionID)
-	return u
-}
-
-// SetIntervalHours sets the "interval_hours" field.
-func (u *GoodBenefitUpsert) SetIntervalHours(v uint32) *GoodBenefitUpsert {
-	u.Set(goodbenefit.FieldIntervalHours, v)
-	return u
-}
-
-// UpdateIntervalHours sets the "interval_hours" field to the value that was provided on create.
-func (u *GoodBenefitUpsert) UpdateIntervalHours() *GoodBenefitUpsert {
-	u.SetExcluded(goodbenefit.FieldIntervalHours)
-	return u
-}
-
-// AddIntervalHours adds v to the "interval_hours" field.
-func (u *GoodBenefitUpsert) AddIntervalHours(v uint32) *GoodBenefitUpsert {
-	u.Add(goodbenefit.FieldIntervalHours, v)
-	return u
-}
-
-// ClearIntervalHours clears the value of the "interval_hours" field.
-func (u *GoodBenefitUpsert) ClearIntervalHours() *GoodBenefitUpsert {
-	u.SetNull(goodbenefit.FieldIntervalHours)
 	return u
 }
 
@@ -798,34 +748,6 @@ func (u *GoodBenefitUpsertOne) UpdateTransactionID() *GoodBenefitUpsertOne {
 func (u *GoodBenefitUpsertOne) ClearTransactionID() *GoodBenefitUpsertOne {
 	return u.Update(func(s *GoodBenefitUpsert) {
 		s.ClearTransactionID()
-	})
-}
-
-// SetIntervalHours sets the "interval_hours" field.
-func (u *GoodBenefitUpsertOne) SetIntervalHours(v uint32) *GoodBenefitUpsertOne {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.SetIntervalHours(v)
-	})
-}
-
-// AddIntervalHours adds v to the "interval_hours" field.
-func (u *GoodBenefitUpsertOne) AddIntervalHours(v uint32) *GoodBenefitUpsertOne {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.AddIntervalHours(v)
-	})
-}
-
-// UpdateIntervalHours sets the "interval_hours" field to the value that was provided on create.
-func (u *GoodBenefitUpsertOne) UpdateIntervalHours() *GoodBenefitUpsertOne {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.UpdateIntervalHours()
-	})
-}
-
-// ClearIntervalHours clears the value of the "interval_hours" field.
-func (u *GoodBenefitUpsertOne) ClearIntervalHours() *GoodBenefitUpsertOne {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.ClearIntervalHours()
 	})
 }
 
@@ -1189,34 +1111,6 @@ func (u *GoodBenefitUpsertBulk) UpdateTransactionID() *GoodBenefitUpsertBulk {
 func (u *GoodBenefitUpsertBulk) ClearTransactionID() *GoodBenefitUpsertBulk {
 	return u.Update(func(s *GoodBenefitUpsert) {
 		s.ClearTransactionID()
-	})
-}
-
-// SetIntervalHours sets the "interval_hours" field.
-func (u *GoodBenefitUpsertBulk) SetIntervalHours(v uint32) *GoodBenefitUpsertBulk {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.SetIntervalHours(v)
-	})
-}
-
-// AddIntervalHours adds v to the "interval_hours" field.
-func (u *GoodBenefitUpsertBulk) AddIntervalHours(v uint32) *GoodBenefitUpsertBulk {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.AddIntervalHours(v)
-	})
-}
-
-// UpdateIntervalHours sets the "interval_hours" field to the value that was provided on create.
-func (u *GoodBenefitUpsertBulk) UpdateIntervalHours() *GoodBenefitUpsertBulk {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.UpdateIntervalHours()
-	})
-}
-
-// ClearIntervalHours clears the value of the "interval_hours" field.
-func (u *GoodBenefitUpsertBulk) ClearIntervalHours() *GoodBenefitUpsertBulk {
-	return u.Update(func(s *GoodBenefitUpsert) {
-		s.ClearIntervalHours()
 	})
 }
 

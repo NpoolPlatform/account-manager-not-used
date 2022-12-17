@@ -86,7 +86,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			goodbenefit.FieldAccountID:     {Type: field.TypeUUID, Column: goodbenefit.FieldAccountID},
 			goodbenefit.FieldBackup:        {Type: field.TypeBool, Column: goodbenefit.FieldBackup},
 			goodbenefit.FieldTransactionID: {Type: field.TypeUUID, Column: goodbenefit.FieldTransactionID},
-			goodbenefit.FieldIntervalHours: {Type: field.TypeUint32, Column: goodbenefit.FieldIntervalHours},
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
@@ -454,11 +453,6 @@ func (f *GoodBenefitFilter) WhereBackup(p entql.BoolP) {
 // WhereTransactionID applies the entql [16]byte predicate on the transaction_id field.
 func (f *GoodBenefitFilter) WhereTransactionID(p entql.ValueP) {
 	f.Where(p.Field(goodbenefit.FieldTransactionID))
-}
-
-// WhereIntervalHours applies the entql uint32 predicate on the interval_hours field.
-func (f *GoodBenefitFilter) WhereIntervalHours(p entql.Uint32P) {
-	f.Where(p.Field(goodbenefit.FieldIntervalHours))
 }
 
 // addPredicate implements the predicateAdder interface.

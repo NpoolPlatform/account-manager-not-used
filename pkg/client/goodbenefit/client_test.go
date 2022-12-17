@@ -39,7 +39,6 @@ var accountData = npool.Account{
 	AccountID:     uuid.NewString(),
 	Backup:        true,
 	TransactionID: uuid.UUID{}.String(),
-	IntervalHours: 24,
 }
 
 var (
@@ -67,15 +66,12 @@ func updateAccount(t *testing.T) {
 
 	backup := true
 	tid := uuid.NewString()
-	hours := uint32(10)
 
 	accountInfo.Backup = &backup
 	accountInfo.TransactionID = &tid
-	accountInfo.IntervalHours = &hours
 
 	accountData.Backup = backup
 	accountData.TransactionID = tid
-	accountData.IntervalHours = hours
 
 	info, err = UpdateAccount(context.Background(), &accountInfo)
 	if assert.Nil(t, err) {
@@ -87,18 +83,16 @@ func updateAccount(t *testing.T) {
 func createAccounts(t *testing.T) {
 	accountDatas := []npool.Account{
 		{
-			ID:            uuid.NewString(),
-			GoodID:        uuid.NewString(),
-			AccountID:     uuid.NewString(),
-			Backup:        true,
-			IntervalHours: 24,
+			ID:        uuid.NewString(),
+			GoodID:    uuid.NewString(),
+			AccountID: uuid.NewString(),
+			Backup:    true,
 		},
 		{
-			ID:            uuid.NewString(),
-			GoodID:        uuid.NewString(),
-			AccountID:     uuid.NewString(),
-			Backup:        true,
-			IntervalHours: 24,
+			ID:        uuid.NewString(),
+			GoodID:    uuid.NewString(),
+			AccountID: uuid.NewString(),
+			Backup:    true,
 		},
 	}
 

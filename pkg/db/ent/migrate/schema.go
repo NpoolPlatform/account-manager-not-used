@@ -59,7 +59,6 @@ var (
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "backup", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "transaction_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "interval_hours", Type: field.TypeUint32, Nullable: true, Default: 24},
 	}
 	// GoodBenefitsTable holds the schema information for the "good_benefits" table.
 	GoodBenefitsTable = &schema.Table{

@@ -34,9 +34,6 @@ func CreateSet(c *ent.GoodBenefitCreate, in *npool.AccountReq) *ent.GoodBenefitC
 	if in.Backup != nil {
 		c.SetBackup(in.GetBackup())
 	}
-	if in.IntervalHours != nil {
-		c.SetIntervalHours(in.GetIntervalHours())
-	}
 	return c
 }
 
@@ -103,9 +100,6 @@ func UpdateSet(info *ent.GoodBenefit, in *npool.AccountReq) *ent.GoodBenefitUpda
 
 	if in.Backup != nil {
 		u.SetBackup(in.GetBackup())
-	}
-	if in.IntervalHours != nil {
-		u.SetIntervalHours(in.GetIntervalHours())
 	}
 	if in.TransactionID != nil {
 		u.SetTransactionID(uuid.MustParse(in.GetTransactionID()))
