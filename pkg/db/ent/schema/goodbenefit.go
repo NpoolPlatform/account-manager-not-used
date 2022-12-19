@@ -19,7 +19,6 @@ func (GoodBenefit) Mixin() []ent.Mixin {
 }
 
 // Fields of the GoodBenefit.
-// nolint
 func (GoodBenefit) Fields() []ent.Field {
 	return []ent.Field{
 		field.
