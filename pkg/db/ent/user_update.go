@@ -196,6 +196,26 @@ func (uu *UserUpdate) ClearLabels() *UserUpdate {
 	return uu
 }
 
+// SetMemo sets the "memo" field.
+func (uu *UserUpdate) SetMemo(s string) *UserUpdate {
+	uu.mutation.SetMemo(s)
+	return uu
+}
+
+// SetNillableMemo sets the "memo" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableMemo(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetMemo(*s)
+	}
+	return uu
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (uu *UserUpdate) ClearMemo() *UserUpdate {
+	uu.mutation.ClearMemo()
+	return uu
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -414,6 +434,19 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldLabels,
 		})
 	}
+	if value, ok := uu.mutation.Memo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldMemo,
+		})
+	}
+	if uu.mutation.MemoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldMemo,
+		})
+	}
 	_spec.Modifiers = uu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -599,6 +632,26 @@ func (uuo *UserUpdateOne) SetLabels(s []string) *UserUpdateOne {
 // ClearLabels clears the value of the "labels" field.
 func (uuo *UserUpdateOne) ClearLabels() *UserUpdateOne {
 	uuo.mutation.ClearLabels()
+	return uuo
+}
+
+// SetMemo sets the "memo" field.
+func (uuo *UserUpdateOne) SetMemo(s string) *UserUpdateOne {
+	uuo.mutation.SetMemo(s)
+	return uuo
+}
+
+// SetNillableMemo sets the "memo" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableMemo(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetMemo(*s)
+	}
+	return uuo
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (uuo *UserUpdateOne) ClearMemo() *UserUpdateOne {
+	uuo.mutation.ClearMemo()
 	return uuo
 }
 
@@ -848,6 +901,19 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Column: user.FieldLabels,
+		})
+	}
+	if value, ok := uuo.mutation.Memo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldMemo,
+		})
+	}
+	if uuo.mutation.MemoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: user.FieldMemo,
 		})
 	}
 	_spec.Modifiers = uuo.modifiers

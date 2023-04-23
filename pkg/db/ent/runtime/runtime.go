@@ -425,6 +425,10 @@ func init() {
 	userDescLabels := userFields[6].Descriptor()
 	// user.DefaultLabels holds the default value on creation for the labels field.
 	user.DefaultLabels = userDescLabels.Default.([]string)
+	// userDescMemo is the schema descriptor for memo field.
+	userDescMemo := userFields[7].Descriptor()
+	// user.DefaultMemo holds the default value on creation for the memo field.
+	user.DefaultMemo = userDescMemo.Default.(string)
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.

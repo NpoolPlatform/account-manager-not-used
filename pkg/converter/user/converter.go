@@ -19,6 +19,7 @@ func Ent2Grpc(row *ent.User) *npool.Account {
 		AccountID:  row.AccountID.String(),
 		UsedFor:    account.AccountUsedFor(account.AccountUsedFor_value[row.UsedFor]),
 		Labels:     row.Labels,
+		Memo:       row.Memo,
 		CreatedAt:  row.CreatedAt,
 	}
 }

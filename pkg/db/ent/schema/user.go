@@ -59,6 +59,10 @@ func (User) Fields() []ent.Field {
 			JSON("labels", []string{}).
 			Optional().
 			Default([]string{}),
+		field.
+			String("memo").
+			Optional().
+			Default(""),
 	}
 }
 

@@ -30,6 +30,8 @@ const (
 	FieldUsedFor = "used_for"
 	// FieldLabels holds the string denoting the labels field in the database.
 	FieldLabels = "labels"
+	// FieldMemo holds the string denoting the memo field in the database.
+	FieldMemo = "memo"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -46,6 +48,7 @@ var Columns = []string{
 	FieldAccountID,
 	FieldUsedFor,
 	FieldLabels,
+	FieldMemo,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -87,6 +90,8 @@ var (
 	DefaultUsedFor string
 	// DefaultLabels holds the default value on creation for the "labels" field.
 	DefaultLabels []string
+	// DefaultMemo holds the default value on creation for the "memo" field.
+	DefaultMemo string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

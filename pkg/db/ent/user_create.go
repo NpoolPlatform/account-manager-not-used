@@ -141,6 +141,20 @@ func (uc *UserCreate) SetLabels(s []string) *UserCreate {
 	return uc
 }
 
+// SetMemo sets the "memo" field.
+func (uc *UserCreate) SetMemo(s string) *UserCreate {
+	uc.mutation.SetMemo(s)
+	return uc
+}
+
+// SetNillableMemo sets the "memo" field if the given value is not nil.
+func (uc *UserCreate) SetNillableMemo(s *string) *UserCreate {
+	if s != nil {
+		uc.SetMemo(*s)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(u uuid.UUID) *UserCreate {
 	uc.mutation.SetID(u)
@@ -291,6 +305,10 @@ func (uc *UserCreate) defaults() error {
 		v := user.DefaultLabels
 		uc.mutation.SetLabels(v)
 	}
+	if _, ok := uc.mutation.Memo(); !ok {
+		v := user.DefaultMemo
+		uc.mutation.SetMemo(v)
+	}
 	if _, ok := uc.mutation.ID(); !ok {
 		if user.DefaultID == nil {
 			return fmt.Errorf("ent: uninitialized user.DefaultID (forgotten import ent/runtime?)")
@@ -420,6 +438,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldLabels,
 		})
 		_node.Labels = value
+	}
+	if value, ok := uc.mutation.Memo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: user.FieldMemo,
+		})
+		_node.Memo = value
 	}
 	return _node, _spec
 }
@@ -634,6 +660,24 @@ func (u *UserUpsert) UpdateLabels() *UserUpsert {
 // ClearLabels clears the value of the "labels" field.
 func (u *UserUpsert) ClearLabels() *UserUpsert {
 	u.SetNull(user.FieldLabels)
+	return u
+}
+
+// SetMemo sets the "memo" field.
+func (u *UserUpsert) SetMemo(v string) *UserUpsert {
+	u.Set(user.FieldMemo, v)
+	return u
+}
+
+// UpdateMemo sets the "memo" field to the value that was provided on create.
+func (u *UserUpsert) UpdateMemo() *UserUpsert {
+	u.SetExcluded(user.FieldMemo)
+	return u
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (u *UserUpsert) ClearMemo() *UserUpsert {
+	u.SetNull(user.FieldMemo)
 	return u
 }
 
@@ -873,6 +917,27 @@ func (u *UserUpsertOne) UpdateLabels() *UserUpsertOne {
 func (u *UserUpsertOne) ClearLabels() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearLabels()
+	})
+}
+
+// SetMemo sets the "memo" field.
+func (u *UserUpsertOne) SetMemo(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetMemo(v)
+	})
+}
+
+// UpdateMemo sets the "memo" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateMemo() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateMemo()
+	})
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (u *UserUpsertOne) ClearMemo() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearMemo()
 	})
 }
 
@@ -1278,6 +1343,27 @@ func (u *UserUpsertBulk) UpdateLabels() *UserUpsertBulk {
 func (u *UserUpsertBulk) ClearLabels() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.ClearLabels()
+	})
+}
+
+// SetMemo sets the "memo" field.
+func (u *UserUpsertBulk) SetMemo(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetMemo(v)
+	})
+}
+
+// UpdateMemo sets the "memo" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateMemo() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateMemo()
+	})
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (u *UserUpsertBulk) ClearMemo() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearMemo()
 	})
 }
 

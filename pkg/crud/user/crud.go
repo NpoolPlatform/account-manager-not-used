@@ -44,7 +44,9 @@ func CreateSet(c *ent.UserCreate, in *npool.AccountReq) *ent.UserCreate {
 	if len(in.GetLabels()) > 0 {
 		c.SetLabels(in.GetLabels())
 	}
-
+	if in.Memo != nil {
+		c.SetMemo(in.GetMemo())
+	}
 	return c
 }
 
@@ -111,6 +113,9 @@ func UpdateSet(info *ent.User, in *npool.AccountReq) *ent.UserUpdateOne {
 
 	if len(in.GetLabels()) > 0 {
 		u.SetLabels(in.GetLabels())
+	}
+	if in.Memo != nil {
+		u.SetMemo(in.GetMemo())
 	}
 	if in.DeletedAt != nil {
 		u.SetDeletedAt(in.GetDeletedAt())

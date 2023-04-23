@@ -35,6 +35,8 @@ type User struct {
 	UsedFor string `json:"used_for,omitempty"`
 	// Labels holds the value of the "labels" field.
 	Labels []string `json:"labels,omitempty"`
+	// Memo holds the value of the "memo" field.
+	Memo string `json:"memo,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -46,7 +48,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new([]byte)
 		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case user.FieldUsedFor:
+		case user.FieldUsedFor, user.FieldMemo:
 			values[i] = new(sql.NullString)
 		case user.FieldID, user.FieldAppID, user.FieldUserID, user.FieldCoinTypeID, user.FieldAccountID:
 			values[i] = new(uuid.UUID)
@@ -127,6 +129,12 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 					return fmt.Errorf("unmarshal field labels: %w", err)
 				}
 			}
+		case user.FieldMemo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field memo", values[i])
+			} else if value.Valid {
+				u.Memo = value.String
+			}
 		}
 	}
 	return nil
@@ -181,6 +189,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("labels=")
 	builder.WriteString(fmt.Sprintf("%v", u.Labels))
+	builder.WriteString(", ")
+	builder.WriteString("memo=")
+	builder.WriteString(u.Memo)
 	builder.WriteByte(')')
 	return builder.String()
 }

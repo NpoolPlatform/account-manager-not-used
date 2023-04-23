@@ -142,6 +142,7 @@ var (
 		{Name: "account_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "used_for", Type: field.TypeString, Nullable: true, Default: "DefaultAccountUsedFor"},
 		{Name: "labels", Type: field.TypeJSON, Nullable: true},
+		{Name: "memo", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
