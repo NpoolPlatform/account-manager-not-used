@@ -15,6 +15,7 @@ func Ent2Grpc(row *ent.Transfer) *npool.Transfer {
 		AppID:        row.AppID.String(),
 		UserID:       row.UserID.String(),
 		TargetUserID: row.TargetUserID.String(),
+		CreatedAt:    row.CreatedAt,
 	}
 }
 
